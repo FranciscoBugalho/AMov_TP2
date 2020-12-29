@@ -1,0 +1,7 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.GeometryGO" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Disable the dark mode in our application. -->
+        <item name="android:forceDarkAllowed">false</item>
+    </style>
+</resources>

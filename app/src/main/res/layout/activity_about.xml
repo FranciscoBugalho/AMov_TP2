@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/ll_background_color"
+    android:padding="@dimen/aa_ll_global_padding"
+    tools:context=".activities.AboutActivity"
+    tools:ignore="Overdraw">
+
+    <!-- LinearLayout for the app logo and ISEC logo -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="METER O ICONE AQUI"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            tools:ignore="NestedWeights" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="METER O LOGO ISEC AQUI"
+            android:textColor="@color/black"
+            android:textSize="25sp" />
+
+    </LinearLayout>
+
+    <!-- LinearLayout to display the about information -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="@drawable/linear_layout_background"
+        android:padding="@dimen/aa_ll_about_information_padding" >
+
+        <TextView
+            android:id="@+id/tvAbout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/aa_about_information"
+            android:textColor="@color/black"
+            android:textSize="@dimen/aa_tv_about_information_text_size"
+            android:lineSpacingExtra="@dimen/aa_tv_about_information_line_spacing_extra"
+            android:gravity="start"
+            android:padding="@dimen/aa_tv_about_information_padding"
+            android:layout_marginVertical="@dimen/aa_tv_about_information_margin_vertical" />
+
+    </LinearLayout>
+
+</LinearLayout>

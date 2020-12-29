@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/ll_background_color"
+    android:padding="@dimen/ap_ll_global_padding"
+    tools:context=".activities.PlayActivity">
+
+    <!-- LinearLayout to display the team name. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/tvTeamName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/ap_tv_text_size"
+            android:fontFamily="sans-serif"
+            android:padding="@dimen/ap_tv_padding" />
+
+    </LinearLayout>
+
+    <!-- LinearLayout to display all the players. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/linear_layout_background"
+        android:padding="@dimen/as_ll_score_information_padding"
+        android:layout_marginTop="@dimen/ap_ll_players_margin_top"
+        android:layout_marginBottom="@dimen/apc_ll_players_margin_bottom" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ap_tv_players"
+            android:textColor="@color/black"
+            android:textSize="@dimen/ap_tv_players_text_size"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/ap_tv_players_padding"
+            android:layout_marginTop="@dimen/ap_tv_players_margin_top"
+            android:layout_marginBottom="@dimen/ap_tv_players_margin_bottom" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/llPlayers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</LinearLayout>

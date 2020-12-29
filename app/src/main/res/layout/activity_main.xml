@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/ll_background_color"
+    android:padding="@dimen/am_ll_global_padding"
+    tools:context=".activities.MainActivity">
+
+    <!-- LinearLayout for the app logo. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.75" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="METER O ICONE AQUI"
+            android:textColor="@color/black"
+            android:textSize="25sp" />
+
+    </LinearLayout>
+
+    <!-- LinearLayout for the menu buttons. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <!-- ConstraintLayout for the menu buttons. -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_margin="@dimen/am_cl_layout_margin"
+            android:padding="@dimen/am_cl_padding" >
+
+            <Button
+                android:id="@+id/btnCreateLobby"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/menu_buttons"
+                android:text="@string/am_btn_create_lobby"
+                android:textColor="@color/black"
+                android:textSize="@dimen/am_btn_text_size"
+                android:textStyle="bold"
+                android:padding="@dimen/am_btn_padding"
+                android:layout_margin="@dimen/am_btn_layout_margin"
+                app:layout_constraintBottom_toTopOf="@+id/btnJoinLobby"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btnJoinLobby"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/menu_buttons"
+                android:text="@string/am_btn_join_lobby"
+                android:textColor="@color/black"
+                android:textSize="@dimen/am_btn_text_size"
+                android:textStyle="bold"
+                android:padding="@dimen/am_btn_padding"
+                android:layout_margin="@dimen/am_btn_layout_margin"
+                app:layout_constraintBottom_toTopOf="@+id/btnScoreboard"
+                app:layout_constraintTop_toBottomOf="@+id/btnCreateLobby" />
+
+            <Button
+                android:id="@+id/btnScoreboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/menu_buttons"
+                android:text="@string/am_btn_scoreboard"
+                android:textColor="@color/black"
+                android:textSize="@dimen/am_btn_text_size"
+                android:textStyle="bold"
+                android:padding="@dimen/am_btn_padding"
+                android:layout_margin="@dimen/am_btn_layout_margin"
+                app:layout_constraintBottom_toTopOf="@+id/btnTutorial"
+                app:layout_constraintTop_toBottomOf="@+id/btnJoinLobby" />
+
+            <Button
+                android:id="@+id/btnTutorial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/menu_buttons"
+                android:text="@string/am_btn_tutorial"
+                android:textColor="@color/black"
+                android:textSize="@dimen/am_btn_text_size"
+                android:textStyle="bold"
+                android:padding="@dimen/am_btn_padding"
+                android:layout_margin="@dimen/am_btn_layout_margin"
+                app:layout_constraintBottom_toBottomOf="@+id/btnAbout"
+                app:layout_constraintTop_toBottomOf="@+id/btnScoreboard" />
+
+            <Button
+                android:id="@+id/btnAbout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/menu_buttons"
+                android:text="@string/am_btn_about"
+                android:textColor="@color/black"
+                android:textSize="@dimen/am_btn_text_size"
+                android:textStyle="bold"
+                android:padding="@dimen/am_btn_padding"
+                android:layout_margin="@dimen/am_btn_layout_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnTutorial" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

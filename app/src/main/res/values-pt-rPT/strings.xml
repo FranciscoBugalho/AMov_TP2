@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GeometryGO</string>
+    <string name="am_btn_create_lobby">Criar Grupo</string>
+    <string name="am_btn_scoreboard">Classificações</string>
+    <string name="am_btn_tutorial">Tutorial</string>
+    <string name="am_btn_about">Sobre</string>
+    <string name="aa_about_information">Projeto realizado por:\n\t- Henrique Fonseca\n\t- José Francisco Bugalho\n\t- Marco Ferreira\n\nProjeto desenvolvido no ano letivo 2020/2021 para a unidade curricular de Arquiteturas Móveis do 3º ano da Licenciatura em Engenharia Informática lecionada no Instituto Superior de Engenharia de Coimbra.</string>
+    <string name="as_tv_top_5">Top 5</string>
+    <string name="am_btn_join_lobby">Entrar no Grupo</string>
+    <string name="alert_dialog_no_internet_connection">Sem conexão à internet. Tente mais tarde!</string>
+    <string name="ap_team_name">Nome da Equipa:</string>
+    <string name="ap_et_hint_insert_team_name">Insira o nome da equipa</string>
+    <string name="ap_tv_players">Jogadores</string>
+    <string name="ap_btn_start_game">Começar Jogo</string>
+</resources>

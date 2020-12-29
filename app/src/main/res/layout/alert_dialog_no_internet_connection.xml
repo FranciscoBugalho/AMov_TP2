@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/red_warnings"
+    android:elevation="@dimen/ad_nic_ll_elevation" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:text="@string/alert_dialog_no_internet_connection"
+        android:textColor="@color/white"
+        android:textSize="@dimen/ad_nic_tv_text_size"
+        android:gravity="center"
+        android:padding="@dimen/ad_nic_tv_padding" />
+
+</LinearLayout>

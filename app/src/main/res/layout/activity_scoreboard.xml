@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/ll_background_color"
+    android:padding="@dimen/as_ll_global_padding"
+    tools:context=".activities.ScoreboardActivity">
+
+    <!-- LinearLayout for the app logo. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="METER O ICONE AQUI"
+            android:textColor="@color/black"
+            android:textSize="25sp" />
+
+    </LinearLayout>
+
+    <!-- LinearLayout for the score information. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="@drawable/linear_layout_background"
+        android:padding="@dimen/as_ll_score_information_padding" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/as_tv_top_5"
+            android:textColor="@color/black"
+            android:textSize="@dimen/as_tv_top_5_text_size"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/as_tv_top_5_padding"
+            android:layout_marginTop="@dimen/as_tv_top_5_margin_top"
+            android:layout_marginBottom="@dimen/as_tv_top_5_margin_bottom" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tvPlayer1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="@dimen/as_tv_score_information_text_size"
+                android:fontFamily="sans-serif"
+                android:padding="@dimen/as_tv_score_information_padding"
+                app:layout_constraintBottom_toTopOf="@+id/tvPlayer2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvPlayer2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="@dimen/as_tv_score_information_text_size"
+                android:fontFamily="sans-serif"
+                android:padding="@dimen/as_tv_score_information_padding"
+                app:layout_constraintBottom_toTopOf="@+id/tvPlayer3"
+                app:layout_constraintTop_toBottomOf="@+id/tvPlayer1" />
+
+            <TextView
+                android:id="@+id/tvPlayer3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="@dimen/as_tv_score_information_text_size"
+                android:fontFamily="sans-serif"
+                android:padding="@dimen/as_tv_score_information_padding"
+                app:layout_constraintBottom_toTopOf="@+id/tvPlayer4"
+                app:layout_constraintTop_toBottomOf="@+id/tvPlayer2" />
+
+            <TextView
+                android:id="@+id/tvPlayer4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="@dimen/as_tv_score_information_text_size"
+                android:fontFamily="sans-serif"
+                android:padding="@dimen/as_tv_score_information_padding"
+                app:layout_constraintBottom_toTopOf="@+id/tvPlayer10"
+                app:layout_constraintTop_toBottomOf="@+id/tvPlayer3" />
+
+            <TextView
+                android:id="@+id/tvPlayer10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="@dimen/as_tv_score_information_text_size"
+                android:fontFamily="sans-serif"
+                android:padding="@dimen/as_tv_score_information_padding"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPlayer4" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

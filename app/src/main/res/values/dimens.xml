@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Activity Main Dimensions. -->
+    <dimen name="am_ll_global_padding">16dp</dimen>
+    <dimen name="am_cl_layout_margin">8dp</dimen>
+    <dimen name="am_cl_padding">8dp</dimen>
+    <dimen name="am_btn_text_size">16sp</dimen>
+    <dimen name="am_btn_padding">5dp</dimen>
+    <dimen name="am_btn_layout_margin">5dp</dimen>
+    <dimen name="am_btn_background_stroke_width">1dp</dimen>
+    <dimen name="am_btn_background_corner_radius">15dp</dimen>
+
+    <!-- Activity Play Dimensions. -->
+    <dimen name="ap_ll_global_padding">16dp</dimen>
+    <dimen name="ap_tv_text_size">18sp</dimen>
+    <dimen name="ap_tv_padding">5dp</dimen>
+    <dimen name="ap_et_text_size">16sp</dimen>
+    <dimen name="ap_ll_players_margin_top">10dp</dimen>
+    <dimen name="ap_ll_players_margin_bottom">10dp</dimen>
+    <dimen name="ap_tv_players_text_size">24sp</dimen>
+    <dimen name="ap_tv_players_padding">5dp</dimen>
+    <dimen name="ap_tv_players_margin_top">5dp</dimen>
+    <dimen name="ap_tv_players_margin_bottom">10dp</dimen>
+    <dimen name="ap_btn_text_size">16sp</dimen>
+    <dimen name="ap_btn_padding_horizontal">20dp</dimen>
+    <dimen name="apc_ll_players_margin_bottom">10dp</dimen>
+
+    <!-- Activity Scoreboard Dimensions. -->
+    <dimen name="as_ll_global_padding">16dp</dimen>
+    <dimen name="as_ll_score_information_padding">8dp</dimen>
+    <dimen name="as_tv_top_5_text_size">26sp</dimen>
+    <dimen name="as_tv_top_5_padding">3dp</dimen>
+    <dimen name="as_tv_top_5_margin_top">10dp</dimen>
+    <dimen name="as_tv_top_5_margin_bottom">20dp</dimen>
+    <dimen name="as_tv_score_information_text_size">20sp</dimen>
+    <dimen name="as_tv_score_information_padding">3dp</dimen>
+
+    <!-- Activity Tutorial Dimensions. -->
+    <dimen name="at_ll_global_padding">16dp</dimen>
+
+    <!-- Activity About Dimensions. -->
+    <dimen name="aa_ll_global_padding">16dp</dimen>
+    <dimen name="aa_ll_about_information_padding">8dp</dimen>
+    <dimen name="aa_tv_about_information_text_size">18sp</dimen>
+    <dimen name="aa_tv_about_information_line_spacing_extra">10dp</dimen>
+    <dimen name="aa_tv_about_information_padding">5dp</dimen>
+    <dimen name="aa_tv_about_information_margin_vertical">10dp</dimen>
+
+    <!-- Alert Dialog for no internet connection. -->
+    <dimen name="ad_nic_tv_text_size">22sp</dimen>
+    <dimen name="ad_nic_tv_padding">10dp</dimen>
+    <dimen name="ad_nic_ll_elevation">10dp</dimen>
+
+</resources>
