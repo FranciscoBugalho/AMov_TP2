@@ -49,8 +49,9 @@ class AlertDialogNoInternetConnection : DialogFragment() {
     ) {
         // Verifies if exists any network connection
         if (!isConnected) {
-            // If there isn't internet connection shows a dialog with a message to the user
-            this.show(supportFragmentManager, FragmentConstants.ALERT_DIALOG)
+            if (!alertDialogNoInternetConnection.isVisible)
+                // If there isn't internet connection shows a dialog with a message to the user
+                this.show(supportFragmentManager, FragmentConstants.ALERT_DIALOG)
         } else {
             if (alertDialogNoInternetConnection.isVisible)
                 alertDialogNoInternetConnection.dismiss()

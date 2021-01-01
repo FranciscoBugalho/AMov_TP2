@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -28,9 +29,6 @@ class MainActivity : AppCompatActivity(), NetworkConnection.ConnectivityReceiver
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // Register the service
-        registerReceiver(networkConnection, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
         findViewById<Button>(R.id.btnCreateLobby).setOnClickListener {
             Intent(this, PlayActivity::class.java)
@@ -69,11 +67,14 @@ class MainActivity : AppCompatActivity(), NetworkConnection.ConnectivityReceiver
 
     override fun onResume() {
         super.onResume()
+        // Register the service
+        registerReceiver(networkConnection, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+
         connectivityReceiverListener = this
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
         // Unregister the service
         unregisterReceiver(networkConnection)
     }
