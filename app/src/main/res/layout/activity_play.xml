@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:background="@color/ll_background_color"
     android:padding="@dimen/ap_ll_global_padding"
+    android:id="@+id/activity_play"
     tools:context=".activities.PlayActivity">
 
     <!-- LinearLayout for the team name definition. -->
@@ -66,6 +67,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvAux" />
 
             </LinearLayout>
 
