@@ -69,7 +69,8 @@
                 android:id="@+id/llPlayers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/ap_ll_players_padding_horizontal">
 
             </LinearLayout>
 

@@ -72,6 +72,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- ScrollView to present the players information. -->
+        <ScrollView
+            android:id="@+id/svPlayersInformation"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPlayers">
+
+            <!-- LinearLayout for the players information. -->
+            <LinearLayout
+                android:id="@+id/llPlayers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/ap_ll_players_padding_horizontal">
+
+            </LinearLayout>
+
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
