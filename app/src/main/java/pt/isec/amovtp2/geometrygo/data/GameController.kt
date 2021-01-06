@@ -135,4 +135,10 @@ class GameController : ViewModel() {
         ) + " \t " + String.format("%.2f", team.getLastPlayer().longitude)
     }
 
+    fun sendLocationToTeam(latitude : Double, longitude : Double) {
+        team.getPlayers().forEach{
+            sendMyDataToOthers(it)
+        }
+    }
+
 }

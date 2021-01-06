@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.Button
@@ -66,10 +67,20 @@ class PlayActivity : AppCompatActivity() {
                     }
                     lobbyStarted = true
                 }
+                else{
+                    if(latitude != null && longitude != null)
+                        game.sendLocationToTeam(latitude!!, longitude!!)
+                    else
+                        Log.e("PlayActivity", "Location is null.")
+                }
             }
         }
     }
 
+    /**
+     * onCreate
+     * 1.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -77,7 +88,6 @@ class PlayActivity : AppCompatActivity() {
         fLoc = FusedLocationProviderClient(this)
 
         game = ViewModelProvider(this).get(GameController::class.java)
-
         // Define which view the user will see depending if he started the app on server mode or not.
         isServer = intent.getBooleanExtra(IntentConstants.IS_SERVER, false)
         if (isServer) {
@@ -112,6 +122,10 @@ class PlayActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * updateView
+     * 1.
+     */
     private fun updateView() {
         val linearLayout = findViewById<LinearLayout>(R.id.llPlayers)
 
@@ -160,11 +174,19 @@ class PlayActivity : AppCompatActivity() {
         linearLayout.invalidate()
     }
 
+    /**
+     * updateView
+     * 1. calls "startLocation" method
+     */
     override fun onResume() {
         super.onResume()
         startLocation(true)
     }
 
+    /**
+     * onPause
+     * 1. if location service is enabled, disables it
+     */
     override fun onPause() {
         super.onPause()
         if (locEnabled) {
@@ -173,6 +195,10 @@ class PlayActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * onRequestPermissionsResult
+     * 1.
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -184,6 +210,10 @@ class PlayActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * startLocation
+     * 1.
+     */
     private fun startLocation(askPerm: Boolean) {
         if (ActivityCompat.checkSelfPermission(
                 this,

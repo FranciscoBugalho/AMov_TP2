@@ -27,5 +27,9 @@ class Team(var teamName: String) {
         return players[getSize() - 1]
     }
 
+    fun getPlayers(): ArrayList<Player> {
+        return players;
+    }
+
 
 }
