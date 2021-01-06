@@ -15,14 +15,10 @@ import pt.isec.amovtp2.geometrygo.receivers.NetworkConnection.NetworkConnectivit
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity(), NetworkConnection.ConnectivityReceiverListener {
 
-    /**
-     * AlertDialog to display that the device lost internet connection.
-     */
+    // AlertDialog to display that the device lost internet connection.
     private var alertDialogErrors = AlertDialogNoInternetConnection()
 
-    /**
-     * BroadcastReceiver to detect the internet connection.
-     */
+    // BroadcastReceiver to detect the internet connection.
     private val networkConnection = NetworkConnection()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +62,7 @@ class MainActivity : AppCompatActivity(), NetworkConnection.ConnectivityReceiver
 
     override fun onResume() {
         super.onResume()
-        // Register the service
+        // Register the service.
         registerReceiver(networkConnection, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
         connectivityReceiverListener = this
@@ -74,7 +70,7 @@ class MainActivity : AppCompatActivity(), NetworkConnection.ConnectivityReceiver
 
     override fun onPause() {
         super.onPause()
-        // Unregister the service
+        // Unregister the service.
         unregisterReceiver(networkConnection)
     }
 

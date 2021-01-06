@@ -9,12 +9,12 @@ import pt.isec.amovtp2.geometrygo.R
 class AlertDialogNoInternetConnection : DialogFragment() {
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        // Defines the background drawable to the alert dialog
-        dialog!!.window?.setBackgroundDrawableResource(R.drawable.alert_dialog_no_internect_connection_background)
+        // Defines the background drawable to the alert dialog.
+        dialog!!.window?.setBackgroundDrawableResource(R.drawable.alert_dialog_no_internet_connection_background)
         return inflater.inflate(R.layout.alert_dialog_no_internet_connection, container, false)
     }
 
@@ -37,20 +37,20 @@ class AlertDialogNoInternetConnection : DialogFragment() {
 
         // Set the dialog layout parameters
         dialog!!.window?.setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
 
     fun presentDialog(
-            alertDialogNoInternetConnection: AlertDialogNoInternetConnection,
-            isConnected: Boolean,
-            supportFragmentManager: FragmentManager
+        alertDialogNoInternetConnection: AlertDialogNoInternetConnection,
+        isConnected: Boolean,
+        supportFragmentManager: FragmentManager
     ) {
-        // Verifies if exists any network connection
+        // Verifies if exists any network connection.
         if (!isConnected) {
             if (!alertDialogNoInternetConnection.isVisible)
-                // If there isn't internet connection shows a dialog with a message to the user
+            // If there isn't internet connection shows a dialog with a message to the user.
                 this.show(supportFragmentManager, FragmentConstants.ALERT_DIALOG)
         } else {
             if (alertDialogNoInternetConnection.isVisible)

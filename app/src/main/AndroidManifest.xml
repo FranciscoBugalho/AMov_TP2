@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="pt.isec.amovtp2.geometrygo">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
@@ -37,9 +38,6 @@
                     tools:ignore="BatteryLife" />
             </intent-filter>
         </receiver>
-
-
-        <service android:name=".MyService" android:process=":my_service" />
 
     </application>
 

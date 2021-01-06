@@ -4,9 +4,7 @@ import java.net.ServerSocket
 
 class Team(var teamName: String) {
 
-    /**
-     * List of players.
-     */
+    // List of players.
     private var players = ArrayList<Player>()
 
     fun getServerSocket(): ServerSocket? {
@@ -23,6 +21,10 @@ class Team(var teamName: String) {
 
     fun getSize(): Int {
         return players.size
+    }
+
+    fun getLastPlayer(): Player {
+        return players[getSize() - 1]
     }
 
 

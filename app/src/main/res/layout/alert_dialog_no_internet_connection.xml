@@ -6,11 +6,12 @@
     android:background="@color/red_warnings"
     android:elevation="@dimen/ad_nic_ll_elevation" >
 
+    <!-- TextView to display the information/error. -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:text="@string/alert_dialog_no_internet_connection"
+        android:text="@string/ad_no_internet_connection"
         android:textColor="@color/white"
         android:textSize="@dimen/ad_nic_tv_text_size"
         android:gravity="center"

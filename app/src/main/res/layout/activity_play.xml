@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,94 +10,138 @@
     android:id="@+id/activity_play"
     tools:context=".activities.PlayActivity">
 
-    <!-- LinearLayout for the team name definition. -->
-    <LinearLayout
+    <!-- ConstraintLayout for the team name definition. -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clTeamName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
+        <!-- TextView to represent the ip address. -->
         <TextView
+            android:id="@+id/tvTeamNameText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:padding="@dimen/ap_tv_padding"
             android:text="@string/ap_team_name"
             android:textColor="@color/black"
             android:textSize="@dimen/ap_tv_text_size"
-            android:fontFamily="sans-serif"
-            android:padding="@dimen/ap_tv_padding" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/etTeamName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- EditText where the user can insert the team name. -->
         <EditText
             android:id="@+id/etTeamName"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/ap_et_hint_insert_team_name"
+            android:importantForAutofill="no"
             android:inputType="text"
             android:textSize="@dimen/ap_et_text_size"
-            android:importantForAutofill="no" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/tvTeamNameText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvTeamNameText" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- LinearLayout to display all the players. -->
-    <LinearLayout
+    <!-- ConstraintLayout to display all the players. -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clPlayers"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
-        android:orientation="vertical"
-        android:background="@drawable/linear_layout_background"
-        android:padding="@dimen/as_ll_score_information_padding"
         android:layout_marginTop="@dimen/ap_ll_players_margin_top"
-        android:layout_marginBottom="@dimen/ap_ll_players_margin_bottom">
+        android:layout_marginBottom="@dimen/ap_ll_players_margin_bottom"
+        android:layout_weight="2"
+        android:background="@drawable/linear_layout_background">
 
+        <!-- TextView to represent the players information. -->
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/tvPlayers"
+            android:layout_width="363dp"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/ap_tv_players_padding"
             android:text="@string/ap_tv_players"
             android:textColor="@color/black"
             android:textSize="@dimen/ap_tv_players_text_size"
             android:textStyle="bold"
-            android:gravity="center_horizontal"
-            android:padding="@dimen/ap_tv_players_padding"
-            android:layout_marginTop="@dimen/ap_tv_players_margin_top"
-            android:layout_marginBottom="@dimen/ap_tv_players_margin_bottom" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/llPlayers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tvAux" />
-
-            </LinearLayout>
-
-        </ScrollView>
-
-    </LinearLayout>
-
-    <!-- LinearLayout to display the start game button. -->
-    <LinearLayout
+    <!-- ConstraintLayout to display ip address and start game button. -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clBottom"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.15"
-        android:gravity="end"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
+        <!-- LinearLayout to display the ip address and an ImageView
+         to send the server ip address to others by message. -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clIpAndSMSLogo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="start"
+            app:layout_constraintEnd_toStartOf="@+id/btnStartGame"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="NestedWeights">
+
+            <!-- TextView to display the ip address. -->
+            <TextView
+                android:id="@+id/tvIpAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start|center_vertical"
+                android:padding="@dimen/ap_tv_players_padding"
+                android:textColor="@color/black"
+                android:textSize="@dimen/ap_tv_ip_address_text_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- ImageView which corresponds to the messages icon. -->
+            <ImageView
+                android:id="@+id/ivSendMessages"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:scaleType="fitStart"
+                android:src="@drawable/sms_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/tvIpAddress"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="ContentDescription" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Button to start the game. -->
         <Button
             android:id="@+id/btnStartGame"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@drawable/menu_buttons"
+            android:paddingHorizontal="@dimen/ap_btn_padding_horizontal"
             android:text="@string/ap_btn_start_game"
             android:textColor="@color/black"
             android:textSize="@dimen/ap_btn_text_size"
-            android:paddingHorizontal="@dimen/ap_btn_padding_horizontal"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/clIpAndSMSLogo"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

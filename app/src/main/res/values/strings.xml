@@ -7,9 +7,16 @@
     <string name="am_btn_scoreboard">Scoreboard</string>
     <string name="as_tv_top_5">Top 5</string>
     <string name="aa_about_information">Project done by:\n\t- Henrique Fonseca\n\t- José Francisco Bugalho\n\t- Marco Ferreira\n\nProject developed in the academic year 2020/2021, in regards of the course of the 3rd year of the Degree in Computer Engineering taught at the Coimbra Institute of Engineering, \"Arquiteturas Móveis\".</string>
-    <string name="alert_dialog_no_internet_connection">No internet connection. Try again later!</string>
+    <string name="ad_no_internet_connection">No internet connection. Try again later!</string>
     <string name="ap_team_name">Team Name:</string>
     <string name="ap_et_hint_insert_team_name">Insert team name</string>
     <string name="ap_tv_players">Players</string>
     <string name="ap_btn_start_game">Start Game</string>
+    <string name="player_tag">Player</string>
+    <string name="ad_join_lobby">Join Lobby</string>
+    <string name="ad_jl_insert_server_ip">Insert server ip</string>
+    <string name="ad_jl_connect_to_other_emulator">Connect to other emulator</string>
+    <string name="ad_jl_btn_cancel">Cancel</string>
+    <string name="ad_jl_btn_connect">Connect</string>
+    <string name="ad_jl_et_empty_error">You have to insert the server ip first!</string>
 </resources>

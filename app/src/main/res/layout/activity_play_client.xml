@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,50 +9,62 @@
     android:padding="@dimen/ap_ll_global_padding"
     tools:context=".activities.PlayActivity">
 
-    <!-- LinearLayout to display the team name. -->
-    <LinearLayout
+    <!-- ConstraintLayout to display the team name. -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center" >
+        android:gravity="center"
+        android:orientation="horizontal">
 
+        <!-- TextView with the team name -->
         <TextView
             android:id="@+id/tvTeamName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:padding="@dimen/ap_tv_padding"
             android:textColor="@color/black"
             android:textSize="@dimen/ap_tv_text_size"
-            android:fontFamily="sans-serif"
-            android:padding="@dimen/ap_tv_padding" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- LinearLayout to display all the players. -->
-    <LinearLayout
+    <!-- ConstraintLayout to display all the players. -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clPlayersInformation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@drawable/linear_layout_background"
-        android:padding="@dimen/as_ll_score_information_padding"
         android:layout_marginTop="@dimen/ap_ll_players_margin_top"
-        android:layout_marginBottom="@dimen/apc_ll_players_margin_bottom" >
+        android:layout_marginBottom="@dimen/apc_ll_players_margin_bottom"
+        android:background="@drawable/linear_layout_background">
 
+        <!-- TextView to represent the players information. -->
         <TextView
+            android:id="@+id/tvPlayersText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/ap_tv_players_padding"
             android:text="@string/ap_tv_players"
             android:textColor="@color/black"
             android:textSize="@dimen/ap_tv_players_text_size"
             android:textStyle="bold"
-            android:gravity="center_horizontal"
-            android:padding="@dimen/ap_tv_players_padding"
-            android:layout_marginTop="@dimen/ap_tv_players_margin_top"
-            android:layout_marginBottom="@dimen/ap_tv_players_margin_bottom" />
+            app:layout_constraintBottom_toTopOf="@+id/svPlayersInformation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- ScrollView to present the players information. -->
         <ScrollView
+            android:id="@+id/svPlayersInformation"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPlayersText">
 
+            <!-- LinearLayout for the players information. -->
             <LinearLayout
                 android:id="@+id/llPlayers"
                 android:layout_width="match_parent"
@@ -62,6 +75,6 @@
 
         </ScrollView>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

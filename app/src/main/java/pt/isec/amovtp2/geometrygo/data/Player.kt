@@ -5,7 +5,7 @@ import java.io.OutputStream
 import java.net.ServerSocket
 import java.net.Socket
 
-class Player(private val id: Int, private var latitude: Double, private var longitude: Double) {
+class Player(internal val id: Int, internal var latitude: Double, internal var longitude: Double) {
 
     internal var serverSocket: ServerSocket? = null
 
