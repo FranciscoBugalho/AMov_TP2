@@ -12,37 +12,22 @@
 
     <!-- ConstraintLayout for the team name definition. -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clTeamName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- TextView to represent the ip address. -->
+        <!-- TextView for the team name -->
         <TextView
-            android:id="@+id/tvTeamNameText"
+            android:id="@+id/tvTeamName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:padding="@dimen/ap_tv_padding"
-            android:text="@string/ap_team_name"
             android:textColor="@color/black"
             android:textSize="@dimen/ap_tv_text_size"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/etTeamName"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- EditText where the user can insert the team name. -->
-        <EditText
-            android:id="@+id/etTeamName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/ap_et_hint_insert_team_name"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:textSize="@dimen/ap_et_text_size"
-            app:layout_constraintBaseline_toBaselineOf="@+id/tvTeamNameText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvTeamNameText" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -51,6 +36,7 @@
         android:id="@+id/clPlayers"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:padding="@dimen/ap_cl_players_padding"
         android:layout_marginTop="@dimen/ap_ll_players_margin_top"
         android:layout_marginBottom="@dimen/ap_ll_players_margin_bottom"
         android:layout_weight="2"
@@ -77,6 +63,7 @@
             android:id="@+id/svPlayersInformation"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="@dimen/ap_sv_margin_top"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPlayers">
 

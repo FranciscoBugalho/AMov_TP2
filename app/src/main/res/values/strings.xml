@@ -19,4 +19,9 @@
     <string name="ad_jl_btn_cancel">Cancel</string>
     <string name="ad_jl_btn_connect">Connect</string>
     <string name="ad_jl_et_empty_error">You have to insert the server ip first!</string>
+    <string name="ad_create_new_lobby">Create New Lobby</string>
+    <string name="ad_insert_team_name">Insert team name</string>
+    <string name="ad_cl_btn_cancel">Cancel</string>
+    <string name="ad_cl_btn_create">Create</string>
+    <string name="ad_cl_et_empty_error">Should insert team name first!</string>
 </resources>

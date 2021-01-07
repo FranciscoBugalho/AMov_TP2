@@ -16,7 +16,7 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <!-- TextView with the team name -->
+        <!-- TextView for the team name -->
         <TextView
             android:id="@+id/tvTeamName"
             android:layout_width="wrap_content"
@@ -37,6 +37,7 @@
         android:id="@+id/clPlayersInformation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="@dimen/ap_cl_players_padding"
         android:layout_marginTop="@dimen/ap_ll_players_margin_top"
         android:layout_marginBottom="@dimen/apc_ll_players_margin_bottom"
         android:background="@drawable/linear_layout_background">
@@ -61,6 +62,7 @@
             android:id="@+id/svPlayersInformation"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="@dimen/ap_sv_margin_top"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPlayersText">
 

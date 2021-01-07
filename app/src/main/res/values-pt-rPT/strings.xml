@@ -20,4 +20,9 @@
     <string name="ad_jl_btn_cancel">Cancelar</string>
     <string name="ad_jl_btn_connect">Conectar</string>
     <string name="ad_jl_et_empty_error">Tem de inserir o ip primeiro!</string>
+    <string name="ad_create_new_lobby">Criar Novo Grupo</string>
+    <string name="ad_insert_team_name">Insira o nome da equipa</string>
+    <string name="ad_cl_btn_cancel">Cancelar</string>
+    <string name="ad_cl_btn_create">Criar</string>
+    <string name="ad_cl_et_empty_error">Tem de inserir o nome da equipa primeiro!</string>
 </resources>

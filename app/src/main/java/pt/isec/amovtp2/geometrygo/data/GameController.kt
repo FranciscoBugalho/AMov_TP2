@@ -10,16 +10,15 @@ import kotlin.concurrent.thread
 
 class GameController : ViewModel() {
     enum class State {
-        STARTING_TEAM, NEW_PLAYER, PLAYER_LEFT, READY_TO_PLAY, NOT_ENOUGH_PLAYERS, END_LOBBY, START
+        STARTING_TEAM, NEW_PLAYER, PLAYER_LEFT, READY_TO_PLAY, NOT_ENOUGH_PLAYERS, END_LOBBY, START, UPDATE_VIEW
     }
 
-    private lateinit var team: Team
+    private var team: Team? = null
     val state = MutableLiveData(State.STARTING_TEAM)
 
     fun startAsServer(latitude: Double, longitude: Double) {
-        createTeamName()
-        team.addPlayer(1, latitude, longitude)
-        val leader = team.getLeader()
+        team!!.addPlayer(1, latitude, longitude)
+        val leader = team!!.getLeader()
 
         if (leader.serverSocket == null) {
             thread {
@@ -31,8 +30,8 @@ class GameController : ViewModel() {
                     } catch (_: Exception) {
 
                     } finally {
-                        leader.serverSocket?.close()
-                        leader.serverSocket = null
+                        /*leader.serverSocket?.close()
+                        leader.serverSocket = null*/
                     }
                 }
             }
@@ -46,15 +45,13 @@ class GameController : ViewModel() {
         longitude: Double
     ) {
         createTeamName()
-        team.addPlayer(1, latitude, longitude)
-        if (team.getLastPlayer().socket != null)
-            return
+        val player = Player(2, latitude, longitude)
         thread {
             try {
                 val newSocket = Socket(serverIP, serverPort)
-                val player = Player(team.getSize(), latitude, longitude)
                 player.socket = newSocket
                 sendMyDataToOthers(player)
+                team!!.addPlayer(player)
                 initTeam(player, newSocket)
             } catch (_: Exception) {
                 Log.i("TAG", "startAsClient: ")
@@ -63,11 +60,14 @@ class GameController : ViewModel() {
     }
 
     private fun sendMyDataToOthers(player: Player) {
-        player.oOS?.run {
+        player.oS?.run {
             thread {
                 try {
                     val printStream = PrintStream(this)
-                    printStream.println(player.latitude.toString() + " " + player.longitude.toString())
+                    printStream.println(
+                        team!!.getSize()
+                            .toString() + " " + player.latitude.toString() + " " + player.longitude.toString()
+                    )
                     printStream.flush()
                 } catch (_: Exception) {
                     //stopGame()
@@ -79,38 +79,47 @@ class GameController : ViewModel() {
     private fun initTeam(player: Player, socket: Socket) {
         player.socket = socket
 
-        try {
-            player.threadCreateTeam = thread {
-                if (player.oIS == null)
+        player.threadCreateTeam = thread {
+            try {
+                if (player.iS == null)
                     return@thread
 
-                val oIS = player.oIS!!.bufferedReader()
+                val oIS = player.iS!!.bufferedReader()
 
                 while (state.value != State.START) {
                     val newPlayerInfo = oIS.readLine()
 
-                    team.addPlayer(
-                        team.getSize() + 1,
-                        newPlayerInfo.split(" ")[0].toDouble(),
-                        newPlayerInfo.split(" ")[1].toDouble()
-                    )
+                    val id = newPlayerInfo.split(" ")[0].toInt()
 
-                    state.postValue(State.NEW_PLAYER)
+                    if (team!!.containsPlayerById(id)) {
+                        team!!.updatePlayerLocation(
+                            id,
+                            newPlayerInfo.split(" ")[1].toDouble(),
+                            newPlayerInfo.split(" ")[2].toDouble()
+                        )
 
-                    if (team.getSize() >= DataConstants.MIN_PLAYERS)
+                        state.postValue(State.UPDATE_VIEW)
+                    } else {
+                        team!!.addPlayer(
+                            id,
+                            newPlayerInfo.split(" ")[1].toDouble(),
+                            newPlayerInfo.split(" ")[2].toDouble()
+                        )
+                        state.postValue(State.NEW_PLAYER)
+                    }
+
+                    if (team!!.getSize() >= DataConstants.MIN_PLAYERS)
                         state.postValue(State.READY_TO_PLAY)
                 }
+            } catch (_: Exception) {
+                //deleteLobby()
             }
-        } catch (_: Exception) {
-            //deleteLobby()
-        } finally {
         }
-
     }
 
     private fun deleteLobby() {
         try {
-            val leader = team.getLeader()
+            val leader = team!!.getLeader()
             state.postValue(State.END_LOBBY)
             leader.socket?.close()
             leader.socket = null
@@ -120,25 +129,47 @@ class GameController : ViewModel() {
         }
     }
 
+    fun sendLocationToTeam(latitude: Double, longitude: Double) {
+        team?.getPlayers()?.forEach {
+            it.oS?.run {
+                thread {
+                    try {
+                        val printStream = PrintStream(this)
+                        printStream.println(it.id.toString() + " " + "$latitude $longitude")
+                        printStream.flush()
+                    } catch (_: Exception) {
+                        //stopGame()
+                    }
+                }
+            }
+        }
+    }
+
+    fun createTeam(teamName: String) {
+        team = Team(teamName)
+    }
+
+    fun getTeamName(): String {
+        return team!!.teamName
+    }
+
     private fun createTeamName() {
         team = Team("aaa")
     }
 
-    fun getLastPlayerId(): Int {
-        return team.getLastPlayer().id
+    fun getTeam(): Team {
+        return team!!
     }
 
-    fun getPlayerLocation(): String {
+    fun getPlayerId(position: Int): Int {
+        return team!!.getPlayers()[position].id
+    }
+
+    fun getPlayerLocation(position: Int): String {
         return String.format(
             "%.2f",
-            team.getLastPlayer().latitude
-        ) + " \t " + String.format("%.2f", team.getLastPlayer().longitude)
-    }
-
-    fun sendLocationToTeam(latitude : Double, longitude : Double) {
-        team.getPlayers().forEach{
-            sendMyDataToOthers(it)
-        }
+            team!!.getPlayers()[position].latitude
+        ) + " \t " + String.format("%.2f", team!!.getPlayers()[position].longitude)
     }
 
 }

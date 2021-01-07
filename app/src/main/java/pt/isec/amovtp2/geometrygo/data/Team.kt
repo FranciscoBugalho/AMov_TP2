@@ -1,5 +1,6 @@
 package pt.isec.amovtp2.geometrygo.data
 
+import java.io.Serializable
 import java.net.ServerSocket
 
 class Team(var teamName: String) {
@@ -19,6 +20,10 @@ class Team(var teamName: String) {
         players.add(Player(id, latitude, longitude))
     }
 
+    fun addPlayer(player: Player) {
+        players.add(player)
+    }
+
     fun getSize(): Int {
         return players.size
     }
@@ -28,8 +33,20 @@ class Team(var teamName: String) {
     }
 
     fun getPlayers(): ArrayList<Player> {
-        return players;
+        return players
     }
 
+    fun containsPlayerById(id: Int): Boolean {
+        players.forEach {
+            if(it.id == id)
+                return true
+        }
+        return false
+    }
+
+    fun updatePlayerLocation(id: Int, latitude: Double, longitude: Double) {
+        players[id - 1].latitude = latitude
+        players[id - 1].longitude = longitude
+    }
 
 }

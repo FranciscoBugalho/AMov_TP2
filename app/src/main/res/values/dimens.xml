@@ -25,6 +25,8 @@
     <dimen name="ap_btn_padding_horizontal">20dp</dimen>
     <dimen name="ap_ll_players_padding_horizontal">8dp</dimen>
     <dimen name="ap_tv_ip_address_text_size">18sp</dimen>
+    <dimen name="ap_cl_players_padding">8dp</dimen>
+    <dimen name="ap_sv_margin_top">8dp</dimen>
     <dimen name="apc_ll_players_margin_bottom">10dp</dimen>
 
     <!-- Activity Scoreboard Dimensions. -->
@@ -66,5 +68,15 @@
     <dimen name="ad_jl_btn_connect_margin_start">5dp</dimen>
     <dimen name="ad_jl_ll_main_elevation">10dp</dimen>
     <dimen name="ad_jl_ll_main_padding">15dp</dimen>
+    <dimen name="ad_cl_ll_main_elevation">10dp</dimen>
+    <dimen name="ad_cl_ll_main_padding">15dp</dimen>
+    <dimen name="ad_cl_tv_title_text_size">24sp</dimen>
+    <dimen name="ad_cl_et_text_size">16sp</dimen>
+    <dimen name="ad_cl_et_margin_top">10dp</dimen>
+    <dimen name="ad_cl_ll_margin_top">10dp</dimen>
+    <dimen name="ad_cl_btn_text_size">16sp</dimen>
+    <dimen name="ad_cl_btn_cancel_margin_end">5dp</dimen>
+    <dimen name="ad_cl_btn_padding_horizontal">15dp</dimen>
+    <dimen name="ad_cl_btn_create_margin_start">5dp</dimen>
 
 </resources>
