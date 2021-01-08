@@ -12,8 +12,8 @@ import pt.isec.amovtp2.geometrygo.data.GameController
 
 class AlertDialogCreateLobby(
     private val game: GameController,
-    private val latitude: Double,
-    private val longitude: Double,
+    private var latitude: Double?,
+    private var longitude: Double?,
     private val tvTeamName: TextView
 ) : DialogFragment() {
     // EditText where the user will insert the team name.
@@ -40,15 +40,18 @@ class AlertDialogCreateLobby(
                 editText.error = getString(R.string.ad_cl_et_empty_error)
                 return@setOnClickListener
             } else {
-                game.createTeam(editText.text.toString())
-                tvTeamName.text = game.getTeamName()
-                game.startAsServer(latitude, longitude)
-                dialog?.dismiss()
+                if(latitude != null && longitude != null) {
+                    game.createTeam(editText.text.toString())
+                    tvTeamName.text = game.getTeamName()
+                    game.startAsServer(latitude!!, longitude!!)
+                    dialog?.dismiss()
+                } else
+                    editText.error = getString(R.string.ad_cl_jl_et_no_latitude_longitude_error)
                 return@setOnClickListener
             }
         }
 
-        // If the button cancel is clicked goes to the main menu
+        // If the button cancel is clicked goes to the main menu.
         btnCancel = view.findViewById(R.id.btnCancel)
         btnCancel.setOnClickListener {
             dialog?.dismiss()
@@ -77,9 +80,17 @@ class AlertDialogCreateLobby(
     }
 
     fun presentDialog(
-        supportFragmentManager: FragmentManager,
+        supportFragmentManager: FragmentManager
     ) {
         this.show(supportFragmentManager, FragmentConstants.ALERT_DIALOG)
+    }
+
+    fun setLatitude(latitude: Double) {
+        this.latitude = latitude
+    }
+
+    fun setLongitude(longitude: Double) {
+        this.longitude = longitude
     }
 
 }

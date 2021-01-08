@@ -1,8 +1,10 @@
 package pt.isec.amovtp2.geometrygo.activities
 
 import android.Manifest
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Typeface
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.util.Log
@@ -11,8 +13,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -22,6 +26,7 @@ import pt.isec.amovtp2.geometrygo.R
 import pt.isec.amovtp2.geometrygo.data.GameController
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogCreateLobby
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogJoinLobby
+
 
 // 192.168.1.70
 class PlayActivity : AppCompatActivity() {
@@ -66,19 +71,13 @@ class PlayActivity : AppCompatActivity() {
                     if (!lobbyStarted) {
                         lobbyStarted = true
                         if (isServer) {
-                            dialogCreate = AlertDialogCreateLobby(
-                                game,
-                                latitude!!,
-                                longitude!!,
-                                findViewById(R.id.tvTeamName)
-                            )
-                            dialogCreate.presentDialog(supportFragmentManager)
+                            dialogCreate.setLatitude(latitude!!)
+                            dialogCreate.setLongitude(longitude!!)
                         } else {
-                            dialogJoin = AlertDialogJoinLobby(game, latitude!!, longitude!!)
-                            dialogJoin.presentDialog(supportFragmentManager)
+                            dialogJoin.setLatitude(latitude!!)
+                            dialogJoin.setLongitude(longitude!!)
                         }
                     } else {
-                        Log.i("onLocationResult", "lobby hast started, gonna send locations")
                         game.sendLocationToTeam(latitude!!, longitude!!)
                     }
                 } else
@@ -121,17 +120,64 @@ class PlayActivity : AppCompatActivity() {
             // Display server ip on the screen.
             findViewById<TextView>(R.id.tvIpAddress).text = strIPAddress
 
+            // Create and display the dialog to define the team name.
+            dialogCreate = AlertDialogCreateLobby(
+                game,
+                latitude,
+                longitude,
+                findViewById(R.id.tvTeamName)
+            )
+
+            dialogCreate.presentDialog(supportFragmentManager)
+
         } else {
             setContentView(R.layout.activity_play_client)
+
+            // Create and display the dialog to insert the server ip address.
+            dialogJoin = AlertDialogJoinLobby(game, latitude, longitude)
+            dialogJoin.presentDialog(supportFragmentManager)
         }
 
         game.state.observe(this@PlayActivity) {
             when (game.state.value) {
-                GameController.State.NOT_ENOUGH_PLAYERS -> btnStart.isEnabled = false
+                GameController.State.STARTING_TEAM -> updateView()
                 GameController.State.NEW_PLAYER -> updateView()
                 GameController.State.UPDATE_VIEW -> updateView()
+                GameController.State.NOT_ENOUGH_PLAYERS -> updateButton(false)
+                GameController.State.PLAYER_LEFT -> updateView()
+                GameController.State.END_LOBBY -> finish()
+                GameController.State.READY_TO_PLAY -> updateButton(true)
+                GameController.State.START -> play()
             }
         }
+    }
+
+    private fun play() {
+        // Will change the activity and start the game.
+    }
+
+    override fun onBackPressed() {
+        val dlg = AlertDialog.Builder(this).run {
+            if (isServer)
+                setTitle(getString(R.string.ad_ql_close_lobby))
+            else
+                setTitle(getString(R.string.ad_ql_quit_lobby))
+
+            setPositiveButton(getString(R.string.ad_ql_btn_yes)) { dlg: DialogInterface, _: Int ->
+                if (isServer) {
+                    // TODO: CLOSE EVERY CLIENT AND LEAVE
+                } else {
+                    // TODO: LEAVE AND NOTIFY THE OTHERS
+                }
+                dlg.dismiss()
+            }
+            setNegativeButton(getString(R.string.ad_ql_btn_no)) { dlg: DialogInterface, _: Int ->
+                dlg.dismiss()
+            }
+            setCancelable(false)
+            create()
+        }
+        dlg.show()
     }
 
     /**
@@ -139,11 +185,20 @@ class PlayActivity : AppCompatActivity() {
      * 1.
      */
     private fun updateView() {
+        if (game.teamExists() == null)
+            return
+
         val linearLayout = findViewById<LinearLayout>(R.id.llPlayers)
 
         linearLayout.removeAllViews()
         linearLayout.invalidate()
 
+        // Set team name.
+        val tvTitle = findViewById<TextView>(R.id.tvTeamName)
+        tvTitle.text = game.getTeamName()
+        tvTitle.invalidate()
+
+        // Updates the LinearLayout with the players.
         for (i in 0 until game.getTeam().getPlayers().size) {
             // Creates a LinearLayout to add two TextViews.
             val newPlayerLayout = LinearLayout(this)
@@ -160,9 +215,20 @@ class PlayActivity : AppCompatActivity() {
             param = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT)
             param.weight = 0.50f
             tvNewPlayerId.layoutParams = param
-            (getString(R.string.player_tag) + " " + game.getPlayerId(i)).also {
-                tvNewPlayerId.text = it
+
+            // Gets player id.
+            val playerId = game.getPlayerId(i)
+
+            if (playerId == -1 || playerId == game.getPlayerId()) {
+                tvNewPlayerId.text = getString(R.string.you_player_tag)
+
+                tvNewPlayerId.setTypeface(null, Typeface.BOLD)
+            } else {
+                (getString(R.string.player_tag) + " " + playerId).also {
+                    tvNewPlayerId.text = it
+                }
             }
+
             tvNewPlayerId.setTextColor(Color.BLACK)
             tvNewPlayerId.textSize = 18f
             tvNewPlayerId.gravity = Gravity.START
@@ -189,12 +255,20 @@ class PlayActivity : AppCompatActivity() {
             // To redraw the LinearLayout on the screen.
             linearLayout.invalidate()
         }
+    }
 
+    private fun updateButton(buttonEnabled: Boolean) {
+        btnStart.isEnabled = buttonEnabled
+
+        if (buttonEnabled)
+            btnStart.background = ContextCompat.getDrawable(this, R.drawable.menu_buttons)
+        else
+            btnStart.background = ContextCompat.getDrawable(this, R.drawable.menu_buttons_disabled)
     }
 
     /**
      * updateView
-     * 1. calls "startLocation" method
+     * 1. Calls "startLocation" method
      */
     override fun onResume() {
         super.onResume()
@@ -203,7 +277,7 @@ class PlayActivity : AppCompatActivity() {
 
     /**
      * onPause
-     * 1. if location service is enabled, disables it
+     * 1. If location service is enabled, disables it
      */
     override fun onPause() {
         super.onPause()

@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/ad_jl_insert_server_ip"
-        android:inputType="text"
+        android:inputType="textCapSentences"
         android:textSize="@dimen/ad_jl_et_text_size"
         android:maxLines="1"
         android:layout_marginTop="@dimen/ad_jl_et_margin_top"

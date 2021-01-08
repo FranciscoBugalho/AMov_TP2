@@ -34,7 +34,6 @@
 
     <!-- ConstraintLayout to display all the players. -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clPlayersInformation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/ap_cl_players_padding"

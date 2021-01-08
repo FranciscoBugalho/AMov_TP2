@@ -14,13 +14,10 @@
     <dimen name="ap_ll_global_padding">16dp</dimen>
     <dimen name="ap_tv_text_size">18sp</dimen>
     <dimen name="ap_tv_padding">5dp</dimen>
-    <dimen name="ap_et_text_size">16sp</dimen>
     <dimen name="ap_ll_players_margin_top">10dp</dimen>
     <dimen name="ap_ll_players_margin_bottom">10dp</dimen>
     <dimen name="ap_tv_players_text_size">24sp</dimen>
     <dimen name="ap_tv_players_padding">5dp</dimen>
-    <dimen name="ap_tv_players_margin_top">5dp</dimen>
-    <dimen name="ap_tv_players_margin_bottom">10dp</dimen>
     <dimen name="ap_btn_text_size">16sp</dimen>
     <dimen name="ap_btn_padding_horizontal">20dp</dimen>
     <dimen name="ap_ll_players_padding_horizontal">8dp</dimen>
@@ -31,11 +28,8 @@
 
     <!-- Activity Scoreboard Dimensions. -->
     <dimen name="as_ll_global_padding">16dp</dimen>
-    <dimen name="as_ll_score_information_padding">8dp</dimen>
     <dimen name="as_tv_top_5_text_size">26sp</dimen>
     <dimen name="as_tv_top_5_padding">3dp</dimen>
-    <dimen name="as_tv_top_5_margin_top">10dp</dimen>
-    <dimen name="as_tv_top_5_margin_bottom">20dp</dimen>
     <dimen name="as_tv_score_information_text_size">20sp</dimen>
     <dimen name="as_tv_score_information_padding">3dp</dimen>
 
@@ -59,8 +53,6 @@
     <dimen name="ad_jl_tv_title_text_size">24sp</dimen>
     <dimen name="ad_jl_et_text_size">16sp</dimen>
     <dimen name="ad_jl_et_margin_top">10dp</dimen>
-    <dimen name="ad_jl_btn_ctoe_text_size">16sp</dimen>
-    <dimen name="ad_jl_btn_ctoe_margin_top">5dp</dimen>
     <dimen name="ad_jl_ll_margin_top">10dp</dimen>
     <dimen name="ad_jl_btn_text_size">16sp</dimen>
     <dimen name="ad_jl_btn_cancel_margin_end">5dp</dimen>

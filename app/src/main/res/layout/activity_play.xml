@@ -7,7 +7,6 @@
     android:orientation="vertical"
     android:background="@color/ll_background_color"
     android:padding="@dimen/ap_ll_global_padding"
-    android:id="@+id/activity_play"
     tools:context=".activities.PlayActivity">
 
     <!-- ConstraintLayout for the team name definition. -->
@@ -33,7 +32,6 @@
 
     <!-- ConstraintLayout to display all the players. -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clPlayers"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:padding="@dimen/ap_cl_players_padding"
@@ -83,7 +81,6 @@
 
     <!-- ConstraintLayout to display ip address and start game button. -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clBottom"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.15"
@@ -117,7 +114,6 @@
 
             <!-- ImageView which corresponds to the messages icon. -->
             <ImageView
-                android:id="@+id/ivSendMessages"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:scaleType="fitStart"

@@ -7,4 +7,7 @@ object DataConstants {
 
     // Server port for client connections.
     const val SERVER_DEFAULT_PORT = 9000
+
+    // Distance from the players
+    const val MAX_DISTANCE_BETWEEN_PLAYERS = 100
 }

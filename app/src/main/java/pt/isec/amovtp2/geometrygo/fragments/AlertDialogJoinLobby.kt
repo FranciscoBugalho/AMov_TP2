@@ -12,8 +12,8 @@ import pt.isec.amovtp2.geometrygo.data.GameController
 
 class AlertDialogJoinLobby(
     private val game: GameController,
-    private val latitude: Double,
-    private val longitude: Double
+    private var latitude: Double?,
+    private var longitude: Double?
 ) : DialogFragment() {
     // EditText where the user will insert the server ip.
     private lateinit var editText: EditText
@@ -39,8 +39,16 @@ class AlertDialogJoinLobby(
                 editText.error = getString(R.string.ad_jl_et_empty_error)
                 return@setOnClickListener
             } else {
-                dialog?.dismiss()
-                game.startAsClient(editText.text.toString(), DataConstants.SERVER_DEFAULT_PORT, latitude, longitude)
+                if (latitude != null && longitude != null) {
+                    game.startAsClient(
+                        editText.text.toString(),
+                        DataConstants.SERVER_DEFAULT_PORT,
+                        latitude!!,
+                        longitude!!
+                    )
+                    dialog?.dismiss()
+                } else
+                    editText.error = getString(R.string.ad_cl_jl_et_no_latitude_longitude_error)
                 return@setOnClickListener
             }
         }
@@ -79,4 +87,11 @@ class AlertDialogJoinLobby(
         this.show(supportFragmentManager, FragmentConstants.ALERT_DIALOG)
     }
 
+    fun setLatitude(latitude: Double) {
+        this.latitude = latitude
+    }
+
+    fun setLongitude(longitude: Double) {
+        this.longitude = longitude
+    }
 }

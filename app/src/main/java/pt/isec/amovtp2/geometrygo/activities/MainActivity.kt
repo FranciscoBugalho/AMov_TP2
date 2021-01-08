@@ -27,18 +27,18 @@ class MainActivity : AppCompatActivity(), NetworkConnection.ConnectivityReceiver
 
         findViewById<Button>(R.id.btnCreateLobby).setOnClickListener {
             Intent(this, PlayActivity::class.java)
-                    .putExtra(IntentConstants.IS_SERVER, true)
-                    .also {
-                        startActivity(it)
-                    }
+                .putExtra(IntentConstants.IS_SERVER, true)
+                .also {
+                    startActivity(it)
+                }
         }
 
         findViewById<Button>(R.id.btnJoinLobby).setOnClickListener {
             Intent(this, PlayActivity::class.java)
-                    .putExtra(IntentConstants.IS_SERVER, false)
-                    .also {
-                        startActivity(it)
-                    }
+                .putExtra(IntentConstants.IS_SERVER, false)
+                .also {
+                    startActivity(it)
+                }
         }
 
         findViewById<Button>(R.id.btnScoreboard).setOnClickListener {
@@ -94,11 +94,14 @@ class MainActivity : AppCompatActivity(), NetworkConnection.ConnectivityReceiver
             btnScoreboard.background = ContextCompat.getDrawable(this, R.drawable.menu_buttons)
         } else {
             btnCreateLobby.isEnabled = false
-            btnCreateLobby.background = ContextCompat.getDrawable(this, R.drawable.menu_buttons_disabled)
+            btnCreateLobby.background =
+                ContextCompat.getDrawable(this, R.drawable.menu_buttons_disabled)
             btnJoinLobby.isEnabled = false
-            btnJoinLobby.background = ContextCompat.getDrawable(this, R.drawable.menu_buttons_disabled)
+            btnJoinLobby.background =
+                ContextCompat.getDrawable(this, R.drawable.menu_buttons_disabled)
             btnScoreboard.isEnabled = false
-            btnScoreboard.background = ContextCompat.getDrawable(this, R.drawable.menu_buttons_disabled)
+            btnScoreboard.background =
+                ContextCompat.getDrawable(this, R.drawable.menu_buttons_disabled)
         }
     }
 

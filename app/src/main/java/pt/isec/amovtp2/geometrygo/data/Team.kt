@@ -1,17 +1,11 @@
 package pt.isec.amovtp2.geometrygo.data
 
-import android.util.Log
-import java.io.Serializable
-import java.net.ServerSocket
+import android.location.Location
 
 class Team(var teamName: String) {
 
     // List of players.
     private var players = ArrayList<Player>()
-
-    fun getServerSocket(): ServerSocket? {
-        return players[0].serverSocket
-    }
 
     fun getLeader(): Player {
         return players[0]
@@ -29,17 +23,13 @@ class Team(var teamName: String) {
         return players.size
     }
 
-    fun getLastPlayer(): Player {
-        return players[getSize() - 1]
-    }
-
     fun getPlayers(): ArrayList<Player> {
         return players
     }
 
     fun containsPlayerById(id: Int): Boolean {
         players.forEach {
-            if(it.id == id)
+            if (it.id == id)
                 return true
         }
         return false
@@ -55,16 +45,34 @@ class Team(var teamName: String) {
         }
     }
 
-    fun updatePlayerId(id: Int, newId: Int, latitude: Double, longitude: Double ){
+    fun updatePlayerId(id: Int, newId: Int, latitude: Double, longitude: Double) {
         players.forEach {
-            if(it.id == id){
+            if (it.id == id) {
                 it.id = newId
                 it.latitude = latitude
                 it.longitude = longitude
                 return
             }
-
         }
+    }
+
+    fun checkPlayersDistance(): Boolean {
+        val loc1 = Location("aux1")
+        val loc2 = Location("aux2")
+
+        for (i in 0 until (players.size / 2)) {
+            for (j in (players.size / 2) until players.size) {
+                loc1.latitude = players[i].latitude
+                loc1.longitude = players[i].longitude
+
+                loc2.latitude = players[j].latitude
+                loc2.longitude = players[j].longitude
+
+                if (loc1.distanceTo(loc2) > DataConstants.MAX_DISTANCE_BETWEEN_PLAYERS)
+                    return false
+            }
+        }
+        return true
     }
 
 }
