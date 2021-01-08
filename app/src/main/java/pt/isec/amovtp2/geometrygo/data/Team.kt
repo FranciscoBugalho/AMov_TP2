@@ -49,4 +49,14 @@ class Team(var teamName: String) {
         players[id - 1].longitude = longitude
     }
 
+    fun updatePlayerId(id: Int, newId: Int, latitude: Double, longitude: Double ){
+        players.forEach {
+            if(it.id == id){
+                it.id = newId
+                it.latitude = latitude
+                it.longitude = longitude
+            }
+        }
+    }
+
 }

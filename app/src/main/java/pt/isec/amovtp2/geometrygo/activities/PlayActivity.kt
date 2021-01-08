@@ -78,6 +78,7 @@ class PlayActivity : AppCompatActivity() {
                             dialogJoin.presentDialog(supportFragmentManager)
                         }
                     } else {
+                        Log.i("onLocationResult", "lobby hast started, gonna send locations")
                         game.sendLocationToTeam(latitude!!, longitude!!)
                     }
                 } else
