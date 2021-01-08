@@ -147,8 +147,6 @@ class GameController : ViewModel() {
 
                 while (state.value != State.START) {
 
-                    Log.i("receiveDataFromPlayers", "${state.value }")
-
                     val newPlayerInfo = iS.readLine()
 
                     val id = newPlayerInfo.split(" ")[0].toInt()
@@ -156,8 +154,8 @@ class GameController : ViewModel() {
                     Log.i("receiveDataFromPlayers", "recebi mensagem de outros jogadores")
                     Log.i("receiveDataFromPlayers", "$newPlayerInfo")
 
-                    if(player.id != -1){
-                        if(player.id == 1){ //se é o servidor
+                    if(id != -1){
+                        if(id == 1){ //se é o servidor
                             team!!.addPlayer(
                                 team!!.getPlayers().size,
                                 newPlayerInfo.split(" ")[1].toDouble(),
@@ -167,7 +165,7 @@ class GameController : ViewModel() {
                         }
                         else{
                             if (team!!.containsPlayerById(-1)) { //se é atribuição de Id
-                                team!!.updatePlayerId(-1, player.id, player.latitude, player.longitude)
+                                team!!.updatePlayerId(-1, id, player.latitude, player.longitude)
                                 state.postValue(State.UPDATE_VIEW)
                             }
                             else{
@@ -189,6 +187,9 @@ class GameController : ViewModel() {
                                 }
                             }
                         }
+                    }
+                    else{
+                        state.postValue(State.UPDATE_VIEW)
                     }
 
 
@@ -226,7 +227,10 @@ class GameController : ViewModel() {
                         try {
                             Log.i("sendLocationToTeam", "Mandei mensagem para o cliente de id: ${it.id}")
                             val printStream = PrintStream(this)
-                            printStream.println(it.id.toString() + " " + "$latitude $longitude")
+                            printStream.println(player.id.toString() + " " + "$latitude $longitude")
+                            printStream.flush()
+
+                            printStream.println(it.id.toString() + " " + "${it.latitude} ${it.longitude}")
                             printStream.flush()
                         } catch (_: Exception) {
                             //stopGame()

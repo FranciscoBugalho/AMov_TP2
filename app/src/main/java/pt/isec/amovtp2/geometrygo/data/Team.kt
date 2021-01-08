@@ -1,5 +1,6 @@
 package pt.isec.amovtp2.geometrygo.data
 
+import android.util.Log
 import java.io.Serializable
 import java.net.ServerSocket
 
@@ -45,8 +46,13 @@ class Team(var teamName: String) {
     }
 
     fun updatePlayerLocation(id: Int, latitude: Double, longitude: Double) {
-        players[id - 1].latitude = latitude
-        players[id - 1].longitude = longitude
+        players.forEach {
+            if (it.id == id) {
+                it.latitude = latitude
+                it.longitude = longitude
+                return
+            }
+        }
     }
 
     fun updatePlayerId(id: Int, newId: Int, latitude: Double, longitude: Double ){
@@ -55,7 +61,9 @@ class Team(var teamName: String) {
                 it.id = newId
                 it.latitude = latitude
                 it.longitude = longitude
+                return
             }
+
         }
     }
 
