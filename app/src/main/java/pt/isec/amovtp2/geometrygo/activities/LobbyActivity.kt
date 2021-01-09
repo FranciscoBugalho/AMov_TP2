@@ -79,7 +79,7 @@ class LobbyActivity : AppCompatActivity() {
                             dialogJoin.setLongitude(longitude!!)
                         }
                     } else {
-                        if(game.getPlayer().serverSocket != null)
+                        if(!game.playerExists() || game.getPlayer().serverSocket != null)
                             game.sendLocationToTeam(latitude!!, longitude!!)
                         else{
                             game.sendLocationToServer(latitude!!, longitude!!)

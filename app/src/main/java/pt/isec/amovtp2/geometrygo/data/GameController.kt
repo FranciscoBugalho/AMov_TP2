@@ -1,5 +1,6 @@
 package pt.isec.amovtp2.geometrygo.data
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.io.PrintStream
@@ -60,7 +61,7 @@ class GameController : ViewModel() {
             try {
                 val newSocket = Socket(serverIP, serverPort)
                 player.socket = newSocket
-                sendLocationToServer(player.latitude, player.longitude)
+                connectToServer(player)
                 team!!.addPlayer(player)
                 receiveDataFromServer()
             } catch (_: Exception) {
@@ -105,15 +106,22 @@ class GameController : ViewModel() {
 
                         state.postValue(State.NEW_PLAYER)
 
+                        var message = team!!.teamName + " "
+                        message += if (state.value == State.READY_TO_PLAY || state.value == State.START) {
+                            "startState"
+                        } else if (state.value == State.END_LOBBY) {
+                            "endState"
+                        } else {
+                            "standbyState"
+                        }
+                        message += " " + team?.getPlayers()!!.size.toString() + " "
+                        message += player.id.toString() + " " + player.latitude + " "  + player.longitude
+
                         player.oS.run {
                             thread {
                                 try {
                                     val printStream = PrintStream(this)
-                                    printStream.println(
-                                        "$id " + "${
-                                            newPlayerInfo.split(" ")[1]
-                                        } ${newPlayerInfo.split(" ")[2]} ${team!!.teamName}"
-                                    )
+                                    printStream.println(message)
                                     printStream.flush()
                                 } catch (_: Exception) {
                                     //stopGame()
@@ -168,10 +176,6 @@ class GameController : ViewModel() {
                     val nrPlayers = newPlayersInfo.split(" ")[2].toInt()
 
                     handlePlayersInfo(nrPlayers, newPlayersInfo)
-
-                    // Sort the players array.
-                    team!!.getPlayers().sortBy { it.id }
-
                 }
             } catch (_: Exception) {
                 //deleteLobby()
@@ -229,6 +233,9 @@ class GameController : ViewModel() {
             } else
                 state.postValue(State.UPDATE_VIEW)
         }
+
+        // Sort the players array.
+        team!!.getPlayers().sortBy { it.id }
     }
 
     /**
@@ -252,12 +259,14 @@ class GameController : ViewModel() {
      */
     fun sendLocationToTeam(latitude: Double, longitude: Double) {
         if (team == null) return
-        // Standby, Start, End
 
-        var message = createMessageForClients()
+        player.latitude = latitude
+        player.longitude = longitude
+
+        val message = createMessageForClients()
 
         synchronized(team!!) {
-            team?.getPlayers()?.forEach { it ->
+            team?.getPlayers()?.forEach {
                 if (it.id != player.id) { // Don't send to myself.
                     player.oS?.run {
                         thread {
@@ -270,26 +279,43 @@ class GameController : ViewModel() {
                             }
                         }
                     }
-                } else
-                    state.postValue(State.UPDATE_VIEW)
+                }
+                state.postValue(State.UPDATE_VIEW)
             }
         }
     }
 
     private fun createMessageForClients(): String {
-        var message = "${team!!.teamName}" + " "
-        if (state.value == State.READY_TO_PLAY || state.value == State.START) {
-            message += "startState"
+        var message = team!!.teamName + " "
+        // Standby, Start, End
+        message += if (state.value == State.READY_TO_PLAY || state.value == State.START) {
+            "startState"
         } else if (state.value == State.END_LOBBY) {
-            message += "endState"
+            "endState"
         } else {
-            message += "standbyState"
+            "standbyState"
         }
-        message += " " + team?.getPlayers()!!.size.toString()
+        message += " " + team?.getPlayers()!!.size.toString() + " "
         team?.getPlayers()?.forEach { iterator ->
-            message += iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}"
+            message += iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}" + " "
         }
         return message
+    }
+
+    private fun connectToServer(player: Player) {
+        player.oS?.run {
+            thread {
+                try {
+                    val printStream = PrintStream(this)
+                    printStream.println(
+                        player.id.toString() + " " + player.latitude.toString() + " " + player.longitude.toString() + " " + team!!.teamName
+                    )
+                    printStream.flush()
+                } catch (_: Exception) {
+                    //stopGame()
+                }
+            }
+        }
     }
 
     /**
@@ -299,8 +325,11 @@ class GameController : ViewModel() {
     fun sendLocationToServer(latitude: Double, longitude: Double) {
         if (team == null) return
 
+        player.latitude = latitude
+        player.longitude = longitude
+
         synchronized(team!!) {
-            team?.getPlayerById(1)?.oS.run{
+            player.oS.run{
                 thread {
                     try {
                         val printStream = PrintStream(this)
@@ -312,6 +341,7 @@ class GameController : ViewModel() {
                 }
             }
         }
+        state.postValue(State.UPDATE_VIEW)
     }
 
     /**
@@ -396,6 +426,10 @@ class GameController : ViewModel() {
         }
 
         state.postValue(State.START)
+    }
+
+    fun playerExists(): Boolean {
+        return this::player.isInitialized
     }
 
 }
