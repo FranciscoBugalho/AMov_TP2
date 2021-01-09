@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity(), NetworkConnection.ConnectivityReceiver
         setContentView(R.layout.activity_main)
 
         findViewById<Button>(R.id.btnCreateLobby).setOnClickListener {
-            Intent(this, PlayActivity::class.java)
+            Intent(this, LobbyActivity::class.java)
                 .putExtra(IntentConstants.IS_SERVER, true)
                 .also {
                     startActivity(it)
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), NetworkConnection.ConnectivityReceiver
         }
 
         findViewById<Button>(R.id.btnJoinLobby).setOnClickListener {
-            Intent(this, PlayActivity::class.java)
+            Intent(this, LobbyActivity::class.java)
                 .putExtra(IntentConstants.IS_SERVER, false)
                 .also {
                     startActivity(it)

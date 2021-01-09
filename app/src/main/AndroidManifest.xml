@@ -6,8 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -17,10 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GeometryGO"
         tools:ignore="AllowBackup">
+        <activity android:name=".activities.PlayActivity" />
         <activity android:name=".activities.AboutActivity" />
         <activity android:name=".activities.TutorialActivity" />
         <activity android:name=".activities.ScoreboardActivity" />
-        <activity android:name=".activities.PlayActivity" />
+        <activity android:name=".activities.LobbyActivity" />
         <activity
             android:name=".activities.MainActivity"
             android:screenOrientation="portrait">
@@ -30,15 +31,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <receiver
             android:name=".receivers.NetworkConnection"
             android:enabled="true">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                <action
+                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
                     tools:ignore="BatteryLife" />
             </intent-filter>
         </receiver>
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCME7nI-R6bvxpH1WETdfUQHYdokGZe-1c"/>
     </application>
 
 </manifest>

@@ -1,11 +1,18 @@
 package pt.isec.amovtp2.geometrygo.data
 
 import android.location.Location
+import androidx.lifecycle.ViewModel
 
-class Team(var teamName: String) {
+class Team(internal var teamName: String): ViewModel() {
 
     // List of players.
     private var players = ArrayList<Player>()
+
+    // Server starting latitude.
+    internal var latitude: Double? = null
+
+    // Server starting longitude.
+    internal var longitude: Double? = null
 
     fun getLeader(): Player {
         return players[0]

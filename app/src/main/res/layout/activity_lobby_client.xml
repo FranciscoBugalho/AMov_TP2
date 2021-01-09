@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/ll_background_color"
+    android:padding="@dimen/al_ll_global_padding"
+    tools:context=".activities.LobbyActivity">
+
+    <!-- ConstraintLayout to display the team name. -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!-- TextView for the team name -->
+        <TextView
+            android:id="@+id/tvTeamName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:padding="@dimen/al_tv_padding"
+            android:textColor="@color/black"
+            android:textSize="@dimen/al_tv_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ConstraintLayout to display all the players. -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/al_cl_players_padding"
+        android:layout_marginTop="@dimen/al_ll_players_margin_top"
+        android:layout_marginBottom="@dimen/alc_ll_players_margin_bottom"
+        android:background="@drawable/linear_layout_background">
+
+        <!-- TextView to represent the players information. -->
+        <TextView
+            android:id="@+id/tvPlayersText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/al_tv_players_padding"
+            android:text="@string/al_tv_players"
+            android:textColor="@color/black"
+            android:textSize="@dimen/al_tv_players_text_size"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/svPlayersInformation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- ScrollView to present the players information. -->
+        <ScrollView
+            android:id="@+id/svPlayersInformation"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/al_sv_margin_top"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPlayersText">
+
+            <!-- LinearLayout for the players information. -->
+            <LinearLayout
+                android:id="@+id/llPlayers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/al_ll_players_padding_horizontal">
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

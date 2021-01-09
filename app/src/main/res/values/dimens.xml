@@ -10,21 +10,23 @@
     <dimen name="am_btn_background_stroke_width">1dp</dimen>
     <dimen name="am_btn_background_corner_radius">15dp</dimen>
 
-    <!-- Activity Play Dimensions. -->
-    <dimen name="ap_ll_global_padding">16dp</dimen>
-    <dimen name="ap_tv_text_size">18sp</dimen>
-    <dimen name="ap_tv_padding">5dp</dimen>
-    <dimen name="ap_ll_players_margin_top">10dp</dimen>
-    <dimen name="ap_ll_players_margin_bottom">10dp</dimen>
-    <dimen name="ap_tv_players_text_size">24sp</dimen>
-    <dimen name="ap_tv_players_padding">5dp</dimen>
-    <dimen name="ap_btn_text_size">16sp</dimen>
-    <dimen name="ap_btn_padding_horizontal">20dp</dimen>
-    <dimen name="ap_ll_players_padding_horizontal">8dp</dimen>
-    <dimen name="ap_tv_ip_address_text_size">18sp</dimen>
-    <dimen name="ap_cl_players_padding">8dp</dimen>
-    <dimen name="ap_sv_margin_top">8dp</dimen>
-    <dimen name="apc_ll_players_margin_bottom">10dp</dimen>
+    <!-- Activity Lobby Dimensions. -->
+    <dimen name="al_ll_global_padding">16dp</dimen>
+    <dimen name="al_tv_text_size">18sp</dimen>
+    <dimen name="al_tv_padding">5dp</dimen>
+    <dimen name="al_ll_players_margin_top">10dp</dimen>
+    <dimen name="al_ll_players_margin_bottom">10dp</dimen>
+    <dimen name="al_tv_players_text_size">24sp</dimen>
+    <dimen name="al_tv_players_padding">5dp</dimen>
+    <dimen name="al_btn_text_size">16sp</dimen>
+    <dimen name="al_btn_padding_horizontal">20dp</dimen>
+    <dimen name="al_ll_players_padding_horizontal">8dp</dimen>
+    <dimen name="al_tv_ip_address_text_size">18sp</dimen>
+    <dimen name="al_cl_players_padding">8dp</dimen>
+    <dimen name="al_sv_margin_top">8dp</dimen>
+
+    <!-- Activity Lobby Client Dimensions. -->
+    <dimen name="alc_ll_players_margin_bottom">10dp</dimen>
 
     <!-- Activity Scoreboard Dimensions. -->
     <dimen name="as_ll_global_padding">16dp</dimen>
@@ -70,5 +72,13 @@
     <dimen name="ad_cl_btn_cancel_margin_end">5dp</dimen>
     <dimen name="ad_cl_btn_padding_horizontal">15dp</dimen>
     <dimen name="ad_cl_btn_create_margin_start">5dp</dimen>
+    <dimen name="ap_tv_timer_padding">12dp</dimen>
+    <dimen name="ap_tv_timer_text_size">20sp</dimen>
+    <dimen name="ap_ll_information_margin_horizontal">20dp</dimen>
+    <dimen name="ap_ll_information_margin_bottom">20dp</dimen>
+    <dimen name="ap_ll_first_player_margin_end">5dp</dimen>
+    <dimen name="ap_ll_second_player_margin_start">5dp</dimen>
+    <dimen name="ap_tv_players_information_padding">10dp</dimen>
+    <dimen name="ap_tv_players_information_text_size">18sp</dimen>
 
 </resources>

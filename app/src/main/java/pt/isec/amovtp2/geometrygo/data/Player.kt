@@ -1,10 +1,11 @@
 package pt.isec.amovtp2.geometrygo.data
 
+import androidx.lifecycle.ViewModel
 import java.io.*
 import java.net.ServerSocket
 import java.net.Socket
 
-class Player(internal var id: Int, internal var latitude: Double, internal var longitude: Double) {
+class Player(internal var id: Int, internal var latitude: Double, internal var longitude: Double) : ViewModel() {
 
     internal var serverSocket: ServerSocket? = null
 

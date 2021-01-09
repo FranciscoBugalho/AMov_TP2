@@ -1,43 +1,34 @@
 package pt.isec.amovtp2.geometrygo.activities
 
 import android.Manifest
-import android.content.DialogInterface
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.Typeface
-import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.CircleOptions
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import pt.isec.amovtp2.geometrygo.R
 import pt.isec.amovtp2.geometrygo.data.GameController
-import pt.isec.amovtp2.geometrygo.fragments.AlertDialogCreateLobby
-import pt.isec.amovtp2.geometrygo.fragments.AlertDialogJoinLobby
+import pt.isec.amovtp2.geometrygo.data.Team
 
+class PlayActivity : AppCompatActivity()/*, OnMapReadyCallback*/ {
 
-// 192.168.1.70
-class PlayActivity : AppCompatActivity() {
-    // Game controller.
-    private lateinit var game: GameController
-
-    // Verifies if the lobby already started or not.
-    private var lobbyStarted = false
-
-    // Start button.
-    private lateinit var btnStart: Button
+    private val game: GameController by viewModels()
 
     // Fused Location Provider.
     private lateinit var fLoc: FusedLocationProviderClient
@@ -54,12 +45,6 @@ class PlayActivity : AppCompatActivity() {
     // Helps to check if the user started as server or no.
     private var isServer: Boolean = false
 
-    // Dialog to user insert the team name.
-    private lateinit var dialogCreate: AlertDialogCreateLobby
-
-    // Dialog to user insert the server ip address.
-    private lateinit var dialogJoin: AlertDialogJoinLobby
-
     // Location callback to get the latitude and the longitude.
     private var locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult?) {
@@ -68,217 +53,61 @@ class PlayActivity : AppCompatActivity() {
                 longitude = it.longitude
 
                 if (latitude != null && longitude != null) {
-                    if (!lobbyStarted) {
-                        lobbyStarted = true
-                        if (isServer) {
-                            dialogCreate.setLatitude(latitude!!)
-                            dialogCreate.setLongitude(longitude!!)
-                        } else {
-                            dialogJoin.setLatitude(latitude!!)
-                            dialogJoin.setLongitude(longitude!!)
-                        }
-                    } else {
-                        game.sendLocationToTeam(latitude!!, longitude!!)
-                    }
-                } else
-                    Log.e("PlayActivity", "Location is null.")
+                    game.sendLocationToTeam(latitude!!, longitude!!)
+                }
             }
         }
     }
 
-    /**
-     * onCreate
-     * 1.
-     */
+    @SuppressLint("VisibleForTests")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Initialize the Fused Location Provider.
         fLoc = FusedLocationProviderClient(this)
 
-        game = ViewModelProvider(this).get(GameController::class.java)
-
         // Define which view the user will see depending if he started the app on server mode or not.
         isServer = intent.getBooleanExtra(IntentConstants.IS_SERVER, false)
         if (isServer) {
             setContentView(R.layout.activity_play)
 
-            btnStart = findViewById(R.id.btnStartGame)
-            btnStart.isEnabled = false
-
-            // Get server ip address.
-            val wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
-            val ip = wifiManager.connectionInfo.ipAddress
-            val strIPAddress = String.format(
-                "%d.%d.%d.%d",
-                ip and 0xff,
-                (ip shr 8) and 0xff,
-                (ip shr 16) and 0xff,
-                (ip shr 24) and 0xff
-            )
-
-            // Display server ip on the screen.
-            findViewById<TextView>(R.id.tvIpAddress).text = strIPAddress
-
-            // Create and display the dialog to define the team name.
-            dialogCreate = AlertDialogCreateLobby(
-                game,
-                latitude,
-                longitude,
-                findViewById(R.id.tvTeamName)
-            )
-
-            dialogCreate.presentDialog(supportFragmentManager)
-
         } else {
             setContentView(R.layout.activity_play_client)
-
-            // Create and display the dialog to insert the server ip address.
-            dialogJoin = AlertDialogJoinLobby(game, latitude, longitude)
-            dialogJoin.presentDialog(supportFragmentManager)
         }
 
-        game.state.observe(this@PlayActivity) {
-            when (game.state.value) {
-                GameController.State.STARTING_TEAM -> updateView()
-                GameController.State.NEW_PLAYER -> updateView()
-                GameController.State.UPDATE_VIEW -> updateView()
-                GameController.State.NOT_ENOUGH_PLAYERS -> updateButton(false)
-                GameController.State.PLAYER_LEFT -> updateView()
-                GameController.State.END_LOBBY -> finish()
-                GameController.State.READY_TO_PLAY -> updateButton(true)
-                GameController.State.START -> play()
-            }
-        }
+        //(supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment)?.getMapAsync(this)
+
     }
 
-    private fun play() {
-        // Will change the activity and start the game.
+    /*
+    @SuppressLint("MissingPermission")
+    override fun onMapReady(map: GoogleMap?) {
+        map ?: return
+
+        // Define map settings
+        if(locEnabled)
+            map.isMyLocationEnabled = true
+        map.mapType = GoogleMap.MAP_TYPE_HYBRID
+        map.uiSettings.isCompassEnabled = true
+        map.uiSettings.isZoomControlsEnabled = true
+        map.uiSettings.isZoomGesturesEnabled = true
+
+
+        val cp = CameraPosition.Builder().target(LatLng(game.getPlayer().latitude, game.getPlayer().longitude)).zoom(17f)
+            .bearing(0f).tilt(0f).build()
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cp))
+
+        val mo = MarkerOptions().position(LatLng(game.getTeam().latitude!!, game.getTeam().longitude!!))
+        val isec = map.addMarker(mo)
+        isec.showInfoWindow()
     }
-
-    override fun onBackPressed() {
-        val dlg = AlertDialog.Builder(this).run {
-            if (isServer)
-                setTitle(getString(R.string.ad_ql_close_lobby))
-            else
-                setTitle(getString(R.string.ad_ql_quit_lobby))
-
-            setPositiveButton(getString(R.string.ad_ql_btn_yes)) { dlg: DialogInterface, _: Int ->
-                if (isServer) {
-                    // TODO: CLOSE EVERY CLIENT AND LEAVE
-                } else {
-                    // TODO: LEAVE AND NOTIFY THE OTHERS
-                }
-                dlg.dismiss()
-            }
-            setNegativeButton(getString(R.string.ad_ql_btn_no)) { dlg: DialogInterface, _: Int ->
-                dlg.dismiss()
-            }
-            setCancelable(false)
-            create()
-        }
-        dlg.show()
-    }
-
-    /**
-     * updateView
-     * 1.
      */
-    private fun updateView() {
-        if (game.teamExists() == null)
-            return
 
-        val linearLayout = findViewById<LinearLayout>(R.id.llPlayers)
-
-        linearLayout.removeAllViews()
-        linearLayout.invalidate()
-
-        // Set team name.
-        val tvTitle = findViewById<TextView>(R.id.tvTeamName)
-        tvTitle.text = game.getTeamName()
-        tvTitle.invalidate()
-
-        // Updates the LinearLayout with the players.
-        for (i in 0 until game.getTeam().getPlayers().size) {
-            // Creates a LinearLayout to add two TextViews.
-            val newPlayerLayout = LinearLayout(this)
-            var param = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            param.setMargins(0, 0, 0, 10)
-            newPlayerLayout.layoutParams = param
-            newPlayerLayout.orientation = LinearLayout.HORIZONTAL
-
-            // Creates the TextView for the player name.
-            val tvNewPlayerId = TextView(this)
-            param = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT)
-            param.weight = 0.50f
-            tvNewPlayerId.layoutParams = param
-
-            // Gets player id.
-            val playerId = game.getPlayerId(i)
-
-            if (playerId == -1 || playerId == game.getPlayerId()) {
-                tvNewPlayerId.text = getString(R.string.you_player_tag)
-
-                tvNewPlayerId.setTypeface(null, Typeface.BOLD)
-            } else {
-                (getString(R.string.player_tag) + " " + playerId).also {
-                    tvNewPlayerId.text = it
-                }
-            }
-
-            tvNewPlayerId.setTextColor(Color.BLACK)
-            tvNewPlayerId.textSize = 18f
-            tvNewPlayerId.gravity = Gravity.START
-            tvNewPlayerId.maxLines = 1
-
-            // Creates the TextView to the player location.
-            val tvNewPlayerLocation = TextView(this)
-            param = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT)
-            param.weight = 0.50f
-            tvNewPlayerLocation.layoutParams = param
-            tvNewPlayerLocation.text = game.getPlayerLocation(i)
-            tvNewPlayerLocation.setTextColor(Color.BLACK)
-            tvNewPlayerLocation.textSize = 18f
-            tvNewPlayerLocation.gravity = Gravity.END
-            tvNewPlayerLocation.maxLines = 1
-
-            // Add the both TextViews to the inner LinearLayout.
-            newPlayerLayout.addView(tvNewPlayerId)
-            newPlayerLayout.addView(tvNewPlayerLocation)
-
-            // Add the inside LinearLayout to the main LinearLayout.
-            linearLayout.addView(newPlayerLayout)
-
-            // To redraw the LinearLayout on the screen.
-            linearLayout.invalidate()
-        }
-    }
-
-    private fun updateButton(buttonEnabled: Boolean) {
-        btnStart.isEnabled = buttonEnabled
-
-        if (buttonEnabled)
-            btnStart.background = ContextCompat.getDrawable(this, R.drawable.menu_buttons)
-        else
-            btnStart.background = ContextCompat.getDrawable(this, R.drawable.menu_buttons_disabled)
-    }
-
-    /**
-     * updateView
-     * 1. Calls "startLocation" method
-     */
     override fun onResume() {
         super.onResume()
         startLocation(true)
     }
 
-    /**
-     * onPause
-     * 1. If location service is enabled, disables it
-     */
     override fun onPause() {
         super.onPause()
         if (locEnabled) {
@@ -287,10 +116,6 @@ class PlayActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * onRequestPermissionsResult
-     * 1.
-     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -302,10 +127,6 @@ class PlayActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * startLocation
-     * 1.
-     */
     private fun startLocation(askPerm: Boolean) {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -340,5 +161,4 @@ class PlayActivity : AppCompatActivity() {
         fLoc.requestLocationUpdates(locReq, locationCallback, null)
         locEnabled = true
     }
-
 }

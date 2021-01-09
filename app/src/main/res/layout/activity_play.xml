@@ -1,149 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/ll_background_color"
-    android:padding="@dimen/ap_ll_global_padding"
+    android:orientation="vertical"
     tools:context=".activities.PlayActivity">
 
-    <!-- ConstraintLayout for the team name definition. -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- FrameLayout to display all the content. -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <!-- TextView for the team name -->
-        <TextView
-            android:id="@+id/tvTeamName"
+        <!-- Fragment to display the map. -->
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- LinearLayout for the time. -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:padding="@dimen/ap_tv_padding"
-            android:textColor="@color/black"
-            android:textSize="@dimen/ap_tv_text_size"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="vertical">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- ConstraintLayout to display all the players. -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:padding="@dimen/ap_cl_players_padding"
-        android:layout_marginTop="@dimen/ap_ll_players_margin_top"
-        android:layout_marginBottom="@dimen/ap_ll_players_margin_bottom"
-        android:layout_weight="2"
-        android:background="@drawable/linear_layout_background">
-
-        <!-- TextView to represent the players information. -->
-        <TextView
-            android:id="@+id/tvPlayers"
-            android:layout_width="363dp"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:padding="@dimen/ap_tv_players_padding"
-            android:text="@string/ap_tv_players"
-            android:textColor="@color/black"
-            android:textSize="@dimen/ap_tv_players_text_size"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- ScrollView to present the players information. -->
-        <ScrollView
-            android:id="@+id/svPlayersInformation"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/ap_sv_margin_top"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvPlayers">
-
-            <!-- LinearLayout for the players information. -->
-            <LinearLayout
-                android:id="@+id/llPlayers"
+            <!-- TextView for the timer. -->
+            <TextView
+                android:id="@+id/tvTimer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/ap_tv_timer_padding"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="@dimen/ap_tv_timer_text_size" />
+
+        </LinearLayout>
+
+        <!-- LinearLayout for two players information. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom"
+            android:layout_marginHorizontal="@dimen/ap_ll_information_margin_horizontal"
+            android:layout_marginBottom="@dimen/ap_ll_information_margin_bottom"
+            android:background="@drawable/linear_layout_background"
+            android:baselineAligned="false">
+
+            <!-- LinearLayout for the first player information. -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:orientation="vertical"
-                android:paddingHorizontal="@dimen/ap_ll_players_padding_horizontal">
+                android:layout_marginEnd="@dimen/ap_ll_first_player_margin_end">
+
+                <!-- TextView to display the first player information. -->
+                <TextView
+                    android:id="@+id/tvInfoPlayerX"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/ap_tv_players_information_padding"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/ap_tv_players_information_text_size" />
 
             </LinearLayout>
 
-        </ScrollView>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- ConstraintLayout to display ip address and start game button. -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.15"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
-
-        <!-- LinearLayout to display the ip address and an ImageView
-         to send the server ip address to others by message. -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clIpAndSMSLogo"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="start"
-            app:layout_constraintEnd_toStartOf="@+id/btnStartGame"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="NestedWeights">
-
-            <!-- TextView to display the ip address. -->
-            <TextView
-                android:id="@+id/tvIpAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="start|center_vertical"
-                android:padding="@dimen/ap_tv_players_padding"
-                android:textColor="@color/black"
-                android:textSize="@dimen/ap_tv_ip_address_text_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <!-- ImageView which corresponds to the messages icon. -->
-            <ImageView
+            <!-- LinearLayout for the second player information. -->
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:scaleType="fitStart"
-                android:src="@drawable/sms_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/tvIpAddress"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                tools:ignore="ContentDescription" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/ap_ll_second_player_margin_start">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- TextView to display the second player information. -->
+                <TextView
+                    android:id="@+id/tvInfoPlayerY"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/ap_tv_players_information_padding"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/ap_tv_players_information_text_size" />
 
-        <!-- Button to start the game. -->
-        <Button
-            android:id="@+id/btnStartGame"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/menu_buttons"
-            android:paddingHorizontal="@dimen/ap_btn_padding_horizontal"
-            android:text="@string/ap_btn_start_game"
-            android:textColor="@color/black"
-            android:textSize="@dimen/ap_btn_text_size"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/clIpAndSMSLogo"
-            app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
-</LinearLayout>
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

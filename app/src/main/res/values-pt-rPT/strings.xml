@@ -9,8 +9,8 @@
     <string name="as_tv_top_5">Top 5</string>
     <string name="am_btn_join_lobby">Entrar no Grupo</string>
     <string name="ad_no_internet_connection">Sem conexão à internet. Tente mais tarde!</string>
-    <string name="ap_tv_players">Jogadores</string>
-    <string name="ap_btn_start_game">Começar Jogo</string>
+    <string name="al_tv_players">Jogadores</string>
+    <string name="al_btn_start_game">Começar Jogo</string>
     <string name="player_tag">Jogador</string>
     <string name="ad_join_lobby">Juntar-se a um grupo</string>
     <string name="ad_jl_insert_server_ip">Insira o ip do servidor</string>

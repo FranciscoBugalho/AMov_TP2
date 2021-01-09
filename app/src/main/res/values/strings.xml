@@ -8,8 +8,8 @@
     <string name="as_tv_top_5">Top 5</string>
     <string name="aa_about_information">Project done by:\n\t- Henrique Fonseca\n\t- José Francisco Bugalho\n\t- Marco Ferreira\n\nProject developed in the academic year 2020/2021, in regards of the course of the 3rd year of the Degree in Computer Engineering taught at the Coimbra Institute of Engineering, \"Arquiteturas Móveis\".</string>
     <string name="ad_no_internet_connection">No internet connection. Try again later!</string>
-    <string name="ap_tv_players">Players</string>
-    <string name="ap_btn_start_game">Start Game</string>
+    <string name="al_tv_players">Players</string>
+    <string name="al_btn_start_game">Start Game</string>
     <string name="player_tag">Player</string>
     <string name="ad_join_lobby">Join Lobby</string>
     <string name="ad_jl_insert_server_ip">Insert server ip</string>

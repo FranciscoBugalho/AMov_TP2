@@ -1,6 +1,5 @@
 package pt.isec.amovtp2.geometrygo.data
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.io.PrintStream
@@ -55,7 +54,7 @@ class GameController : ViewModel() {
                 team!!.addPlayer(player)
                 receiveDataFromPlayers()
             } catch (_: Exception) {
-                Log.i("TAG", "startAsClient: ")
+                //Log.i("TAG", "startAsClient: ")
             }
         }
     }
@@ -89,6 +88,9 @@ class GameController : ViewModel() {
                 while (state.value != State.START) {
 
                     val newPlayerInfo = iS.readLine()
+
+                    if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
+                        state.postValue(State.READY_TO_PLAY)
 
                     val teamName = newPlayerInfo.split(" ")[3]
                     if (teamName != "")
@@ -133,9 +135,6 @@ class GameController : ViewModel() {
 
                     // Sort the players array.
                     team!!.getPlayers().sortBy { it.id }
-
-                    if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
-                            state.postValue(State.READY_TO_PLAY)
                 }
             } catch (_: Exception) {
                 //deleteLobby()
@@ -154,6 +153,9 @@ class GameController : ViewModel() {
                 while (state.value != State.START) {
 
                     val newPlayerInfo = iS.readLine()
+
+                    if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
+                        state.postValue(State.START)
 
                     val teamName = newPlayerInfo.split(" ")[3]
                     if (teamName != "")
@@ -271,6 +273,10 @@ class GameController : ViewModel() {
         return team
     }
 
+    fun getPlayer(): Player {
+        return player
+    }
+
     fun getPlayerId(): Int {
         return player.id
     }
@@ -284,6 +290,18 @@ class GameController : ViewModel() {
             "%.2f",
             team!!.getPlayers()[position].latitude
         ) + " \t " + String.format("%.2f", team!!.getPlayers()[position].longitude)
+    }
+
+    fun setStateAsStart() {
+        if (player.id == 1) {
+            team!!.latitude = player.latitude
+            team!!.longitude = player.longitude
+        } else {
+            team!!.latitude = team!!.getPlayers()[0].latitude
+            team!!.longitude = team!!.getPlayers()[0].longitude
+        }
+
+        state.postValue(State.START)
     }
 
 }
