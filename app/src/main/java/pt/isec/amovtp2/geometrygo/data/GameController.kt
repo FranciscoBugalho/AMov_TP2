@@ -16,6 +16,11 @@ class GameController : ViewModel() {
     private var team: Team? = null
     val state = MutableLiveData(State.STARTING_TEAM)
 
+    /**
+     * startAsServer
+     * Server initialization
+     * Starts the threat that receives messages
+     */
     fun startAsServer(latitude: Double, longitude: Double) {
         player = Player(1, latitude, longitude)
         team!!.addPlayer(player)
@@ -38,6 +43,11 @@ class GameController : ViewModel() {
         }
     }
 
+    /**
+     * startAsClient
+     * Client initialization
+     * First communication to server
+     */
     fun startAsClient(
         serverIP: String,
         serverPort: Int = DataConstants.SERVER_DEFAULT_PORT,
@@ -50,31 +60,19 @@ class GameController : ViewModel() {
             try {
                 val newSocket = Socket(serverIP, serverPort)
                 player.socket = newSocket
-                sendMyDataToOthers(player)
+                sendLocationToServer(player.latitude, player.longitude)
                 team!!.addPlayer(player)
-                receiveDataFromPlayers()
+                receiveDataFromServer()
             } catch (_: Exception) {
                 //Log.i("TAG", "startAsClient: ")
             }
         }
     }
 
-    private fun sendMyDataToOthers(player: Player) {
-        player.oS?.run {
-            thread {
-                try {
-                    val printStream = PrintStream(this)
-                    printStream.println(
-                        player.id.toString() + " " + player.latitude.toString() + " " + player.longitude.toString() + " " + team!!.teamName
-                    )
-                    printStream.flush()
-                } catch (_: Exception) {
-                    //stopGame()
-                }
-            }
-        }
-    }
-
+    /**
+     * receiveMessagesFromClients
+     * Server receives the data of a client
+     */
     private fun receiveMessagesFromClients(socket: Socket) {
         player.socket = socket
 
@@ -142,7 +140,11 @@ class GameController : ViewModel() {
         }
     }
 
-    private fun receiveDataFromPlayers() {
+    /**
+     * receiveDataFromServer
+     * Client receives the data of the team from the server
+     */
+    private fun receiveDataFromServer() {
         player.threadCreateTeam = thread {
             try {
                 if (player.iS == null)
@@ -152,58 +154,20 @@ class GameController : ViewModel() {
 
                 while (state.value != State.START) {
 
-                    val newPlayerInfo = iS.readLine()
+                    val newPlayersInfo = iS.readLine()
 
                     if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
                         state.postValue(State.START)
 
-                    val teamName = newPlayerInfo.split(" ")[3]
+                    val teamName = newPlayersInfo.split(" ")[0]
                     if (teamName != "")
                         team!!.teamName = teamName
 
-                    val id = newPlayerInfo.split(" ")[0].toInt()
+                    //TODO: qq coisa com o status I guess
+                    val status = newPlayersInfo.split(" ")[1]
+                    val nrPlayers = newPlayersInfo.split(" ")[2].toInt()
 
-                    if (id != -1) {
-                        if (id == 1) { // If it's server.
-                            if (!team!!.containsPlayerById(1)) {
-                                team!!.addPlayer(
-                                    team!!.getPlayers().size,
-                                    newPlayerInfo.split(" ")[1].toDouble(),
-                                    newPlayerInfo.split(" ")[2].toDouble()
-                                )
-                                state.postValue(State.NEW_PLAYER)
-                            } else {
-                                team!!.updatePlayerLocation(
-                                    id,
-                                    newPlayerInfo.split(" ")[1].toDouble(),
-                                    newPlayerInfo.split(" ")[2].toDouble()
-                                )
-                                state.postValue(State.UPDATE_VIEW)
-                            }
-                        } else {
-                            if (team!!.containsPlayerById(-1)) { // Set player id.
-                                team!!.updatePlayerId(-1, id, player.latitude, player.longitude)
-                                state.postValue(State.UPDATE_VIEW)
-                            } else {
-                                if (team!!.containsPlayerById(id)) { // Player already exists, update.
-                                    team!!.updatePlayerLocation(
-                                        id,
-                                        newPlayerInfo.split(" ")[1].toDouble(),
-                                        newPlayerInfo.split(" ")[2].toDouble()
-                                    )
-                                    state.postValue(State.UPDATE_VIEW)
-                                } else { // Player does not exists.
-                                    team!!.addPlayer(
-                                        team!!.getPlayers().size,
-                                        newPlayerInfo.split(" ")[1].toDouble(),
-                                        newPlayerInfo.split(" ")[2].toDouble()
-                                    )
-                                    state.postValue(State.NEW_PLAYER)
-                                }
-                            }
-                        }
-                    } else
-                        state.postValue(State.UPDATE_VIEW)
+                    handlePlayersInfo(nrPlayers, newPlayersInfo)
 
                     // Sort the players array.
                     team!!.getPlayers().sortBy { it.id }
@@ -215,6 +179,61 @@ class GameController : ViewModel() {
         }
     }
 
+    /**
+     * handlePlayersInfo
+     * Handles the data of each player received from the server
+     */
+    private fun handlePlayersInfo(nrPlayers: Int, newPlayersInfo: String) {
+        for (i in 3..nrPlayers + 3) {
+            val id = newPlayersInfo.split(" ")[i].toInt()
+
+            if (id != -1) {
+                if (id == 1) { // If it's server.
+                    if (!team!!.containsPlayerById(1)) {
+                        team!!.addPlayer(
+                            team!!.getPlayers().size,
+                            newPlayersInfo.split(" ")[1 + i].toDouble(),
+                            newPlayersInfo.split(" ")[2 + i].toDouble()
+                        )
+                        state.postValue(State.NEW_PLAYER)
+                    } else {
+                        team!!.updatePlayerLocation(
+                            id,
+                            newPlayersInfo.split(" ")[1 + i].toDouble(),
+                            newPlayersInfo.split(" ")[2 + i].toDouble()
+                        )
+                        state.postValue(State.UPDATE_VIEW)
+                    }
+                } else {
+                    if (team!!.containsPlayerById(-1)) { // Set player id.
+                        team!!.updatePlayerId(-1, id, player.latitude, player.longitude)
+                        state.postValue(State.UPDATE_VIEW)
+                    } else {
+                        if (team!!.containsPlayerById(id)) { // Player already exists, update.
+                            team!!.updatePlayerLocation(
+                                id,
+                                newPlayersInfo.split(" ")[1 + i].toDouble(),
+                                newPlayersInfo.split(" ")[2 + i].toDouble()
+                            )
+                            state.postValue(State.UPDATE_VIEW)
+                        } else { // Player does not exists.
+                            team!!.addPlayer(
+                                team!!.getPlayers().size,
+                                newPlayersInfo.split(" ")[1 + i].toDouble(),
+                                newPlayersInfo.split(" ")[2 + i].toDouble()
+                            )
+                            state.postValue(State.NEW_PLAYER)
+                        }
+                    }
+                }
+            } else
+                state.postValue(State.UPDATE_VIEW)
+        }
+    }
+
+    /**
+     * deleteLobby
+     */
     private fun deleteLobby() {
         try {
             val leader = team!!.getLeader()
@@ -227,20 +246,24 @@ class GameController : ViewModel() {
         }
     }
 
+    /**
+     * sendLocationToTeam
+     * Server sends the data from each player to the others
+     */
     fun sendLocationToTeam(latitude: Double, longitude: Double) {
         if (team == null) return
+        // Standby, Start, End
+
+        var message = createMessageForClients()
 
         synchronized(team!!) {
-            team?.getPlayers()?.forEach {
+            team?.getPlayers()?.forEach { it ->
                 if (it.id != player.id) { // Don't send to myself.
                     player.oS?.run {
                         thread {
                             try {
                                 val printStream = PrintStream(this)
-                                printStream.println(player.id.toString() + " " + "$latitude $longitude ${team!!.teamName}")
-                                printStream.flush()
-
-                                printStream.println(it.id.toString() + " " + "${it.latitude} ${it.longitude} ${team!!.teamName}")
+                                printStream.println(message)
                                 printStream.flush()
                             } catch (_: Exception) {
                                 //stopGame()
@@ -253,38 +276,106 @@ class GameController : ViewModel() {
         }
     }
 
+    private fun createMessageForClients(): String {
+        var message = "${team!!.teamName}" + " "
+        if (state.value == State.READY_TO_PLAY || state.value == State.START) {
+            message += "startState"
+        } else if (state.value == State.END_LOBBY) {
+            message += "endState"
+        } else {
+            message += "standbyState"
+        }
+        message += " " + team?.getPlayers()!!.size.toString()
+        team?.getPlayers()?.forEach { iterator ->
+            message += iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}"
+        }
+        return message
+    }
+
+    /**
+     * sendLocationToServer
+     * Client send it's data to the server
+     */
+    fun sendLocationToServer(latitude: Double, longitude: Double) {
+        if (team == null) return
+
+        synchronized(team!!) {
+            team?.getPlayerById(1)?.oS.run{
+                thread {
+                    try {
+                        val printStream = PrintStream(this)
+                        printStream.println(player.id.toString() + " " + "$latitude $longitude ${team!!.teamName}")
+                        printStream.flush()
+                    } catch (_: Exception) {
+                        //stopGame()
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * createTeam
+     * Initializes team with a name
+     */
     fun createTeam(teamName: String) {
         team = Team(teamName)
     }
 
-    fun getTeamName(): String {
-        return team!!.teamName
-    }
-
+    /**
+     * createEmptyTeamName
+     * Initializes team without a name
+     */
     private fun createEmptyTeamName() {
         team = Team("")
     }
 
+
+    /**
+     * getTeamName
+     */
+    fun getTeamName(): String {
+        return team!!.teamName
+    }
+
+    /**
+     * getTeam
+     */
     fun getTeam(): Team {
         return team!!
     }
 
+    /**
+     * teamExists
+     */
     fun teamExists(): Team? {
         return team
     }
 
+    /**
+     * getPlayer
+     */
     fun getPlayer(): Player {
         return player
     }
 
+    /**
+     * getPlayerId
+     */
     fun getPlayerId(): Int {
         return player.id
     }
 
+    /**
+     * getPlayerId
+     */
     fun getPlayerId(position: Int): Int {
         return team!!.getPlayers()[position].id
     }
 
+    /**
+     * getPlayerLocation
+     */
     fun getPlayerLocation(position: Int): String {
         return String.format(
             "%.2f",
@@ -292,6 +383,9 @@ class GameController : ViewModel() {
         ) + " \t " + String.format("%.2f", team!!.getPlayers()[position].longitude)
     }
 
+    /**
+     * setStateAsStart
+     */
     fun setStateAsStart() {
         if (player.id == 1) {
             team!!.latitude = player.latitude

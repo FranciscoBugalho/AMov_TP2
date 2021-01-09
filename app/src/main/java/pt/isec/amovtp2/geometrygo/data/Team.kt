@@ -34,6 +34,14 @@ class Team(internal var teamName: String): ViewModel() {
         return players
     }
 
+    fun getPlayerById(id: Int) : Player?{
+        players.forEach {
+            if (it.id == id)
+                return it
+        }
+        return null
+    }
+
     fun containsPlayerById(id: Int): Boolean {
         players.forEach {
             if (it.id == id)
