@@ -152,7 +152,7 @@ class LobbyActivity : AppCompatActivity() {
                 GameController.State.NEW_PLAYER -> updateView()
                 GameController.State.UPDATE_VIEW -> updateView()
                 GameController.State.NOT_ENOUGH_PLAYERS -> updateButton(false)
-                GameController.State.PLAYER_LEFT -> updateView()
+                GameController.State.PLAYER_LEFT -> finish()
                 GameController.State.END_LOBBY -> finish()
                 GameController.State.READY_TO_PLAY -> updateButton(true)
                 GameController.State.START -> play()
@@ -187,8 +187,10 @@ class LobbyActivity : AppCompatActivity() {
             setPositiveButton(getString(R.string.ad_ql_btn_yes)) { dlg: DialogInterface, _: Int ->
                 if (isServer) {
                     // TODO: CLOSE EVERY CLIENT AND LEAVE
+                    game.serverExitLobby()
                 } else {
                     // TODO: LEAVE AND NOTIFY THE OTHERS
+                    game.clientExitLobby()
                 }
                 dlg.dismiss()
             }

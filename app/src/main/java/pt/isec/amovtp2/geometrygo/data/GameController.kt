@@ -92,62 +92,85 @@ class GameController : ViewModel() {
                     // TODO: MUDAR ISTO DAQUI
                     if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
                         state.postValue(State.READY_TO_PLAY)
+                    Log.i("receiveMessagesFromCli:", "newPlayerInfo: $newPlayerInfo")
 
-                    val teamName = newPlayerInfo.split(" ")[3]
-                    if (teamName != "")
-                        team!!.teamName = teamName
-
-                    val id = newPlayerInfo.split(" ")[0].toInt()
-
-                    if (id == -1) { // Received new player.
-                        tempPlayer.id = team!!.getPlayers().size + 1
-                        tempPlayer.latitude = newPlayerInfo.split(" ")[1].toDouble()
-                        tempPlayer.longitude = newPlayerInfo.split(" ")[2].toDouble()
-                        team!!.addPlayer(
-                            tempPlayer
-                        )
-
-                        state.postValue(State.NEW_PLAYER)
-
-                        var message = team!!.teamName + " "
-                        message += if (state.value == State.READY_TO_PLAY || state.value == State.START) {
-                            "startState"
-                        } else if (state.value == State.END_LOBBY) {
-                            "endState"
-                        } else {
-                            "standbyState"
-                        }
-                        message += " " + "1" + " "
-                        message += tempPlayer.id.toString() + " " + tempPlayer.latitude + " "  + tempPlayer.longitude
-
-
-                        tempPlayer.oS.run {
-                            thread {
-                                try {
-                                    val printStream = PrintStream(this)
-                                    printStream.println(message)
-                                    printStream.flush()
-                                } catch (_: Exception) {
-                                    //stopGame()
-                                }
-                            }
-                        }
-                    } else { // Update player information.
-                        if (team!!.containsPlayerById(id)) {
-                            team!!.updatePlayerLocation(
-                                id,
-                                newPlayerInfo.split(" ")[1].toDouble(),
-                                newPlayerInfo.split(" ")[2].toDouble()
-                            )
+                    if(newPlayerInfo.split(" ")[1] == "!exit"){
+                        if(team!!.removePlayer(team!!.getPlayerById(newPlayerInfo.split(" ")[0].toInt()))){
+                            Log.i("receiveMessagesFromCli:", "client with the id ${newPlayerInfo.split(" ")[0].toInt()} ghosted")
                             state.postValue(State.UPDATE_VIEW)
                         }
+                        else{
+                            Log.e("receiveMessagesFromCli:", "there's no client with the id ${newPlayerInfo.split(" ")[0].toInt()}")
+                        }
                     }
+                    else{
+                        handlePlayerData(newPlayerInfo, tempPlayer)
+                    }
+
 
                     // Sort the players array.
                     team!!.getPlayers().sortBy { it.id }
                 }
             } catch (_: Exception) {
                 //deleteLobby()
+            }
+        }
+    }
+
+    /**
+     * handlePlayerData
+     */
+    private fun handlePlayerData(
+        newPlayerInfo: String,
+        tempPlayer: Player
+    ) {
+        val teamName = newPlayerInfo.split(" ")[3]
+        if (teamName != "")
+            team!!.teamName = teamName
+
+        val id = newPlayerInfo.split(" ")[0].toInt()
+
+        if (id == -1) { // Received new player.
+            tempPlayer.id = team!!.getPlayers().size + 1
+            tempPlayer.latitude = newPlayerInfo.split(" ")[1].toDouble()
+            tempPlayer.longitude = newPlayerInfo.split(" ")[2].toDouble()
+            team!!.addPlayer(
+                tempPlayer
+            )
+
+            state.postValue(State.NEW_PLAYER)
+
+            var message = team!!.teamName + " "
+            message += if (state.value == State.READY_TO_PLAY || state.value == State.START) {
+                "startState"
+            } else if (state.value == State.END_LOBBY) {
+                "endState"
+            } else {
+                "standbyState"
+            }
+            message += " " + "1" + " "
+            message += tempPlayer.id.toString() + " " + tempPlayer.latitude + " " + tempPlayer.longitude
+
+
+            tempPlayer.oS.run {
+                thread {
+                    try {
+                        val printStream = PrintStream(this)
+                        printStream.println(message)
+                        printStream.flush()
+                    } catch (_: Exception) {
+                        //stopGame()
+                    }
+                }
+            }
+        } else { // Update player information.
+            if (team!!.containsPlayerById(id)) {
+                team!!.updatePlayerLocation(
+                    id,
+                    newPlayerInfo.split(" ")[1].toDouble(),
+                    newPlayerInfo.split(" ")[2].toDouble()
+                )
+                state.postValue(State.UPDATE_VIEW)
             }
         }
     }
@@ -194,9 +217,12 @@ class GameController : ViewModel() {
      */
     private fun handlePlayersInfo(nrPlayers: Int, newPlayersInfo: String) {
 
+        val listIds = arrayListOf<Int>() //ids that came from server
+
         for (i in 3 until nrPlayers*3 + 3 step 3) {
 
             val id = newPlayersInfo.split(" ")[i].toInt()
+            listIds.add(id)
 
             if (id != -1) {
                 if (id == 1) { // If it's server.
@@ -246,7 +272,37 @@ class GameController : ViewModel() {
             } else
                 state.postValue(State.UPDATE_VIEW)
         }
+
+        removeClientsThatLeftLobby(listIds)
     }
+
+    /**
+     * removeClientsThatLeftLobby
+     * Removes clients not received from server from the lobby
+     */
+    private fun removeClientsThatLeftLobby(listIds: ArrayList<Int>) {
+        var listClientsToRemove = arrayListOf<Int>() //ids that are in the player's storage data but were not received from the server
+        var flagDelete = true
+
+        team!!.getPlayers().forEach{
+            listIds.forEach(){ iterator ->
+                if(it.id == iterator)
+                    flagDelete = false
+            }
+
+            if(flagDelete){
+                listClientsToRemove.add(it.id)
+            }
+            else {
+                flagDelete = true
+            }
+        }
+
+        listClientsToRemove.forEach{
+            team!!.removePlayer(team!!.getPlayerById(it))
+        }
+    }
+
 
     /**
      * deleteLobby
@@ -289,7 +345,7 @@ class GameController : ViewModel() {
                             }
                         }
                     }
-                state.postValue(State.UPDATE_VIEW)
+                //state.postValue(State.UPDATE_VIEW)
             }
         }
     }
@@ -441,7 +497,30 @@ class GameController : ViewModel() {
         state.postValue(State.START)
     }
 
+    fun serverExitLobby(){
+        state.postValue(State.END_LOBBY)
+        Log.i("serverExitLobby", "state: ${state.value} ")
+    }
 
+    fun clientExitLobby(){
+
+
+        synchronized(team!!) {
+            player.oS.run{
+                thread {
+                    try {
+                        val printStream = PrintStream(this)
+                        Log.i("sendLocationToServer", "${player.id} !exit")
+                        printStream.println(player.id.toString() + " " + "!exit")
+                        printStream.flush()
+                    } catch (_: Exception) {
+                        //stopGame()
+                    }
+                }
+            }
+        }
+        state.postValue(State.PLAYER_LEFT)
+    }
 
     fun playerExists(): Boolean {
         return this::player.isInitialized

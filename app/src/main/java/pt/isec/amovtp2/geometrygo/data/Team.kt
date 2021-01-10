@@ -97,4 +97,10 @@ class Team(internal var teamName: String): ViewModel() {
         return false
     }
 
+    fun removePlayer(player : Player?) : Boolean{
+        if(player == null)
+            return false
+        return players.remove(player)
+    }
+
 }
