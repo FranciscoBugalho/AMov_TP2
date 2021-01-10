@@ -77,7 +77,7 @@ class GameController : ViewModel() {
      * Server receives the data of a client.
      */
     private fun receiveMessagesFromClients(socket: Socket) {
-        val tempPlayer  = Player()
+        val tempPlayer = Player()
         tempPlayer.socket = socket
 
         tempPlayer.threadCreateTeam = thread {
@@ -96,16 +96,20 @@ class GameController : ViewModel() {
                         state.postValue(State.READY_TO_PLAY)
                     Log.i("receiveMessagesFromCli:", "newPlayerInfo: $newPlayerInfo")
 
-                    if(newPlayerInfo.split(" ")[1] == "!exit"){
-                        if(team!!.removePlayer(team!!.getPlayerById(newPlayerInfo.split(" ")[0].toInt()))){
-                            Log.i("receiveMessagesFromCli:", "client with the id ${newPlayerInfo.split(" ")[0].toInt()} ghosted")
+                    if (newPlayerInfo.split(" ")[1] == "!exit") {
+                        if (team!!.removePlayer(team!!.getPlayerById(newPlayerInfo.split(" ")[0].toInt()))) {
+                            Log.i(
+                                "receiveMessagesFromCli:",
+                                "client with the id ${newPlayerInfo.split(" ")[0].toInt()} ghosted"
+                            )
                             state.postValue(State.UPDATE_VIEW)
+                        } else {
+                            Log.e(
+                                "receiveMessagesFromCli:",
+                                "there's no client with the id ${newPlayerInfo.split(" ")[0].toInt()}"
+                            )
                         }
-                        else{
-                            Log.e("receiveMessagesFromCli:", "there's no client with the id ${newPlayerInfo.split(" ")[0].toInt()}")
-                        }
-                    }
-                    else{
+                    } else {
                         handlePlayerData(newPlayerInfo, tempPlayer)
                     }
 
@@ -192,19 +196,23 @@ class GameController : ViewModel() {
                 while (state.value != State.START) {
                     val newPlayersInfo = iS.readLine()
 
-                    val teamName = newPlayersInfo.split(" ")[0]
-                    if (teamName != "")
-                        team!!.teamName = teamName
 
-                    //TODO: qq coisa com o status I guess
-                    val status = newPlayersInfo.split(" ")[1]
-                    val nrPlayers = newPlayersInfo.split(" ")[2].toInt()
+                    if(newPlayersInfo.split(" ")[1] == "endState"){
+                        state.postValue(State.END_LOBBY)
+                    }
+                    else{
+                        val teamName = newPlayersInfo.split(" ")[0]
+                        if (teamName != "")
+                            team!!.teamName = teamName
 
-                    // TODO: TROCAR ISTO PELO STATUS e chamar setStateAsStart()
-                    //if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
-                      //  state.postValue(State.START)
+                        val nrPlayers = newPlayersInfo.split(" ")[2].toInt()
 
-                    handlePlayersInfo(nrPlayers, newPlayersInfo)
+                        // TODO: TROCAR ISTO PELO STATUS e chamar setStateAsStart()
+                        //if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
+                        //  state.postValue(State.START)
+
+                        handlePlayersInfo(nrPlayers, newPlayersInfo)
+                    }
                 }
             } catch (e: Exception) {
                 Log.i("receiveDataFromServer", "e: $e ")
@@ -220,7 +228,7 @@ class GameController : ViewModel() {
 
         val listIds = arrayListOf<Int>() //ids that came from server
 
-        for (i in 3 until nrPlayers*3 + 3 step 3) {
+        for (i in 3 until nrPlayers * 3 + 3 step 3) {
 
             val id = newPlayersInfo.split(" ")[i].toInt()
             listIds.add(id)
@@ -282,19 +290,19 @@ class GameController : ViewModel() {
      * Removes clients not received from server from the lobby
      */
     private fun removeClientsThatLeftLobby(listIds: ArrayList<Int>) {
-        val listClientsToRemove = arrayListOf<Int>() //ids that are in the player's storage data but were not received from the server
+        val listClientsToRemove =
+            arrayListOf<Int>() //ids that are in the player's storage data but were not received from the server
         var flagDelete = true
 
-        team!!.getPlayers().forEach{
+        team!!.getPlayers().forEach {
             listIds.forEach { iterator ->
-                if(it.id == iterator)
+                if (it.id == iterator)
                     flagDelete = false
             }
 
-            if(flagDelete){
+            if (flagDelete) {
                 listClientsToRemove.add(it.id)
-            }
-            else {
+            } else {
                 flagDelete = true
             }
         }
@@ -309,7 +317,6 @@ class GameController : ViewModel() {
             }
         }
     }
-
 
     /**
      * deleteLobby
@@ -340,7 +347,7 @@ class GameController : ViewModel() {
 
         synchronized(team!!) {
             team?.getPlayers()?.forEach {
-                if(it.id != player.id)
+                if (it.id != player.id)
                     it.oS?.run {
                         thread {
                             try {
@@ -369,7 +376,7 @@ class GameController : ViewModel() {
         }
         message += " " + team?.getPlayers()!!.size.toString() + " "
         team?.getPlayers()?.forEach { iterator ->
-            if(iterator.id == -1) {
+            if (iterator.id == -1) {
                 if (team!!.isLastPlayer(iterator.id))
                     message += " "
             } else {
@@ -410,7 +417,7 @@ class GameController : ViewModel() {
         player.longitude = longitude
 
         synchronized(team!!) {
-            player.oS.run{
+            player.oS.run {
                 thread {
                     try {
                         val printStream = PrintStream(this)
@@ -509,20 +516,36 @@ class GameController : ViewModel() {
         state.postValue(State.START)
     }
 
-    fun serverExitLobby(){
+    fun serverExitLobby() {
         state.postValue(State.END_LOBBY)
-        Log.i("serverExitLobby", "state: ${state.value} ")
-    }
-
-    fun clientExitLobby(){
-
 
         synchronized(team!!) {
-            player.oS.run{
+            team?.getPlayers()?.forEach {
+                if (it.id != player.id)
+                    it.oS?.run {
+                        thread {
+                            try {
+                                val printStream = PrintStream(this)
+                                Log.i("serverExitLobby", team!!.teamName + " endState 0")
+                                printStream.println(team!!.teamName + " endState 0")
+                                printStream.flush()
+                            } catch (_: Exception) {
+                                //stopGame()
+                            }
+                        }
+                    }
+                //state.postValue(State.UPDATE_VIEW)
+            }
+        }
+    }
+
+    fun clientExitLobby() {
+
+        synchronized(team!!) {
+            player.oS.run {
                 thread {
                     try {
                         val printStream = PrintStream(this)
-                        Log.i("sendLocationToServer", "${player.id} !exit")
                         printStream.println(player.id.toString() + " " + "!exit")
                         printStream.flush()
                     } catch (_: Exception) {
