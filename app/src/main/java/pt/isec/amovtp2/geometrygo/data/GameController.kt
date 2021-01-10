@@ -1,6 +1,5 @@
 package pt.isec.amovtp2.geometrygo.data
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.io.PrintStream
@@ -19,8 +18,8 @@ class GameController : ViewModel() {
 
     /**
      * startAsServer
-     * Server initialization
-     * Starts the threat that receives messages
+     * Server initialization.
+     * Starts the threat that receives messages.
      */
     fun startAsServer(latitude: Double, longitude: Double) {
         player = Player(1, latitude, longitude)
@@ -46,8 +45,8 @@ class GameController : ViewModel() {
 
     /**
      * startAsClient
-     * Client initialization
-     * First communication to server
+     * Client initialization.
+     * First communication to server.
      */
     fun startAsClient(
         serverIP: String,
@@ -72,7 +71,7 @@ class GameController : ViewModel() {
 
     /**
      * receiveMessagesFromClients
-     * Server receives the data of a client
+     * Server receives the data of a client.
      */
     private fun receiveMessagesFromClients(socket: Socket) {
         player.socket = socket
@@ -88,6 +87,7 @@ class GameController : ViewModel() {
 
                     val newPlayerInfo = iS.readLine()
 
+                    // TODO: MUDAR ISTO DAQUI
                     if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
                         state.postValue(State.READY_TO_PLAY)
 
@@ -150,7 +150,7 @@ class GameController : ViewModel() {
 
     /**
      * receiveDataFromServer
-     * Client receives the data of the team from the server
+     * Client receives the data of the team from the server.
      */
     private fun receiveDataFromServer() {
         player.threadCreateTeam = thread {
@@ -164,9 +164,6 @@ class GameController : ViewModel() {
 
                     val newPlayersInfo = iS.readLine()
 
-                    if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
-                        state.postValue(State.START)
-
                     val teamName = newPlayersInfo.split(" ")[0]
                     if (teamName != "")
                         team!!.teamName = teamName
@@ -174,6 +171,10 @@ class GameController : ViewModel() {
                     //TODO: qq coisa com o status I guess
                     val status = newPlayersInfo.split(" ")[1]
                     val nrPlayers = newPlayersInfo.split(" ")[2].toInt()
+
+                    // TODO: TROCAR ISTO PELO STATUS e chamar setStateAsStart()
+                    if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
+                        state.postValue(State.START)
 
                     handlePlayersInfo(nrPlayers, newPlayersInfo)
                 }
@@ -255,7 +256,7 @@ class GameController : ViewModel() {
 
     /**
      * sendLocationToTeam
-     * Server sends the data from each player to the others
+     * Server sends the data from each player to the others.
      */
     fun sendLocationToTeam(latitude: Double, longitude: Double) {
         if (team == null) return
@@ -320,7 +321,7 @@ class GameController : ViewModel() {
 
     /**
      * sendLocationToServer
-     * Client send it's data to the server
+     * Client send it's data to the server.
      */
     fun sendLocationToServer(latitude: Double, longitude: Double) {
         if (team == null) return
@@ -346,7 +347,7 @@ class GameController : ViewModel() {
 
     /**
      * createTeam
-     * Initializes team with a name
+     * Initializes team with a name.
      */
     fun createTeam(teamName: String) {
         team = Team(teamName)
@@ -354,7 +355,7 @@ class GameController : ViewModel() {
 
     /**
      * createEmptyTeamName
-     * Initializes team without a name
+     * Initializes team without a name.
      */
     private fun createEmptyTeamName() {
         team = Team("")
@@ -421,8 +422,8 @@ class GameController : ViewModel() {
             team!!.latitude = player.latitude
             team!!.longitude = player.longitude
         } else {
-            team!!.latitude = team!!.getPlayers()[0].latitude
-            team!!.longitude = team!!.getPlayers()[0].longitude
+            team!!.latitude = team!!.getPlayerById(1)!!.latitude
+            team!!.longitude = team!!.getPlayerById(1)!!.longitude
         }
 
         state.postValue(State.START)
