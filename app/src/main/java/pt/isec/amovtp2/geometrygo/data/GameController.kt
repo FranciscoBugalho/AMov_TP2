@@ -29,15 +29,17 @@ class GameController : ViewModel() {
         if (player.serverSocket == null) {
             thread {
                 player.serverSocket = ServerSocket(DataConstants.SERVER_DEFAULT_PORT)
-                player.serverSocket.apply {
-                    try {
-                        state.postValue(State.NOT_ENOUGH_PLAYERS)
-                        receiveMessagesFromClients(player.serverSocket!!.accept())
-                    } catch (_: Exception) {
+                while (true) {
+                    player.serverSocket.apply {
+                        try {
+                            state.postValue(State.NOT_ENOUGH_PLAYERS)
+                            receiveMessagesFromClients(player.serverSocket!!.accept())
+                        } catch (_: Exception) {
 
-                    } finally {
-                        /*leader.serverSocket?.close()
+                        } finally {
+                            /*leader.serverSocket?.close()
                         leader.serverSocket = null*/
+                        }
                     }
                 }
             }
@@ -107,7 +109,6 @@ class GameController : ViewModel() {
                         handlePlayerData(newPlayerInfo, tempPlayer)
                     }
 
-
                     // Sort the players array.
                     team!!.getPlayers().sortBy { it.id }
                 }
@@ -131,7 +132,7 @@ class GameController : ViewModel() {
         val id = newPlayerInfo.split(" ")[0].toInt()
 
         if (id == -1) { // Received new player.
-            tempPlayer.id = team!!.getPlayers().size + 1
+            tempPlayer.id = team!!.getPlayers()[team!!.getSize() - 1].id + 1
             tempPlayer.latitude = newPlayerInfo.split(" ")[1].toDouble()
             tempPlayer.longitude = newPlayerInfo.split(" ")[2].toDouble()
             team!!.addPlayer(
@@ -228,7 +229,7 @@ class GameController : ViewModel() {
                 if (id == 1) { // If it's server.
                     if (!team!!.containsPlayerById(1)) {
                         team!!.addPlayer(
-                            team!!.getPlayers().size,
+                            id,
                             newPlayersInfo.split(" ")[1 + i].toDouble(),
                             newPlayersInfo.split(" ")[2 + i].toDouble()
                         )
@@ -258,7 +259,7 @@ class GameController : ViewModel() {
                             state.postValue(State.UPDATE_VIEW)
                         } else { // Player does not exists.
                             team!!.addPlayer(
-                                team!!.getPlayers().size,
+                                id,
                                 newPlayersInfo.split(" ")[1 + i].toDouble(),
                                 newPlayersInfo.split(" ")[2 + i].toDouble()
                             )
@@ -281,11 +282,11 @@ class GameController : ViewModel() {
      * Removes clients not received from server from the lobby
      */
     private fun removeClientsThatLeftLobby(listIds: ArrayList<Int>) {
-        var listClientsToRemove = arrayListOf<Int>() //ids that are in the player's storage data but were not received from the server
+        val listClientsToRemove = arrayListOf<Int>() //ids that are in the player's storage data but were not received from the server
         var flagDelete = true
 
         team!!.getPlayers().forEach{
-            listIds.forEach(){ iterator ->
+            listIds.forEach { iterator ->
                 if(it.id == iterator)
                     flagDelete = false
             }
@@ -298,8 +299,14 @@ class GameController : ViewModel() {
             }
         }
 
-        listClientsToRemove.forEach{
-            team!!.removePlayer(team!!.getPlayerById(it))
+        synchronized(team!!) {
+            listClientsToRemove.forEach {
+                if (team!!.removePlayer(team!!.getPlayerById(it))) {
+                    state.postValue(State.UPDATE_VIEW)
+                } else {
+                    Log.e("receiveMessagesFromCli:", "there's no client with the id $it")
+                }
+            }
         }
     }
 
@@ -362,10 +369,15 @@ class GameController : ViewModel() {
         }
         message += " " + team?.getPlayers()!!.size.toString() + " "
         team?.getPlayers()?.forEach { iterator ->
-            if(team!!.isLastPlayer(iterator.id))
-                message += iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}"
-            else
-                message += iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}" + " "
+            if(iterator.id == -1) {
+                if (team!!.isLastPlayer(iterator.id))
+                    message += " "
+            } else {
+                if (team!!.isLastPlayer(iterator.id))
+                    message += iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}"
+                else
+                    message += iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}" + " "
+            }
         }
 
         return message

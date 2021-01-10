@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.Button
@@ -223,6 +224,9 @@ class LobbyActivity : AppCompatActivity() {
 
         // Updates the LinearLayout with the players.
         for (i in 0 until game.getTeam().getPlayers().size) {
+
+            Log.i("updateView", "updateView: ${game.getTeam().getPlayers()[i].id}")
+
             // Creates a LinearLayout to add two TextViews.
             val newPlayerLayout = LinearLayout(this)
             var param = LinearLayout.LayoutParams(
