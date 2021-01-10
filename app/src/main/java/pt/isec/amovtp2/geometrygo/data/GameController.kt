@@ -1,5 +1,6 @@
 package pt.isec.amovtp2.geometrygo.data
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.io.PrintStream
@@ -74,14 +75,15 @@ class GameController : ViewModel() {
      * Server receives the data of a client.
      */
     private fun receiveMessagesFromClients(socket: Socket) {
-        player.socket = socket
+        val tempPlayer  = Player()
+        tempPlayer.socket = socket
 
-        player.threadCreateTeam = thread {
+        tempPlayer.threadCreateTeam = thread {
             try {
-                if (player.iS == null)
+                if (tempPlayer.iS == null)
                     return@thread
 
-                val iS = player.iS!!.bufferedReader()
+                val iS = tempPlayer.iS!!.bufferedReader()
 
                 while (state.value != State.START) {
 
@@ -98,10 +100,11 @@ class GameController : ViewModel() {
                     val id = newPlayerInfo.split(" ")[0].toInt()
 
                     if (id == -1) { // Received new player.
+                        tempPlayer.id = team!!.getPlayers().size + 1
+                        tempPlayer.latitude = newPlayerInfo.split(" ")[1].toDouble()
+                        tempPlayer.longitude = newPlayerInfo.split(" ")[2].toDouble()
                         team!!.addPlayer(
-                            team!!.getPlayers().size + 1, // Set id.
-                            newPlayerInfo.split(" ")[1].toDouble(),
-                            newPlayerInfo.split(" ")[2].toDouble()
+                            tempPlayer
                         )
 
                         state.postValue(State.NEW_PLAYER)
@@ -114,10 +117,11 @@ class GameController : ViewModel() {
                         } else {
                             "standbyState"
                         }
-                        message += " " + team?.getPlayers()!!.size.toString() + " "
-                        message += player.id.toString() + " " + player.latitude + " "  + player.longitude
+                        message += " " + "1" + " "
+                        message += tempPlayer.id.toString() + " " + tempPlayer.latitude + " "  + tempPlayer.longitude
 
-                        player.oS.run {
+
+                        tempPlayer.oS.run {
                             thread {
                                 try {
                                     val printStream = PrintStream(this)
@@ -148,6 +152,7 @@ class GameController : ViewModel() {
         }
     }
 
+
     /**
      * receiveDataFromServer
      * Client receives the data of the team from the server.
@@ -161,7 +166,6 @@ class GameController : ViewModel() {
                 val iS = player.iS!!.bufferedReader()
 
                 while (state.value != State.START) {
-
                     val newPlayersInfo = iS.readLine()
 
                     val teamName = newPlayersInfo.split(" ")[0]
@@ -173,13 +177,13 @@ class GameController : ViewModel() {
                     val nrPlayers = newPlayersInfo.split(" ")[2].toInt()
 
                     // TODO: TROCAR ISTO PELO STATUS e chamar setStateAsStart()
-                    if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
-                        state.postValue(State.START)
+                    //if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
+                      //  state.postValue(State.START)
 
                     handlePlayersInfo(nrPlayers, newPlayersInfo)
                 }
-            } catch (_: Exception) {
-                //deleteLobby()
+            } catch (e: Exception) {
+                Log.i("receiveDataFromServer", "e: $e ")
             }
         }
     }
@@ -189,7 +193,9 @@ class GameController : ViewModel() {
      * Handles the data of each player received from the server
      */
     private fun handlePlayersInfo(nrPlayers: Int, newPlayersInfo: String) {
-        for (i in 3..nrPlayers + 3) {
+
+        for (i in 3 until nrPlayers*3 + 3 step 3) {
+
             val id = newPlayersInfo.split(" ")[i].toInt()
 
             if (id != -1) {
@@ -200,6 +206,9 @@ class GameController : ViewModel() {
                             newPlayersInfo.split(" ")[1 + i].toDouble(),
                             newPlayersInfo.split(" ")[2 + i].toDouble()
                         )
+                        // Sort the players array.
+                        team!!.getPlayers().sortBy { it.id }
+
                         state.postValue(State.NEW_PLAYER)
                     } else {
                         team!!.updatePlayerLocation(
@@ -227,6 +236,9 @@ class GameController : ViewModel() {
                                 newPlayersInfo.split(" ")[1 + i].toDouble(),
                                 newPlayersInfo.split(" ")[2 + i].toDouble()
                             )
+                            // Sort the players array.
+                            team!!.getPlayers().sortBy { it.id }
+
                             state.postValue(State.NEW_PLAYER)
                         }
                     }
@@ -234,9 +246,6 @@ class GameController : ViewModel() {
             } else
                 state.postValue(State.UPDATE_VIEW)
         }
-
-        // Sort the players array.
-        team!!.getPlayers().sortBy { it.id }
     }
 
     /**
@@ -268,8 +277,8 @@ class GameController : ViewModel() {
 
         synchronized(team!!) {
             team?.getPlayers()?.forEach {
-                if (it.id != player.id) { // Don't send to myself.
-                    player.oS?.run {
+                if(it.id != player.id)
+                    it.oS?.run {
                         thread {
                             try {
                                 val printStream = PrintStream(this)
@@ -280,7 +289,6 @@ class GameController : ViewModel() {
                             }
                         }
                     }
-                }
                 state.postValue(State.UPDATE_VIEW)
             }
         }
@@ -298,8 +306,12 @@ class GameController : ViewModel() {
         }
         message += " " + team?.getPlayers()!!.size.toString() + " "
         team?.getPlayers()?.forEach { iterator ->
-            message += iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}" + " "
+            if(team!!.isLastPlayer(iterator.id))
+                message += iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}"
+            else
+                message += iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}" + " "
         }
+
         return message
     }
 
@@ -428,6 +440,8 @@ class GameController : ViewModel() {
 
         state.postValue(State.START)
     }
+
+
 
     fun playerExists(): Boolean {
         return this::player.isInitialized

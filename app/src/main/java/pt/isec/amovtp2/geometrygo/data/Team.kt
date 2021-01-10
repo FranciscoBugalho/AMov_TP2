@@ -90,4 +90,11 @@ class Team(internal var teamName: String): ViewModel() {
         return true
     }
 
+
+    fun isLastPlayer(id: Int) : Boolean{
+        if(id == players[players.size - 1].id)
+            return true
+        return false
+    }
+
 }
