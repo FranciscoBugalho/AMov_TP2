@@ -3,6 +3,10 @@ package pt.isec.amovtp2.geometrygo.data
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.maps.model.LatLng
+import pt.isec.amovtp2.geometrygo.data.constants.DataConstants
+import pt.isec.amovtp2.geometrygo.data.constants.ErrorConstants
+import pt.isec.amovtp2.geometrygo.data.constants.MessagesStatusConstants
 import java.io.PrintStream
 import java.net.ServerSocket
 import java.net.Socket
@@ -582,4 +586,7 @@ class GameController : ViewModel() {
         return this::player.isInitialized
     }
 
+    fun getPlayerPosition(playerId: Int) : LatLng? {
+        return team!!.getPlayerPosition(playerId)
+    }
 }

@@ -1,4 +1,4 @@
-package pt.isec.amovtp2.geometrygo.data
+package pt.isec.amovtp2.geometrygo.data.constants
 
 object ErrorConstants {
     // Error tag for the function receiveMessagesFromCli().

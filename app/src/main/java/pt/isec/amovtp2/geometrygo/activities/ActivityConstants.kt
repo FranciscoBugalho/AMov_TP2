@@ -6,4 +6,7 @@ object ActivityConstants {
 
     // Request Code for the location.
     const val REQUEST_CODE_LOCATION = 25
+
+    // Polygon tag
+    const val POLYGON_TAG = "polygon"
 }

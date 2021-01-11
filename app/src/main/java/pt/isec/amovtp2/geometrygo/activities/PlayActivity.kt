@@ -4,19 +4,21 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.*
 import pt.isec.amovtp2.geometrygo.R
-import pt.isec.amovtp2.geometrygo.data.GameController
+import pt.isec.amovtp2.geometrygo.data.Game.game
 
-class PlayActivity : AppCompatActivity()/*, OnMapReadyCallback*/ {
-
-    private val game: GameController by viewModels()
+class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
 
     // Fused Location Provider.
     private lateinit var fLoc: FusedLocationProviderClient
@@ -41,7 +43,11 @@ class PlayActivity : AppCompatActivity()/*, OnMapReadyCallback*/ {
                 longitude = it.longitude
 
                 if (latitude != null && longitude != null) {
-                    game.sendLocationToTeam(latitude!!, longitude!!)
+                    if (isServer)
+                        game.sendLocationToTeam(latitude!!, longitude!!)
+                    else
+                        game.sendLocationToServer(latitude!!, longitude!!)
+
                 }
             }
         }
@@ -58,16 +64,14 @@ class PlayActivity : AppCompatActivity()/*, OnMapReadyCallback*/ {
         isServer = intent.getBooleanExtra(ActivityConstants.IS_SERVER, false)
         if (isServer) {
             setContentView(R.layout.activity_play)
-
         } else {
             setContentView(R.layout.activity_play_client)
         }
 
-        //(supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment)?.getMapAsync(this)
+        (supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment)?.getMapAsync(this)
 
     }
 
-    /*
     @SuppressLint("MissingPermission")
     override fun onMapReady(map: GoogleMap?) {
         map ?: return
@@ -86,10 +90,43 @@ class PlayActivity : AppCompatActivity()/*, OnMapReadyCallback*/ {
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cp))
 
         val mo = MarkerOptions().position(LatLng(game.getTeam().latitude!!, game.getTeam().longitude!!))
-        val isec = map.addMarker(mo)
-        isec.showInfoWindow()
+            .title(getString(R.string.ap_player_1_start_point))
+        val startPoint = map.addMarker(mo)
+        startPoint.showInfoWindow()
+
+        val polygonOptions = PolygonOptions()
+        // Add players positions
+        for (i in 0 until game.getTeam().getPlayers().size) {
+            val position = game.getPlayerPosition(game.getPlayerId(i))
+            if (position != null) {
+                polygonOptions.add(position)
+            }
+        }
+        // Add again the first player position to close the polygon
+        /*val position = game.getPlayerPosition(1)
+        if (position != null)
+            polygonOptions.add(position)*/
+
+        val polygon = map.addPolygon(polygonOptions)
+        polygon.tag = ActivityConstants.POLYGON_TAG
+
+        stylePolygon(polygon)
     }
-     */
+
+    private fun stylePolygon(polygon: Polygon) {
+        val POLYGON_STROKE_WIDTH_PX = 8
+        val COLOR_BLUE_ARGB = -0x657db
+
+
+        // Get the data object stored with the polygon.
+        val type = polygon.tag?.toString() ?: ""
+        val strokeColor = COLOR_BLUE_ARGB
+
+        if (type == ActivityConstants.POLYGON_TAG) {
+            polygon.strokeWidth = POLYGON_STROKE_WIDTH_PX.toFloat()
+            polygon.strokeColor = strokeColor
+        }
+    }
 
     override fun onResume() {
         super.onResume()

@@ -1,6 +1,8 @@
 package pt.isec.amovtp2.geometrygo.data
 
 import android.location.Location
+import com.google.android.gms.maps.model.LatLng
+import pt.isec.amovtp2.geometrygo.data.constants.DataConstants
 
 class Team(internal var teamName: String) {
 
@@ -100,6 +102,14 @@ class Team(internal var teamName: String) {
         if(player == null)
             return false
         return players.remove(player)
+    }
+
+    fun getPlayerPosition(playerId: Int): LatLng? {
+        players.forEach {
+            if (it.id == playerId)
+                return LatLng(it.latitude, it.longitude)
+        }
+        return null
     }
 
 }

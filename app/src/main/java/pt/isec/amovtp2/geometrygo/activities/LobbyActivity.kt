@@ -24,15 +24,14 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import pt.isec.amovtp2.geometrygo.R
+import pt.isec.amovtp2.geometrygo.data.Game.game
 import pt.isec.amovtp2.geometrygo.data.GameController
-import pt.isec.amovtp2.geometrygo.data.MessagesStatusConstants
+import pt.isec.amovtp2.geometrygo.data.constants.MessagesStatusConstants
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogCreateLobby
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogJoinLobby
 
 // 192.168.1.70
 class LobbyActivity : AppCompatActivity() {
-    // Game controller.
-    private lateinit var game: GameController
 
     // Verifies if the lobby already started or not.
     private var lobbyStarted = false

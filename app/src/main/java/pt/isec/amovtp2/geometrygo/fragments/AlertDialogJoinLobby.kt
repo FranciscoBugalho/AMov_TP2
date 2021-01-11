@@ -7,7 +7,7 @@ import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import pt.isec.amovtp2.geometrygo.R
-import pt.isec.amovtp2.geometrygo.data.DataConstants
+import pt.isec.amovtp2.geometrygo.data.constants.DataConstants
 import pt.isec.amovtp2.geometrygo.data.GameController
 
 class AlertDialogJoinLobby(
