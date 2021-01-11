@@ -1,11 +1,11 @@
 package pt.isec.amovtp2.geometrygo.data
 
-import androidx.lifecycle.ViewModel
-import java.io.*
+import java.io.InputStream
+import java.io.OutputStream
 import java.net.ServerSocket
 import java.net.Socket
 
-class Player() : ViewModel() {
+class Player() {
     internal var id : Int = 0
     internal var latitude : Double = 0.0
     internal var longitude : Double = 0.0

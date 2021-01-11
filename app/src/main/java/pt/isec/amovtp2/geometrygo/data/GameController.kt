@@ -10,12 +10,21 @@ import kotlin.concurrent.thread
 
 class GameController : ViewModel() {
     enum class State {
-        STARTING_TEAM, NEW_PLAYER, PLAYER_LEFT, READY_TO_PLAY, NOT_ENOUGH_PLAYERS, END_LOBBY, START, UPDATE_VIEW
+        STARTING_TEAM, NEW_PLAYER, UPDATE_VIEW, NOT_ENOUGH_PLAYERS, PLAYER_LEFT, READY_TO_PLAY,
+        END_LOBBY, START, END_GAME
     }
 
+    // Actual player.
     private lateinit var player: Player
+
+    // Team will all the players.
     private var team: Team? = null
+
+    // Actual game state.
     val state = MutableLiveData(State.STARTING_TEAM)
+
+    // Checks if the game already started or not.
+    var gameStarted = false
 
     /**
      * startAsServer
@@ -29,6 +38,7 @@ class GameController : ViewModel() {
         if (player.serverSocket == null) {
             thread {
                 player.serverSocket = ServerSocket(DataConstants.SERVER_DEFAULT_PORT)
+                // TODO: while (player.serverSocket != null)
                 while (true) {
                     player.serverSocket.apply {
                         try {
@@ -38,7 +48,7 @@ class GameController : ViewModel() {
 
                         } finally {
                             /*leader.serverSocket?.close()
-                        leader.serverSocket = null*/
+                            leader.serverSocket = null*/
                         }
                     }
                 }
@@ -67,7 +77,7 @@ class GameController : ViewModel() {
                 team!!.addPlayer(player)
                 receiveDataFromServer()
             } catch (_: Exception) {
-                //Log.i("TAG", "startAsClient: ")
+
             }
         }
     }
@@ -87,26 +97,20 @@ class GameController : ViewModel() {
 
                 val iS = tempPlayer.iS!!.bufferedReader()
 
-                while (state.value != State.START) {
+                while (state.value != State.END_GAME) {
 
                     val newPlayerInfo = iS.readLine()
 
-                    // TODO: MUDAR ISTO DAQUI
-                    if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
-                        state.postValue(State.READY_TO_PLAY)
-                    Log.i("receiveMessagesFromCli:", "newPlayerInfo: $newPlayerInfo")
+                    if (!gameStarted)
+                        checkIfGameCanStart()
 
-                    if (newPlayerInfo.split(" ")[1] == "!exit") {
+                    if (newPlayerInfo.split(" ")[1] == MessagesStatusConstants.EXIT_MESSAGE) {
                         if (team!!.removePlayer(team!!.getPlayerById(newPlayerInfo.split(" ")[0].toInt()))) {
-                            Log.i(
-                                "receiveMessagesFromCli:",
-                                "client with the id ${newPlayerInfo.split(" ")[0].toInt()} ghosted"
-                            )
                             state.postValue(State.UPDATE_VIEW)
                         } else {
                             Log.e(
-                                "receiveMessagesFromCli:",
-                                "there's no client with the id ${newPlayerInfo.split(" ")[0].toInt()}"
+                                ErrorConstants.RECEIVE_MESSAGE_FROM_CLIENT_TAG,
+                                "There's no client with the id ${newPlayerInfo.split(" ")[0].toInt()}"
                             )
                         }
                     } else {
@@ -139,23 +143,21 @@ class GameController : ViewModel() {
             tempPlayer.id = team!!.getPlayers()[team!!.getSize() - 1].id + 1
             tempPlayer.latitude = newPlayerInfo.split(" ")[1].toDouble()
             tempPlayer.longitude = newPlayerInfo.split(" ")[2].toDouble()
-            team!!.addPlayer(
-                tempPlayer
-            )
+
+            team!!.addPlayer(tempPlayer)
 
             state.postValue(State.NEW_PLAYER)
 
             var message = team!!.teamName + " "
             message += if (state.value == State.READY_TO_PLAY || state.value == State.START) {
-                "startState"
+                MessagesStatusConstants.START_STATE
             } else if (state.value == State.END_LOBBY) {
-                "endState"
+                MessagesStatusConstants.END_STATE
             } else {
-                "standbyState"
+                MessagesStatusConstants.STANDBY_STATE
             }
             message += " " + "1" + " "
             message += tempPlayer.id.toString() + " " + tempPlayer.latitude + " " + tempPlayer.longitude
-
 
             tempPlayer.oS.run {
                 thread {
@@ -193,40 +195,40 @@ class GameController : ViewModel() {
 
                 val iS = player.iS!!.bufferedReader()
 
-                while (state.value != State.START) {
+                while (state.value != State.END_GAME) {
                     val newPlayersInfo = iS.readLine()
 
+                    when {
+                        newPlayersInfo.split(" ")[1] == MessagesStatusConstants.END_STATE -> {
+                            state.postValue(State.END_LOBBY)
+                        }
+                        newPlayersInfo.split(" ")[1] == MessagesStatusConstants.START_STATE -> {
+                            setStateAsStart()
+                        }
+                        else -> {
+                            val teamName = newPlayersInfo.split(" ")[0]
+                            if (teamName != "")
+                                team!!.teamName = teamName
 
-                    if(newPlayersInfo.split(" ")[1] == "endState"){
-                        state.postValue(State.END_LOBBY)
-                    }
-                    else{
-                        val teamName = newPlayersInfo.split(" ")[0]
-                        if (teamName != "")
-                            team!!.teamName = teamName
+                            val nrPlayers = newPlayersInfo.split(" ")[2].toInt()
 
-                        val nrPlayers = newPlayersInfo.split(" ")[2].toInt()
-
-                        // TODO: TROCAR ISTO PELO STATUS e chamar setStateAsStart()
-                        //if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
-                        //  state.postValue(State.START)
-
-                        handlePlayersInfo(nrPlayers, newPlayersInfo)
+                            handlePlayersInfo(nrPlayers, newPlayersInfo)
+                        }
                     }
                 }
             } catch (e: Exception) {
-                Log.i("receiveDataFromServer", "e: $e ")
+                Log.e(ErrorConstants.RECEIVE_DATA_FROM_SERVER_TAG, "e: $e")
             }
         }
     }
 
     /**
      * handlePlayersInfo
-     * Handles the data of each player received from the server
+     * Handles the data of each player received from the server.
      */
     private fun handlePlayersInfo(nrPlayers: Int, newPlayersInfo: String) {
-
-        val listIds = arrayListOf<Int>() //ids that came from server
+        // Ids that came from server
+        val listIds = arrayListOf<Int>()
 
         for (i in 3 until nrPlayers * 3 + 3 step 3) {
 
@@ -287,11 +289,12 @@ class GameController : ViewModel() {
 
     /**
      * removeClientsThatLeftLobby
-     * Removes clients not received from server from the lobby
+     * Removes clients not received from server from the lobby.
      */
     private fun removeClientsThatLeftLobby(listIds: ArrayList<Int>) {
+        // Ids that are in the player's storage data but were not received from the server.
         val listClientsToRemove =
-            arrayListOf<Int>() //ids that are in the player's storage data but were not received from the server
+            arrayListOf<Int>()
         var flagDelete = true
 
         team!!.getPlayers().forEach {
@@ -312,7 +315,7 @@ class GameController : ViewModel() {
                 if (team!!.removePlayer(team!!.getPlayerById(it))) {
                     state.postValue(State.UPDATE_VIEW)
                 } else {
-                    Log.e("receiveMessagesFromCli:", "there's no client with the id $it")
+                    Log.e(ErrorConstants.REMOVE_CLIENTS_TAG, "There's no client with the id $it")
                 }
             }
         }
@@ -366,13 +369,12 @@ class GameController : ViewModel() {
 
     private fun createMessageForClients(): String {
         var message = team!!.teamName + " "
-        // Standby, Start, End
         message += if (state.value == State.READY_TO_PLAY || state.value == State.START) {
-            "startState"
+            MessagesStatusConstants.START_STATE
         } else if (state.value == State.END_LOBBY) {
-            "endState"
+            MessagesStatusConstants.END_STATE
         } else {
-            "standbyState"
+            MessagesStatusConstants.STANDBY_STATE
         }
         message += " " + team?.getPlayers()!!.size.toString() + " "
         team?.getPlayers()?.forEach { iterator ->
@@ -380,10 +382,10 @@ class GameController : ViewModel() {
                 if (team!!.isLastPlayer(iterator.id))
                     message += " "
             } else {
-                if (team!!.isLastPlayer(iterator.id))
-                    message += iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}"
+                message += if (team!!.isLastPlayer(iterator.id))
+                    iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}"
                 else
-                    message += iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}" + " "
+                    iterator.id.toString() + " " + "${iterator.latitude}" + " " + "${iterator.longitude}" + " "
             }
         }
 
@@ -396,7 +398,8 @@ class GameController : ViewModel() {
                 try {
                     val printStream = PrintStream(this)
                     printStream.println(
-                        player.id.toString() + " " + player.latitude.toString() + " " + player.longitude.toString() + " " + team!!.teamName
+                        player.id.toString() + " " + player.latitude.toString() + " "
+                                + player.longitude.toString() + " " + team!!.teamName
                     )
                     printStream.flush()
                 } catch (_: Exception) {
@@ -421,7 +424,10 @@ class GameController : ViewModel() {
                 thread {
                     try {
                         val printStream = PrintStream(this)
-                        printStream.println(player.id.toString() + " " + "$latitude $longitude ${team!!.teamName}")
+                        printStream.println(
+                            player.id.toString() + " "
+                                    + "$latitude $longitude ${team!!.teamName}"
+                        )
                         printStream.flush()
                     } catch (_: Exception) {
                         //stopGame()
@@ -430,6 +436,77 @@ class GameController : ViewModel() {
             }
         }
         state.postValue(State.UPDATE_VIEW)
+    }
+
+    fun serverChangeStatus(status: String) {
+        if (status == MessagesStatusConstants.END_STATE)
+            state.postValue(State.END_LOBBY)
+        else if (status == MessagesStatusConstants.START_STATE)
+            state.postValue(State.START)
+
+        synchronized(team!!) {
+            team?.getPlayers()?.forEach {
+                if (it.id != player.id)
+                    it.oS?.run {
+                        thread {
+                            try {
+                                val printStream = PrintStream(this)
+                                printStream.println(team!!.teamName + " " + status + " 0")
+                                printStream.flush()
+                            } catch (_: Exception) {
+                                //stopGame()
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
+    fun clientExitLobby() {
+        synchronized(team!!) {
+            player.oS.run {
+                thread {
+                    try {
+                        val printStream = PrintStream(this)
+                        printStream.println(
+                            player.id.toString()
+                                    + " " + MessagesStatusConstants.EXIT_MESSAGE
+                        )
+                        printStream.flush()
+                    } catch (_: Exception) {
+                        //stopGame()
+                    }
+                }
+            }
+        }
+        state.postValue(State.PLAYER_LEFT)
+    }
+
+    private fun checkIfGameCanStart() {
+        // TODO: MUDAR PARA A CONSTANTE 3
+        if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
+            state.postValue(State.READY_TO_PLAY)
+    }
+
+    /**
+     * setStateAsStart
+     */
+    private fun setStateAsStart() {
+        if (player.id == 1) {
+            team!!.latitude = player.latitude
+            team!!.longitude = player.longitude
+        } else {
+            team!!.latitude = team!!.getPlayerById(1)!!.latitude
+            team!!.longitude = team!!.getPlayerById(1)!!.longitude
+        }
+
+        state.postValue(State.START)
+        gameStarted = true
+    }
+
+    fun startGame() {
+        setStateAsStart()
+        serverChangeStatus(MessagesStatusConstants.START_STATE)
     }
 
     /**
@@ -499,62 +576,6 @@ class GameController : ViewModel() {
             "%.2f",
             team!!.getPlayers()[position].latitude
         ) + " \t " + String.format("%.2f", team!!.getPlayers()[position].longitude)
-    }
-
-    /**
-     * setStateAsStart
-     */
-    fun setStateAsStart() {
-        if (player.id == 1) {
-            team!!.latitude = player.latitude
-            team!!.longitude = player.longitude
-        } else {
-            team!!.latitude = team!!.getPlayerById(1)!!.latitude
-            team!!.longitude = team!!.getPlayerById(1)!!.longitude
-        }
-
-        state.postValue(State.START)
-    }
-
-    fun serverExitLobby() {
-        state.postValue(State.END_LOBBY)
-
-        synchronized(team!!) {
-            team?.getPlayers()?.forEach {
-                if (it.id != player.id)
-                    it.oS?.run {
-                        thread {
-                            try {
-                                val printStream = PrintStream(this)
-                                Log.i("serverExitLobby", team!!.teamName + " endState 0")
-                                printStream.println(team!!.teamName + " endState 0")
-                                printStream.flush()
-                            } catch (_: Exception) {
-                                //stopGame()
-                            }
-                        }
-                    }
-                //state.postValue(State.UPDATE_VIEW)
-            }
-        }
-    }
-
-    fun clientExitLobby() {
-
-        synchronized(team!!) {
-            player.oS.run {
-                thread {
-                    try {
-                        val printStream = PrintStream(this)
-                        printStream.println(player.id.toString() + " " + "!exit")
-                        printStream.flush()
-                    } catch (_: Exception) {
-                        //stopGame()
-                    }
-                }
-            }
-        }
-        state.postValue(State.PLAYER_LEFT)
     }
 
     fun playerExists(): Boolean {

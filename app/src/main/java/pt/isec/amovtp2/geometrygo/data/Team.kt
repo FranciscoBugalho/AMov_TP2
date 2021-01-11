@@ -1,9 +1,8 @@
 package pt.isec.amovtp2.geometrygo.data
 
 import android.location.Location
-import androidx.lifecycle.ViewModel
 
-class Team(internal var teamName: String): ViewModel() {
+class Team(internal var teamName: String) {
 
     // List of players.
     private var players = ArrayList<Player>()

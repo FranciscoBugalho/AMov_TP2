@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.net.wifi.WifiManager
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.Button
@@ -26,7 +25,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import pt.isec.amovtp2.geometrygo.R
 import pt.isec.amovtp2.geometrygo.data.GameController
-import pt.isec.amovtp2.geometrygo.data.Team
+import pt.isec.amovtp2.geometrygo.data.MessagesStatusConstants
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogCreateLobby
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogJoinLobby
 
@@ -105,14 +104,14 @@ class LobbyActivity : AppCompatActivity() {
         game = ViewModelProvider(this).get(GameController::class.java)
 
         // Define which view the user will see depending if he started the app on server mode or not.
-        isServer = intent.getBooleanExtra(IntentConstants.IS_SERVER, false)
+        isServer = intent.getBooleanExtra(ActivityConstants.IS_SERVER, false)
         if (isServer) {
             setContentView(R.layout.activity_lobby)
 
             btnStart = findViewById(R.id.btnStartGame)
             btnStart.isEnabled = false
             btnStart.setOnClickListener {
-                game.setStateAsStart()
+                game.startGame()
             }
 
             // Get server ip address.
@@ -157,6 +156,7 @@ class LobbyActivity : AppCompatActivity() {
                 GameController.State.END_LOBBY -> finish()
                 GameController.State.READY_TO_PLAY -> updateButton(true)
                 GameController.State.START -> play()
+                else -> updateView()
             }
         }
     }
@@ -165,13 +165,13 @@ class LobbyActivity : AppCompatActivity() {
         // Will change the activity and start the game.
         if (isServer) {
             Intent(this, PlayActivity::class.java)
-                .putExtra(IntentConstants.IS_SERVER, true)
+                .putExtra(ActivityConstants.IS_SERVER, true)
                 .also {
                     startActivity(it)
                 }
         } else {
             Intent(this, PlayActivity::class.java)
-                .putExtra(IntentConstants.IS_SERVER, false)
+                .putExtra(ActivityConstants.IS_SERVER, false)
                 .also {
                     startActivity(it)
                 }
@@ -187,10 +187,8 @@ class LobbyActivity : AppCompatActivity() {
 
             setPositiveButton(getString(R.string.ad_ql_btn_yes)) { dlg: DialogInterface, _: Int ->
                 if (isServer) {
-                    // TODO: CLOSE EVERY CLIENT AND LEAVE
-                    game.serverExitLobby()
+                    game.serverChangeStatus(MessagesStatusConstants.END_STATE)
                 } else {
-                    // TODO: LEAVE AND NOTIFY THE OTHERS
                     game.clientExitLobby()
                 }
                 dlg.dismiss()
@@ -224,9 +222,6 @@ class LobbyActivity : AppCompatActivity() {
 
         // Updates the LinearLayout with the players.
         for (i in 0 until game.getTeam().getPlayers().size) {
-
-            Log.i("updateView", "updateView: ${game.getTeam().getPlayers()[i].id}")
-
             // Creates a LinearLayout to add two TextViews.
             val newPlayerLayout = LinearLayout(this)
             var param = LinearLayout.LayoutParams(
@@ -324,7 +319,7 @@ class LobbyActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 25) {
+        if (requestCode == ActivityConstants.REQUEST_CODE_LOCATION) {
             startLocation(false)
         }
     }
@@ -350,7 +345,7 @@ class LobbyActivity : AppCompatActivity() {
                     this, arrayOf(
                         Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION,
-                    ), 25
+                    ), ActivityConstants.REQUEST_CODE_LOCATION
                 )
             else
                 finish()

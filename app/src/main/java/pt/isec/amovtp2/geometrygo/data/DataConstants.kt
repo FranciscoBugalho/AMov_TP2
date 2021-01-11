@@ -10,4 +10,5 @@ object DataConstants {
 
     // Distance from the players
     const val MAX_DISTANCE_BETWEEN_PLAYERS = 100
+
 }

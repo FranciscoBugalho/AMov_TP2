@@ -55,7 +55,7 @@ class PlayActivity : AppCompatActivity()/*, OnMapReadyCallback*/ {
         fLoc = FusedLocationProviderClient(this)
 
         // Define which view the user will see depending if he started the app on server mode or not.
-        isServer = intent.getBooleanExtra(IntentConstants.IS_SERVER, false)
+        isServer = intent.getBooleanExtra(ActivityConstants.IS_SERVER, false)
         if (isServer) {
             setContentView(R.layout.activity_play)
 
@@ -110,7 +110,7 @@ class PlayActivity : AppCompatActivity()/*, OnMapReadyCallback*/ {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 25) {
+        if (requestCode == ActivityConstants.REQUEST_CODE_LOCATION) {
             startLocation(false)
         }
     }
@@ -132,7 +132,7 @@ class PlayActivity : AppCompatActivity()/*, OnMapReadyCallback*/ {
                     this, arrayOf(
                         Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION,
-                    ), 25
+                    ), ActivityConstants.REQUEST_CODE_LOCATION
                 )
             else
                 finish()
