@@ -1,11 +1,14 @@
 package pt.isec.amovtp2.geometrygo.activities
 
+import android.Manifest
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import pt.isec.amovtp2.geometrygo.R
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogNoInternetConnection
@@ -57,6 +60,21 @@ class MainActivity : AppCompatActivity(), NetworkConnection.ConnectivityReceiver
             Intent(this, AboutActivity::class.java).also {
                 startActivity(it)
             }
+        }
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.RECEIVE_SMS
+            ) != PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.SEND_SMS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS),
+                1234
+            )
         }
     }
 

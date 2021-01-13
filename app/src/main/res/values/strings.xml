@@ -28,4 +28,7 @@
     <string name="ad_ql_quit_lobby">Are you sure that you want to quit the lobby?</string>
     <string name="ad_ql_close_lobby">Are you sure that you want to close the lobby?</string>
     <string name="ap_player_1_start_point">P1 Start Point</string>
+    <string name="insert_number">Insert Number</string>
+    <string name="send">send</string>
+    <string name="sms_id_token" translatable="false">GEOAPP_Automatic_MSG_6172839405 Requested join on IP:</string>
 </resources>

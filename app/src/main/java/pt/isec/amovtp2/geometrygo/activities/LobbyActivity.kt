@@ -10,6 +10,7 @@ import android.graphics.Typeface
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
@@ -27,6 +28,7 @@ import pt.isec.amovtp2.geometrygo.R
 import pt.isec.amovtp2.geometrygo.data.Game.game
 import pt.isec.amovtp2.geometrygo.data.GameController
 import pt.isec.amovtp2.geometrygo.data.constants.MessagesStatusConstants
+import pt.isec.amovtp2.geometrygo.fragments.AlertDialogChooseContact
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogCreateLobby
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogJoinLobby
 
@@ -96,6 +98,8 @@ class LobbyActivity : AppCompatActivity() {
     @SuppressLint("VisibleForTests")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
 
         // Initialize the Fused Location Provider.
         fLoc = FusedLocationProviderClient(this)
@@ -360,6 +364,11 @@ class LobbyActivity : AppCompatActivity() {
         }
         fLoc.requestLocationUpdates(locReq, locationCallback, null)
         locEnabled = true
+    }
+
+    fun sendMessage(view: View) {
+        val dialogSendSMS = AlertDialogChooseContact(findViewById<TextView>(R.id.tvIpAddress).text.toString())
+        dialogSendSMS.presentDialog(supportFragmentManager)
     }
 
 }
