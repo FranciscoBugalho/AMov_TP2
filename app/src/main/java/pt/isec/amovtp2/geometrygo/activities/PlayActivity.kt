@@ -4,8 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -21,7 +19,6 @@ import com.google.common.collect.Lists
 import pt.isec.amovtp2.geometrygo.R
 import pt.isec.amovtp2.geometrygo.data.Game.game
 import pt.isec.amovtp2.geometrygo.data.GameController
-import java.util.concurrent.CopyOnWriteArrayList
 
 class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -99,8 +96,17 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
         for (i in 0 until game.getTeam().getPlayers().size) {
             if (game.getPlayerId() != game.getTeam().getPlayers()[i].id) {
                 val mo = MarkerOptions()
-                    .position(LatLng(game.getTeam().getPlayers()[i].latitude, game.getTeam().getPlayers()[i].longitude))
-                    .title(getString(R.string.play_activity_player_first_letter) + game.getPlayerId(i))
+                    .position(
+                        LatLng(
+                            game.getTeam().getPlayers()[i].latitude,
+                            game.getTeam().getPlayers()[i].longitude
+                        )
+                    )
+                    .title(
+                        getString(R.string.play_activity_player_first_letter) + game.getPlayerId(
+                            i
+                        )
+                    )
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
 
                 val marker = map.addMarker(mo)
@@ -117,7 +123,7 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
         map = googleMap
 
         // Define map settings
-        if(locEnabled)
+        if (locEnabled)
             map.isMyLocationEnabled = true
         map.mapType = GoogleMap.MAP_TYPE_HYBRID
         map.uiSettings.isCompassEnabled = true
@@ -125,13 +131,15 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
         map.uiSettings.isZoomGesturesEnabled = true
 
 
-        val cp = CameraPosition.Builder().target(LatLng(game.getPlayer().latitude, game.getPlayer().longitude)).zoom(17f)
+        val cp = CameraPosition.Builder()
+            .target(LatLng(game.getPlayer().latitude, game.getPlayer().longitude)).zoom(17f)
             .bearing(0f).tilt(0f).build()
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cp))
 
         // Set a market on the player 1 start point
-        val mo = MarkerOptions().position(LatLng(game.getTeam().latitude!!, game.getTeam().longitude!!))
-            .title(getString(R.string.ap_player_1_start_point))
+        val mo =
+            MarkerOptions().position(LatLng(game.getTeam().latitude!!, game.getTeam().longitude!!))
+                .title(getString(R.string.ap_player_1_start_point))
         val startPoint = map.addMarker(mo)
         startPoint.showInfoWindow()
 
@@ -139,7 +147,7 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun drawPolygon() {
-        if(!this::map.isInitialized) return
+        if (!this::map.isInitialized) return
 
         if (this::polygon.isInitialized)
             polygon.remove()
@@ -224,9 +232,7 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val locReq = LocationRequest().apply {
             interval = 15000
-            //fastestInterval = 2000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            //maxWaitTime = 10000
         }
         fLoc.requestLocationUpdates(locReq, locationCallback, null)
         locEnabled = true

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/ll_background_color"
+    android:orientation="vertical"
     android:padding="@dimen/al_ll_global_padding"
     tools:context=".activities.LobbyActivity">
 
@@ -34,11 +34,11 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="@dimen/al_cl_players_padding"
         android:layout_marginTop="@dimen/al_ll_players_margin_top"
         android:layout_marginBottom="@dimen/al_ll_players_margin_bottom"
         android:layout_weight="2"
-        android:background="@drawable/linear_layout_background">
+        android:background="@drawable/linear_layout_background"
+        android:padding="@dimen/al_cl_players_padding">
 
         <!-- TextView to represent the players information. -->
         <TextView
@@ -88,7 +88,7 @@
         android:orientation="horizontal">
 
         <!-- LinearLayout to display the ip address and an ImageView
-         to send the server ip address to others by message. -->
+         to ad_cc_btn_send the server ip address to others by message. -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clIpAndSMSLogo"
             android:layout_width="0dp"
@@ -116,6 +116,7 @@
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:onClick="sendMessage"
                 android:scaleType="fitStart"
                 android:src="@drawable/sms_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -124,8 +125,7 @@
                 app:layout_constraintStart_toEndOf="@+id/tvIpAddress"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
-                tools:ignore="ContentDescription"
-                android:onClick="sendMessage"/>
+                tools:ignore="ContentDescription" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

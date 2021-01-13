@@ -11,7 +11,7 @@ object DataConstants {
     // Max distance between all players in the lobby.
     const val MAX_DISTANCE_BETWEEN_PLAYERS = 100
 
-    // Wait time to send data to the database, in milliseconds (30 seconds).
+    // Wait time to ad_cc_btn_send data to the database, in milliseconds (30 seconds).
     const val DELAY_BETWEEN_SENDING_DATA = 30000
 
     // Max time without sending information to the database, in minutes.

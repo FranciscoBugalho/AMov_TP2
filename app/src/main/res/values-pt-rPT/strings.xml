@@ -29,7 +29,11 @@
     <string name="ad_ql_quit_lobby">Tem a certeza que quer fechar o lobby?</string>
     <string name="ad_ql_close_lobby">Tem a certeza que quer sair do lobby?</string>
     <string name="ap_player_1_start_point">J1 Ponto Inicial</string>
-    <string name="send">Enviar</string>
-    <string name="insert_number">Insira Número</string>
+    <string name="ad_cc_btn_send">Enviar</string>
+    <string name="ad_cc_insert_number">Insira Número</string>
     <string name="play_activity_player_first_letter">J</string>
+    <string name="ad_cc_insert_a_valid_phone_number_error">Tem de inserir um número de telemóvel válido!</string>
+    <string name="ad_cc_btn_cancel">Cancelar</string>
+    <string name="sms_response_thanks_for_the_ip">Obrigado pelo ip!</string>
+    <string name="sms_received_text">SMS recebido.</string>
 </resources>

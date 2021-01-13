@@ -40,7 +40,7 @@ class AlertDialogCreateLobby(
                 editText.error = getString(R.string.ad_cl_et_empty_error)
                 return@setOnClickListener
             } else {
-                if(latitude != null && longitude != null) {
+                if (latitude != null && longitude != null) {
                     game.createTeam(editText.text.toString())
                     tvTeamName.text = game.getTeamName()
                     game.startAsServer(latitude!!, longitude!!)

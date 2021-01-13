@@ -2,19 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/red_warnings"
-    android:elevation="@dimen/ad_nic_ll_elevation" >
+    android:elevation="@dimen/ad_nic_ll_elevation"
+    android:orientation="vertical">
 
     <!-- TextView to display the information/error. -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="@dimen/ad_nic_tv_padding"
         android:text="@string/ad_no_internet_connection"
         android:textColor="@color/white"
-        android:textSize="@dimen/ad_nic_tv_text_size"
-        android:gravity="center"
-        android:padding="@dimen/ad_nic_tv_padding" />
+        android:textSize="@dimen/ad_nic_tv_text_size" />
 
 </LinearLayout>

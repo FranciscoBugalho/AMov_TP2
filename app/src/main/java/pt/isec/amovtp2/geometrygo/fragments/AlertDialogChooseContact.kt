@@ -11,12 +11,10 @@ import androidx.fragment.app.FragmentManager
 import pt.isec.amovtp2.geometrygo.R
 
 class AlertDialogChooseContact(private val ipAddress: String) : DialogFragment() {
-
-    //val SMS_WITH__SERVER_IP = getString(R.string.sms_id_token) + ipAddress;
-    // EditText where the user will insert the server ip.
+    // EditText where the user will insert the phone number.
     private lateinit var editTextDestinationNumber: EditText
 
-    // Button connect.
+    // Button ad_cc_btn_send message.
     private lateinit var btnSendSMS: Button
 
     // Button cancel.
@@ -30,21 +28,29 @@ class AlertDialogChooseContact(private val ipAddress: String) : DialogFragment()
         val view = inflater.inflate(R.layout.alert_dialog_choose_contact, container, false)
 
         editTextDestinationNumber = view.findViewById(R.id.etSMSDestination)
+
         btnSendSMS = view.findViewById(R.id.btnSendSMS)
         btnSendSMS.setOnClickListener {
-            if ( !isGlobalPhoneNumber(editTextDestinationNumber.text.toString()) ||
-                editTextDestinationNumber.text.isEmpty() ) {
-                editTextDestinationNumber.error = "insert a valid phone number"
+            if (!isGlobalPhoneNumber(editTextDestinationNumber.text.toString()) ||
+                editTextDestinationNumber.text.isEmpty()
+            ) {
+                editTextDestinationNumber.error =
+                    getString(R.string.ad_cc_insert_a_valid_phone_number_error)
                 return@setOnClickListener
             } else {
                 val resp: SmsManager = SmsManager.getDefault()
-                //todo substituir origin pelo ip e um nome fixo definifo hardcoded 6172839405 GeoAppIp ip
-                resp.sendTextMessage(editTextDestinationNumber.text.toString(), null,getString(R.string.sms_id_token) + ipAddress, null, null)
+                resp.sendTextMessage(
+                    editTextDestinationNumber.text.toString(),
+                    null,
+                    getString(R.string.sms_id_token) + ipAddress,
+                    null,
+                    null
+                )
                 dialog?.dismiss()
             }
         }
 
-        // If the button cancel is clicked goes to the main menu
+        // If the button cancel is clicked cancel the dialog.
         btnCancel = view.findViewById(R.id.btnCancel)
         btnCancel.setOnClickListener {
             dialog?.dismiss()

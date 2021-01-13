@@ -61,25 +61,12 @@ class MainActivity : AppCompatActivity(), NetworkConnection.ConnectivityReceiver
                 startActivity(it)
             }
         }
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.RECEIVE_SMS
-            ) != PackageManager.PERMISSION_GRANTED ||
-            ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.SEND_SMS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS),
-                1234
-            )
-        }
     }
 
     override fun onResume() {
         super.onResume()
+        askPermissionsForMessages(true)
+
         // Register the service.
         registerReceiver(networkConnection, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
@@ -123,4 +110,39 @@ class MainActivity : AppCompatActivity(), NetworkConnection.ConnectivityReceiver
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == ActivityConstants.REQUEST_CODE_MESSAGES) {
+            askPermissionsForMessages(false)
+        }
+    }
+
+    private fun askPermissionsForMessages(askPerm: Boolean) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.RECEIVE_SMS
+            ) != PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.SEND_SMS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            // Ask the permissions to send and receive messages.
+            if (askPerm)
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS),
+                    ActivityConstants.REQUEST_CODE_MESSAGES
+                )
+            else
+                finish()
+
+            return
+        }
+    }
 }

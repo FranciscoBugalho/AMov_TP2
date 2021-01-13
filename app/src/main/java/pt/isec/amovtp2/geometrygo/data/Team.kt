@@ -1,12 +1,9 @@
 package pt.isec.amovtp2.geometrygo.data
 
 import android.location.Location
-import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import pt.isec.amovtp2.geometrygo.data.constants.DataConstants
-import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.TimeUnit
 
 class Team(internal var teamName: String) {
 
@@ -39,7 +36,7 @@ class Team(internal var teamName: String) {
         return players
     }
 
-    fun getPlayerById(id: Int) : Player?{
+    fun getPlayerById(id: Int): Player? {
         players.forEach {
             if (it.id == id)
                 return it
@@ -96,14 +93,14 @@ class Team(internal var teamName: String) {
     }
 
 
-    fun isLastPlayer(id: Int) : Boolean{
-        if(id == players[players.size - 1].id)
+    fun isLastPlayer(id: Int): Boolean {
+        if (id == players[players.size - 1].id)
             return true
         return false
     }
 
-    fun removePlayer(player : Player?) : Boolean{
-        if(player == null)
+    fun removePlayer(player: Player?): Boolean {
+        if (player == null)
             return false
         return players.remove(player)
     }
@@ -123,7 +120,12 @@ class Team(internal var teamName: String) {
         }
     }
 
-    fun setPlayerLocation(id: Int, latitude: Double, longitude: Double, connectionDate: Timestamp) : Player? {
+    fun setPlayerLocation(
+        id: Int,
+        latitude: Double,
+        longitude: Double,
+        connectionDate: Timestamp
+    ): Player? {
         var diff = connectionDate.toDate().time - Timestamp.now().toDate().time
 
         diff /= (60 * 1000)

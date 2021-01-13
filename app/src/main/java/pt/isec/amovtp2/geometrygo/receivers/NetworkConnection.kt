@@ -23,7 +23,8 @@ class NetworkConnection : BroadcastReceiver() {
         connMgr.allNetworks.forEach { network ->
             connMgr.getNetworkCapabilities(network).apply {
                 if (this?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true ||
-                        this?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true)
+                    this?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
+                )
                     return true
             }
         }

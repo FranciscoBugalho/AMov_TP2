@@ -6,14 +6,14 @@ import java.net.ServerSocket
 import java.net.Socket
 
 class Player() {
-    internal var id : Int = 0
-    internal var latitude : Double = 0.0
-    internal var longitude : Double = 0.0
+    internal var id: Int = 0
+    internal var latitude: Double = 0.0
+    internal var longitude: Double = 0.0
 
-    constructor(id: Int, latitude: Double, longitude: Double) : this(){
-         this.id = id
-         this.latitude = latitude
-         this.longitude = longitude
+    constructor(id: Int, latitude: Double, longitude: Double) : this() {
+        this.id = id
+        this.latitude = latitude
+        this.longitude = longitude
     }
 
     internal var serverSocket: ServerSocket? = null

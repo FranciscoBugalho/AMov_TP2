@@ -14,7 +14,7 @@ class TutorialActivity : AppCompatActivity(), NetworkConnection.ConnectivityRece
     // AlertDialog to display that the device lost internet connection.
     private var alertDialogErrors = AlertDialogNoInternetConnection()
 
-     // BroadcastReceiver to detect the internet connection.
+    // BroadcastReceiver to detect the internet connection.
     private val networkConnection = NetworkConnection()
 
     override fun onCreate(savedInstanceState: Bundle?) {

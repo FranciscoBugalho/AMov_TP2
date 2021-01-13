@@ -46,6 +46,16 @@
     <dimen name="aa_tv_about_information_padding">5dp</dimen>
     <dimen name="aa_tv_about_information_margin_vertical">10dp</dimen>
 
+    <!-- Activity Play -->
+    <dimen name="ap_tv_timer_padding">12dp</dimen>
+    <dimen name="ap_tv_timer_text_size">20sp</dimen>
+    <dimen name="ap_ll_information_margin_horizontal">20dp</dimen>
+    <dimen name="ap_ll_information_margin_bottom">20dp</dimen>
+    <dimen name="ap_ll_first_player_margin_end">5dp</dimen>
+    <dimen name="ap_ll_second_player_margin_start">5dp</dimen>
+    <dimen name="ap_tv_players_information_padding">10dp</dimen>
+    <dimen name="ap_tv_players_information_text_size">18sp</dimen>
+
     <!-- Alert Dialog for no internet connection. -->
     <dimen name="ad_nic_tv_text_size">22sp</dimen>
     <dimen name="ad_nic_tv_padding">10dp</dimen>
@@ -62,6 +72,8 @@
     <dimen name="ad_jl_btn_connect_margin_start">5dp</dimen>
     <dimen name="ad_jl_ll_main_elevation">10dp</dimen>
     <dimen name="ad_jl_ll_main_padding">15dp</dimen>
+
+    <!-- Alert Dialog Create Lobby. -->
     <dimen name="ad_cl_ll_main_elevation">10dp</dimen>
     <dimen name="ad_cl_ll_main_padding">15dp</dimen>
     <dimen name="ad_cl_tv_title_text_size">24sp</dimen>
@@ -72,13 +84,17 @@
     <dimen name="ad_cl_btn_cancel_margin_end">5dp</dimen>
     <dimen name="ad_cl_btn_padding_horizontal">15dp</dimen>
     <dimen name="ad_cl_btn_create_margin_start">5dp</dimen>
-    <dimen name="ap_tv_timer_padding">12dp</dimen>
-    <dimen name="ap_tv_timer_text_size">20sp</dimen>
-    <dimen name="ap_ll_information_margin_horizontal">20dp</dimen>
-    <dimen name="ap_ll_information_margin_bottom">20dp</dimen>
-    <dimen name="ap_ll_first_player_margin_end">5dp</dimen>
-    <dimen name="ap_ll_second_player_margin_start">5dp</dimen>
-    <dimen name="ap_tv_players_information_padding">10dp</dimen>
-    <dimen name="ap_tv_players_information_text_size">18sp</dimen>
+
+    <!-- Alert Dialog Choose Contact. -->
+    <dimen name="ad_cc_ll_main_elevation">10dp</dimen>
+    <dimen name="ad_cc_ll_main_padding">15dp</dimen>
+    <dimen name="ad_cc_tv_title_text_size">24sp</dimen>
+    <dimen name="ad_cc_et_text_size">16sp</dimen>
+    <dimen name="ad_cc_et_margin_top">10dp</dimen>
+    <dimen name="ad_cc_ll_margin_top">10dp</dimen>
+    <dimen name="ad_cc_btn_text_size">16sp</dimen>
+    <dimen name="ad_cc_btn_cancel_margin_end">5dp</dimen>
+    <dimen name="ad_cc_btn_padding_horizontal">15dp</dimen>
+    <dimen name="ad_cc_btn_send_margin_start">5dp</dimen>
 
 </resources>

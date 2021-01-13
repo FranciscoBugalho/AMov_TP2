@@ -4,7 +4,6 @@ object MessagesStatusConstants {
     // Message to exit a lobby.
     const val EXIT_MESSAGE = "!exit"
 
-
     // Start state.
     const val START_STATE = "startState"
 

@@ -3,50 +3,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
-    android:elevation="@dimen/ad_cl_ll_main_elevation"
-    android:padding="@dimen/ad_cl_ll_main_padding">
+    android:elevation="@dimen/ad_cc_ll_main_elevation"
+    android:orientation="vertical"
+    android:padding="@dimen/ad_cc_ll_main_padding">
 
     <!-- TextView to display the dialog title. -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/insert_number"
-        android:textSize="@dimen/ad_cl_tv_title_text_size"
-        android:textAlignment="center" />
+        android:text="@string/ad_cc_insert_number"
+        android:textAlignment="center"
+        android:textSize="@dimen/ad_cc_tv_title_text_size" />
 
-    <!-- EditText to user write the team name. -->
+    <!-- EditText to user write the phone number. -->
     <EditText
         android:id="@+id/etSMSDestination"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ad_cc_et_margin_top"
         android:hint="@string/ad_insert_team_name"
+        android:importantForAutofill="no"
         android:inputType="textCapSentences"
-        android:textSize="@dimen/ad_cl_et_text_size"
         android:maxLines="1"
-        android:layout_marginTop="@dimen/ad_cl_et_margin_top"
-        android:importantForAutofill="no" />
+        android:textSize="@dimen/ad_cc_et_text_size" />
 
     <!-- LinearLayout to display the buttons. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/ad_cl_ll_margin_top" >
+        android:layout_marginTop="@dimen/ad_cc_ll_margin_top"
+        android:orientation="horizontal">
 
         <!-- Button Cancel. -->
         <Button
             android:id="@+id/btnCancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/ad_cc_btn_cancel_margin_end"
             android:layout_weight="1"
             android:background="@drawable/menu_buttons"
-            android:text="@string/ad_cl_btn_cancel"
+            android:paddingHorizontal="@dimen/ad_cc_btn_padding_horizontal"
+            android:text="@string/ad_cc_btn_cancel"
             android:textColor="@color/black"
-            android:textSize="@dimen/ad_cl_btn_text_size"
-            android:layout_marginEnd="@dimen/ad_cl_btn_cancel_margin_end"
-            android:paddingHorizontal="@dimen/ad_cl_btn_padding_horizontal"
+            android:textSize="@dimen/ad_cc_btn_text_size"
             tools:ignore="ButtonStyle" />
 
         <!-- Button Create. -->
@@ -54,13 +54,13 @@
             android:id="@+id/btnSendSMS"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ad_cc_btn_send_margin_start"
             android:layout_weight="1"
             android:background="@drawable/menu_buttons"
-            android:text="@string/send"
+            android:paddingHorizontal="@dimen/ad_cc_btn_padding_horizontal"
+            android:text="@string/ad_cc_btn_send"
             android:textColor="@color/black"
-            android:textSize="@dimen/ad_cl_btn_text_size"
-            android:layout_marginStart="@dimen/ad_cl_btn_create_margin_start"
-            android:paddingHorizontal="@dimen/ad_cl_btn_padding_horizontal"
+            android:textSize="@dimen/ad_cc_btn_text_size"
             tools:ignore="ButtonStyle" />
 
     </LinearLayout>

@@ -1,7 +1,5 @@
 package pt.isec.amovtp2.geometrygo.data
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -425,7 +423,7 @@ class GameController : ViewModel() {
 
     /**
      * sendLocationToServer
-     * Client send it's data to the server.
+     * Client ad_cc_btn_send it's data to the server.
      */
     fun sendLocationToServer(latitude: Double, longitude: Double) {
         if (team == null) return
@@ -497,8 +495,7 @@ class GameController : ViewModel() {
     }
 
     private fun checkIfGameCanStart() {
-        // TODO: MUDAR PARA A CONSTANTE 3
-        if (team!!.getSize() >= 2 && team!!.checkPlayersDistance())
+        if (team!!.getSize() >= DataConstants.MIN_PLAYERS && team!!.checkPlayersDistance())
             state.postValue(State.READY_TO_PLAY)
     }
 

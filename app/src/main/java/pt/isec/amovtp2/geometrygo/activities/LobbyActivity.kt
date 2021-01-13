@@ -31,10 +31,7 @@ import pt.isec.amovtp2.geometrygo.data.constants.MessagesStatusConstants
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogChooseContact
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogCreateLobby
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogJoinLobby
-import java.net.InetAddress
-import java.net.NetworkInterface
 import java.util.*
-
 
 // 192.168.1.70
 class LobbyActivity : AppCompatActivity() {
@@ -84,9 +81,9 @@ class LobbyActivity : AppCompatActivity() {
                             dialogJoin.setLongitude(longitude!!)
                         }
                     } else {
-                        if(!game.playerExists() || game.getPlayer().serverSocket != null)
+                        if (!game.playerExists() || game.getPlayer().serverSocket != null)
                             game.sendLocationToTeam(latitude!!, longitude!!)
-                        else{
+                        else {
                             game.sendLocationToServer(latitude!!, longitude!!)
                         }
                     }
@@ -102,8 +99,6 @@ class LobbyActivity : AppCompatActivity() {
     @SuppressLint("VisibleForTests")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
 
         // Initialize the Fused Location Provider.
         fLoc = FusedLocationProviderClient(this)
@@ -366,14 +361,15 @@ class LobbyActivity : AppCompatActivity() {
             interval = 5000
             fastestInterval = 2000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            //maxWaitTime = 10000
         }
         fLoc.requestLocationUpdates(locReq, locationCallback, null)
         locEnabled = true
     }
 
     fun sendMessage(view: View) {
-        val dialogSendSMS = AlertDialogChooseContact(findViewById<TextView>(R.id.tvIpAddress).text.toString())
+        view.invalidate()
+        val dialogSendSMS =
+            AlertDialogChooseContact(findViewById<TextView>(R.id.tvIpAddress).text.toString())
         dialogSendSMS.presentDialog(supportFragmentManager)
     }
 }

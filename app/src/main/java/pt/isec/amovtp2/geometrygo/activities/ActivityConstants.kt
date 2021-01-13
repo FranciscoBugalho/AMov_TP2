@@ -7,6 +7,9 @@ object ActivityConstants {
     // Request Code for the location.
     const val REQUEST_CODE_LOCATION = 25
 
-    // Polygon tag
+    // Request Code to send and receive messages.
+    const val REQUEST_CODE_MESSAGES = 26
+
+    // Polygon tag.
     const val POLYGON_TAG = "polygon"
 }

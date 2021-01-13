@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/ll_background_color"
+    android:orientation="vertical"
     android:padding="@dimen/am_ll_global_padding"
     tools:context=".activities.MainActivity">
 
@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.75" >
+        android:layout_weight="0.75">
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,28 +30,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" >
+        android:layout_weight="1">
 
         <!-- ConstraintLayout for the menu buttons. -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_margin="@dimen/am_cl_layout_margin"
-            android:padding="@dimen/am_cl_padding" >
+            android:orientation="vertical"
+            android:padding="@dimen/am_cl_padding">
 
             <!-- Create Lobby Button. -->
             <Button
                 android:id="@+id/btnCreateLobby"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/am_btn_layout_margin"
                 android:background="@drawable/menu_buttons"
+                android:padding="@dimen/am_btn_padding"
                 android:text="@string/am_btn_create_lobby"
                 android:textColor="@color/black"
                 android:textSize="@dimen/am_btn_text_size"
                 android:textStyle="bold"
-                android:padding="@dimen/am_btn_padding"
-                android:layout_margin="@dimen/am_btn_layout_margin"
                 app:layout_constraintBottom_toTopOf="@+id/btnJoinLobby"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -60,13 +60,13 @@
                 android:id="@+id/btnJoinLobby"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/am_btn_layout_margin"
                 android:background="@drawable/menu_buttons"
+                android:padding="@dimen/am_btn_padding"
                 android:text="@string/am_btn_join_lobby"
                 android:textColor="@color/black"
                 android:textSize="@dimen/am_btn_text_size"
                 android:textStyle="bold"
-                android:padding="@dimen/am_btn_padding"
-                android:layout_margin="@dimen/am_btn_layout_margin"
                 app:layout_constraintBottom_toTopOf="@+id/btnScoreboard"
                 app:layout_constraintTop_toBottomOf="@+id/btnCreateLobby" />
 
@@ -76,13 +76,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_margin="@dimen/am_btn_layout_margin"
                 android:background="@drawable/menu_buttons"
+                android:padding="@dimen/am_btn_padding"
                 android:text="@string/am_btn_scoreboard"
                 android:textColor="@color/black"
                 android:textSize="@dimen/am_btn_text_size"
                 android:textStyle="bold"
-                android:padding="@dimen/am_btn_padding"
-                android:layout_margin="@dimen/am_btn_layout_margin"
                 app:layout_constraintBottom_toTopOf="@+id/btnTutorial"
                 app:layout_constraintTop_toBottomOf="@+id/btnJoinLobby" />
 
@@ -92,13 +92,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_margin="@dimen/am_btn_layout_margin"
                 android:background="@drawable/menu_buttons"
+                android:padding="@dimen/am_btn_padding"
                 android:text="@string/am_btn_tutorial"
                 android:textColor="@color/black"
                 android:textSize="@dimen/am_btn_text_size"
                 android:textStyle="bold"
-                android:padding="@dimen/am_btn_padding"
-                android:layout_margin="@dimen/am_btn_layout_margin"
                 app:layout_constraintBottom_toBottomOf="@+id/btnAbout"
                 app:layout_constraintTop_toBottomOf="@+id/btnScoreboard" />
 
@@ -108,13 +108,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_margin="@dimen/am_btn_layout_margin"
                 android:background="@drawable/menu_buttons"
+                android:padding="@dimen/am_btn_padding"
                 android:text="@string/am_btn_about"
                 android:textColor="@color/black"
                 android:textSize="@dimen/am_btn_text_size"
                 android:textStyle="bold"
-                android:padding="@dimen/am_btn_padding"
-                android:layout_margin="@dimen/am_btn_layout_margin"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnTutorial" />
 
