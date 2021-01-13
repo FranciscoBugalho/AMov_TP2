@@ -29,6 +29,10 @@ import pt.isec.amovtp2.geometrygo.data.GameController
 import pt.isec.amovtp2.geometrygo.data.constants.MessagesStatusConstants
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogCreateLobby
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogJoinLobby
+import java.net.InetAddress
+import java.net.NetworkInterface
+import java.util.*
+
 
 // 192.168.1.70
 class LobbyActivity : AppCompatActivity() {
@@ -116,13 +120,17 @@ class LobbyActivity : AppCompatActivity() {
             // Get server ip address.
             val wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
             val ip = wifiManager.connectionInfo.ipAddress
-            val strIPAddress = String.format(
+            var strIPAddress = String.format(
                 "%d.%d.%d.%d",
                 ip and 0xff,
                 (ip shr 8) and 0xff,
                 (ip shr 16) and 0xff,
                 (ip shr 24) and 0xff
             )
+
+            if(strIPAddress == "0.0.0.0") {
+                strIPAddress = getMobileIPAddress()
+            }
 
             // Display server ip on the screen.
             findViewById<TextView>(R.id.tvIpAddress).text = strIPAddress
@@ -364,4 +372,19 @@ class LobbyActivity : AppCompatActivity() {
         locEnabled = true
     }
 
+    fun getMobileIPAddress(): String {
+        try {
+            val interfaces: List<NetworkInterface> =
+                Collections.list(NetworkInterface.getNetworkInterfaces())
+            for (i in interfaces) {
+                val address: List<InetAddress> = Collections.list(i.inetAddresses)
+                for (a in address) {
+                    if (!a.isLoopbackAddress) {
+                        return a.hostAddress
+                    }
+                }
+            }
+        } catch (ex: Exception) { }
+        return ""
+    }
 }
