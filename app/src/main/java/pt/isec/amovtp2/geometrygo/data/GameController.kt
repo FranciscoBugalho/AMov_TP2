@@ -1,15 +1,22 @@
 package pt.isec.amovtp2.geometrygo.data
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
-import pt.isec.amovtp2.geometrygo.data.constants.DataConstants
-import pt.isec.amovtp2.geometrygo.data.constants.ErrorConstants
-import pt.isec.amovtp2.geometrygo.data.constants.MessagesStatusConstants
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import pt.isec.amovtp2.geometrygo.data.constants.*
 import java.io.PrintStream
 import java.net.ServerSocket
 import java.net.Socket
+import java.util.*
 import kotlin.concurrent.thread
 
 class GameController : ViewModel() {
@@ -29,6 +36,9 @@ class GameController : ViewModel() {
 
     // Checks if the game already started or not.
     var gameStarted = false
+
+    // Start game date and time
+    private lateinit var startDateTime: Date
 
     /**
      * startAsServer
@@ -504,6 +514,8 @@ class GameController : ViewModel() {
             team!!.longitude = team!!.getPlayerById(1)!!.longitude
         }
 
+        startDateTime = Date()
+
         state.postValue(State.START)
         gameStarted = true
     }
@@ -586,7 +598,128 @@ class GameController : ViewModel() {
         return this::player.isInitialized
     }
 
-    fun getPlayerPosition(playerId: Int) : LatLng? {
+    fun getPlayerPosition(playerId: Int): LatLng? {
         return team!!.getPlayerPosition(playerId)
+    }
+
+    fun closeAllConnections() {
+        player.serverSocket?.close()
+        player.socket?.close()
+
+        team!!.closeConnections()
+    }
+
+    fun createDatabase() {
+        val db = Firebase.firestore
+
+        team!!.getPlayers().forEach {
+            val playerData = hashMapOf(
+                FirebaseConstants.LATITUDE_FIELD to it.latitude,
+                FirebaseConstants.LONGITUDE_FIELD to it.longitude,
+                FirebaseConstants.LAST_CONNECTION_FIELD to Timestamp(Date())
+            )
+
+            db.collection(FirebaseConstants.PLAYER_LOCATION_COLLECTION)
+                .document(team!!.teamName)
+                .collection(FirebaseConstants.PLAYERS_COLLECTION_PATH)
+                .document(it.id.toString()).set(playerData)
+        }
+    }
+
+    fun canSaveData(latitude: Double, longitude: Double) {
+        // Update all data
+        if (player.latitude != latitude || player.longitude != longitude) {
+            player.latitude = latitude
+            player.longitude = longitude
+
+            saveDataInDatabase()
+        } else // Update only the time for the last connection
+            updateTimeInDatabase()
+    }
+
+    private fun updateTimeInDatabase() {
+        val db = Firebase.firestore
+
+        val v = db.collection(FirebaseConstants.PLAYER_LOCATION_COLLECTION)
+            .document(team!!.teamName)
+            .collection(FirebaseConstants.PLAYERS_COLLECTION_PATH)
+            .document(player.id.toString())
+
+        db.runTransaction { transition ->
+            transition.update(v, FirebaseConstants.LAST_CONNECTION_FIELD, Timestamp(Date()))
+            null
+        }
+    }
+
+    private fun saveDataInDatabase() {
+        val db = Firebase.firestore
+
+        val v = db.collection(FirebaseConstants.PLAYER_LOCATION_COLLECTION)
+            .document(team!!.teamName)
+            .collection(FirebaseConstants.PLAYERS_COLLECTION_PATH)
+            .document(player.id.toString())
+
+        db.runTransaction { transition ->
+            transition.update(v, FirebaseConstants.LATITUDE_FIELD, player.latitude)
+            transition.update(v, FirebaseConstants.LONGITUDE_FIELD, player.longitude)
+            transition.update(v, FirebaseConstants.LAST_CONNECTION_FIELD, Timestamp(Date()))
+            null
+        }
+    }
+
+    fun readDataFromDatabase() {
+        GlobalScope.launch {
+            val db = Firebase.firestore
+            while (true) {
+                val toRemove = arrayListOf<Player>()
+
+                team!!.getPlayers().forEach {
+                    db.collection(FirebaseConstants.PLAYER_LOCATION_COLLECTION)
+                        .document(team!!.teamName)
+                        .collection(FirebaseConstants.PLAYERS_COLLECTION_PATH)
+                        .document(it.id.toString())
+                        .addSnapshotListener { doc, e ->
+                            if (e != null)
+                                return@addSnapshotListener
+
+                            if (doc != null && doc.exists()) {
+                                val latitude = doc.getDouble(FirebaseConstants.LATITUDE_FIELD)
+                                val longitude = doc.getDouble(FirebaseConstants.LONGITUDE_FIELD)
+                                val connectionDate =
+                                    doc.getTimestamp(FirebaseConstants.LAST_CONNECTION_FIELD)
+
+                                if (latitude != null && longitude != null && connectionDate != null) {
+                                    val playerToRemove = team!!.setPlayerLocation(
+                                        it.id,
+                                        latitude,
+                                        longitude,
+                                        connectionDate,
+                                    )
+
+                                    if (player.id == it.id) {
+                                        player.latitude = latitude
+                                        player.longitude = longitude
+                                    }
+
+                                    if (playerToRemove != null)
+                                        toRemove.add(playerToRemove)
+                                    state.postValue(State.UPDATE_VIEW)
+                                }
+                            }
+                        }
+                }
+
+                synchronized(team!!.getPlayers()) {
+                    // Remove players if needed
+                    if (toRemove.isNotEmpty()) {
+                        team!!.removePlayers(toRemove)
+                        state.postValue(State.UPDATE_VIEW)
+                    }
+                    // TODO: SE FOR EU TERMINAR O JOGO
+                }
+
+                delay(DataConstants.DELAY_BETWEEN_SENDING_DATA.toLong())
+            }
+        }
     }
 }

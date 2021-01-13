@@ -167,12 +167,14 @@ class LobbyActivity : AppCompatActivity() {
                 .putExtra(ActivityConstants.IS_SERVER, true)
                 .also {
                     startActivity(it)
+                    finish()
                 }
         } else {
             Intent(this, PlayActivity::class.java)
                 .putExtra(ActivityConstants.IS_SERVER, false)
                 .also {
                     startActivity(it)
+                    finish()
                 }
         }
     }
