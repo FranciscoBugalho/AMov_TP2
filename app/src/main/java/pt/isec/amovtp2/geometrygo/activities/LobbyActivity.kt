@@ -120,17 +120,13 @@ class LobbyActivity : AppCompatActivity() {
             // Get server ip address.
             val wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
             val ip = wifiManager.connectionInfo.ipAddress
-            var strIPAddress = String.format(
+            val strIPAddress = String.format(
                 "%d.%d.%d.%d",
                 ip and 0xff,
                 (ip shr 8) and 0xff,
                 (ip shr 16) and 0xff,
                 (ip shr 24) and 0xff
             )
-
-            if(strIPAddress == "0.0.0.0") {
-                strIPAddress = getMobileIPAddress()
-            }
 
             // Display server ip on the screen.
             findViewById<TextView>(R.id.tvIpAddress).text = strIPAddress
@@ -370,21 +366,5 @@ class LobbyActivity : AppCompatActivity() {
         }
         fLoc.requestLocationUpdates(locReq, locationCallback, null)
         locEnabled = true
-    }
-
-    fun getMobileIPAddress(): String {
-        try {
-            val interfaces: List<NetworkInterface> =
-                Collections.list(NetworkInterface.getNetworkInterfaces())
-            for (i in interfaces) {
-                val address: List<InetAddress> = Collections.list(i.inetAddresses)
-                for (a in address) {
-                    if (!a.isLoopbackAddress) {
-                        return a.hostAddress
-                    }
-                }
-            }
-        } catch (ex: Exception) { }
-        return ""
     }
 }
