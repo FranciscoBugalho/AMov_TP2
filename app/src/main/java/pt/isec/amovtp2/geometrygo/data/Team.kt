@@ -1,8 +1,12 @@
 package pt.isec.amovtp2.geometrygo.data
 
 import android.location.Location
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.Timestamp
 import pt.isec.amovtp2.geometrygo.data.constants.DataConstants
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.TimeUnit
 
 class Team(internal var teamName: String) {
 
@@ -110,6 +114,32 @@ class Team(internal var teamName: String) {
                 return LatLng(it.latitude, it.longitude)
         }
         return null
+    }
+
+    fun closeConnections() {
+        players.forEach {
+            it.serverSocket?.close()
+            it.socket?.close()
+        }
+    }
+
+    fun setPlayerLocation(id: Int, latitude: Double, longitude: Double, connectionDate: Timestamp) : Player? {
+        var diff = connectionDate.toDate().time - Timestamp.now().toDate().time
+
+        diff /= (60 * 1000)
+
+        // If the last connection was more than 5 minutes, set the player to be removed
+        if (diff > DataConstants.MAX_TIME_WITHOUT_COMMUNICATION)
+            return getPlayerById(id)
+
+        updatePlayerLocation(id, latitude, longitude)
+        return null
+    }
+
+    fun removePlayers(playersToRemove: ArrayList<Player>) {
+        synchronized(players) {
+            players.removeAll(playersToRemove)
+        }
     }
 
 }

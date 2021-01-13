@@ -4,6 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -15,8 +17,11 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.common.collect.Lists
 import pt.isec.amovtp2.geometrygo.R
 import pt.isec.amovtp2.geometrygo.data.Game.game
+import pt.isec.amovtp2.geometrygo.data.GameController
+import java.util.concurrent.CopyOnWriteArrayList
 
 class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -32,8 +37,14 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
     // Represents the longitude.
     private var longitude: Double? = null
 
-    // Helps to check if the user started as server or no.
-    private var isServer: Boolean = false
+    // Map.
+    private lateinit var map: GoogleMap
+
+    // Polygon.
+    private lateinit var polygon: Polygon
+
+    // Markers list.
+    private var markers = Lists.newCopyOnWriteArrayList<Marker>()
 
     // Location callback to get the latitude and the longitude.
     private var locationCallback = object : LocationCallback() {
@@ -43,11 +54,7 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
                 longitude = it.longitude
 
                 if (latitude != null && longitude != null) {
-                    if (isServer)
-                        game.sendLocationToTeam(latitude!!, longitude!!)
-                    else
-                        game.sendLocationToServer(latitude!!, longitude!!)
-
+                    game.canSaveData(latitude!!, longitude!!)
                 }
             }
         }
@@ -56,32 +63,65 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
     @SuppressLint("VisibleForTests")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_play)
+
+        // Close the network connection
+        game.closeAllConnections()
+        game.createDatabase()
+
+        game.readDataFromDatabase()
 
         // Initialize the Fused Location Provider.
         fLoc = FusedLocationProviderClient(this)
 
-        // Define which view the user will see depending if he started the app on server mode or not.
-        isServer = intent.getBooleanExtra(ActivityConstants.IS_SERVER, false)
-        if (isServer) {
-            setContentView(R.layout.activity_play)
-        } else {
-            setContentView(R.layout.activity_play_client)
-        }
-
         (supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment)?.getMapAsync(this)
 
+        game.state.observe(this@PlayActivity) {
+            when (game.state.value) {
+                GameController.State.UPDATE_VIEW -> updateView()
+            }
+        }
+    }
+
+    private fun updateView() {
+        updateMarkers()
+        drawPolygon()
+    }
+
+    private fun updateMarkers() {
+        // Removes the markers from the screen
+        markers.forEach {
+            it.remove()
+        }
+        markers.clear()
+
+        // Draws the new markers
+        for (i in 0 until game.getTeam().getPlayers().size) {
+            if (game.getPlayerId() != game.getTeam().getPlayers()[i].id) {
+                val mo = MarkerOptions()
+                    .position(LatLng(game.getTeam().getPlayers()[i].latitude, game.getTeam().getPlayers()[i].longitude))
+                    .title(getString(R.string.play_activity_player_first_letter) + game.getPlayerId(i))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+
+                val marker = map.addMarker(mo)
+                markers.add(marker)
+                marker.showInfoWindow()
+            }
+        }
     }
 
     @SuppressLint("MissingPermission")
-    override fun onMapReady(map: GoogleMap?) {
-        map ?: return
+    override fun onMapReady(googleMap: GoogleMap?) {
+        googleMap ?: return
+
+        map = googleMap
 
         // Define map settings
         if(locEnabled)
             map.isMyLocationEnabled = true
         map.mapType = GoogleMap.MAP_TYPE_HYBRID
         map.uiSettings.isCompassEnabled = true
-        map.uiSettings.isZoomControlsEnabled = true
+        //map.uiSettings.isZoomControlsEnabled = true
         map.uiSettings.isZoomGesturesEnabled = true
 
 
@@ -89,10 +129,20 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
             .bearing(0f).tilt(0f).build()
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cp))
 
+        // Set a market on the player 1 start point
         val mo = MarkerOptions().position(LatLng(game.getTeam().latitude!!, game.getTeam().longitude!!))
             .title(getString(R.string.ap_player_1_start_point))
         val startPoint = map.addMarker(mo)
         startPoint.showInfoWindow()
+
+        drawPolygon()
+    }
+
+    private fun drawPolygon() {
+        if(!this::map.isInitialized) return
+
+        if (this::polygon.isInitialized)
+            polygon.remove()
 
         val polygonOptions = PolygonOptions()
         // Add players positions
@@ -102,21 +152,16 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
                 polygonOptions.add(position)
             }
         }
-        // Add again the first player position to close the polygon
-        /*val position = game.getPlayerPosition(1)
-        if (position != null)
-            polygonOptions.add(position)*/
-
-        val polygon = map.addPolygon(polygonOptions)
+        polygon = map.addPolygon(polygonOptions)
         polygon.tag = ActivityConstants.POLYGON_TAG
 
         stylePolygon(polygon)
     }
 
+
     private fun stylePolygon(polygon: Polygon) {
         val POLYGON_STROKE_WIDTH_PX = 8
         val COLOR_BLUE_ARGB = -0x657db
-
 
         // Get the data object stored with the polygon.
         val type = polygon.tag?.toString() ?: ""
@@ -178,8 +223,8 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         val locReq = LocationRequest().apply {
-            interval = 5000
-            fastestInterval = 2000
+            interval = 15000
+            //fastestInterval = 2000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             //maxWaitTime = 10000
         }

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "165725876089",
+    "project_id": "geometrygo",
+    "storage_bucket": "geometrygo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165725876089:android:03f1d55644dbeb91f449a8",
+        "android_client_info": {
+          "package_name": "pt.isec.amovtp2.geometrygo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165725876089-1ug1h9pgv1ogld76t6m2fsesur91jgbh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pt.isec.amovtp2.geometrygo",
+            "certificate_hash": "553cae1c113376f12ecc1df7ea47f5f5075700b3"
+          }
+        },
+        {
+          "client_id": "165725876089-inara50mmmjqo1msqg9jhjbc7p6p6qv0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCME7nI-R6bvxpH1WETdfUQHYdokGZe-1c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "165725876089-inara50mmmjqo1msqg9jhjbc7p6p6qv0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

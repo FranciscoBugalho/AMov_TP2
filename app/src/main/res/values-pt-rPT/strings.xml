@@ -31,4 +31,5 @@
     <string name="ap_player_1_start_point">J1 Ponto Inicial</string>
     <string name="send">Enviar</string>
     <string name="insert_number">Insira Número</string>
+    <string name="play_activity_player_first_letter">J</string>
 </resources>

@@ -31,4 +31,5 @@
     <string name="insert_number">Insert Number</string>
     <string name="send">send</string>
     <string name="sms_id_token" translatable="false">GEOAPP_Automatic_MSG_6172839405 Requested join on IP:</string>
+    <string name="play_activity_player_first_letter">P</string>
 </resources>

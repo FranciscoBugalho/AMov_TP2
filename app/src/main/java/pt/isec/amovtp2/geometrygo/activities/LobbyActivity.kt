@@ -31,6 +31,10 @@ import pt.isec.amovtp2.geometrygo.data.constants.MessagesStatusConstants
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogChooseContact
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogCreateLobby
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogJoinLobby
+import java.net.InetAddress
+import java.net.NetworkInterface
+import java.util.*
+
 
 // 192.168.1.70
 class LobbyActivity : AppCompatActivity() {
@@ -171,12 +175,14 @@ class LobbyActivity : AppCompatActivity() {
                 .putExtra(ActivityConstants.IS_SERVER, true)
                 .also {
                     startActivity(it)
+                    finish()
                 }
         } else {
             Intent(this, PlayActivity::class.java)
                 .putExtra(ActivityConstants.IS_SERVER, false)
                 .also {
                     startActivity(it)
+                    finish()
                 }
         }
     }
@@ -370,5 +376,4 @@ class LobbyActivity : AppCompatActivity() {
         val dialogSendSMS = AlertDialogChooseContact(findViewById<TextView>(R.id.tvIpAddress).text.toString())
         dialogSendSMS.presentDialog(supportFragmentManager)
     }
-
 }

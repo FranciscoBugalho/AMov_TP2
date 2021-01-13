@@ -92,5 +92,4 @@ class AlertDialogCreateLobby(
     fun setLongitude(longitude: Double) {
         this.longitude = longitude
     }
-
 }
