@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ll_background_color"
+    android:orientation="vertical"
+    tools:context=".activities.EndGameActivity">
+
+    <!-- TextView with the title. -->
+    <TextView
+        android:id="@+id/tvInformation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:background="@color/white"
+        android:padding="@dimen/aeg_tv_title_padding"
+        android:text="@string/aegw_tv_you_win"
+        android:textColor="@color/black"
+        android:textSize="@dimen/aeg_tv_title_text_size"
+        android:textStyle="bold" />
+
+    <!-- ConstraintLayout for the map and the button -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <!-- FrameLayout to display all the content. -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Fragment to display the map. -->
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:ignore="FragmentTagUsage" />
+
+        </FrameLayout>
+
+        <!-- Button to go to the main menu. -->
+        <Button
+            android:id="@+id/btnMainMenu"
+            android:layout_width="@dimen/aeg_btn_go_menu_width"
+            android:layout_height="@dimen/aeg_btn_go_menu_height"
+            android:layout_marginEnd="@dimen/aeg_btn_go_menu_margin_end"
+            android:layout_marginBottom="@dimen/aeg_btn_go_menu_margin_bottom"
+            android:background="@drawable/rounded_button_end_game"
+            android:enabled="false"
+            android:gravity="center"
+            android:text="@string/aeg_btn_go_menu_arrow_right"
+            android:textColor="@color/black"
+            android:textSize="@dimen/aeg_btn_go_menu_text_size"
+            android:textStyle="bold"
+            android:typeface="sans"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

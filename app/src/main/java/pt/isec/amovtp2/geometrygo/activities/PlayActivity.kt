@@ -2,10 +2,16 @@ package pt.isec.amovtp2.geometrygo.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -19,11 +25,18 @@ import com.google.common.collect.Lists
 import pt.isec.amovtp2.geometrygo.R
 import pt.isec.amovtp2.geometrygo.data.Game.game
 import pt.isec.amovtp2.geometrygo.data.GameController
+import pt.isec.amovtp2.geometrygo.data.constants.DataConstants
 
 class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
 
     // Fused Location Provider.
     private lateinit var fLoc: FusedLocationProviderClient
+
+    // End game button.
+    private lateinit var btnEndGame: Button
+
+    // Timer TextView.
+    private lateinit var tvTimer: TextView
 
     // Verifies if the location is enabled.
     private var locEnabled = false
@@ -42,6 +55,8 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
 
     // Markers list.
     private var markers = Lists.newCopyOnWriteArrayList<Marker>()
+
+    private lateinit var timer: CountDownTimer
 
     // Location callback to get the latitude and the longitude.
     private var locationCallback = object : LocationCallback() {
@@ -62,37 +77,101 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
 
-        // Close the network connection
+        (supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment)?.getMapAsync(this)
+
+        btnEndGame = findViewById(R.id.btnEndGame)
+        btnEndGame.setOnClickListener {
+            game.confirmEnd()
+        }
+
+        tvTimer = findViewById(R.id.tvTimer)
+
+        // Close the network connection.
         game.closeAllConnections()
         game.createDatabase()
 
-        game.readDataFromDatabase()
+        // Stats the timer
+        startTimer()
+
+        game.readDataFromDatabase(applicationContext)
 
         // Initialize the Fused Location Provider.
         fLoc = FusedLocationProviderClient(this)
 
-        (supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment)?.getMapAsync(this)
-
         game.state.observe(this@PlayActivity) {
             when (game.state.value) {
-                GameController.State.UPDATE_VIEW -> updateView()
+                GameController.State.UPDATE_VIEW -> updateView(false)
+                GameController.State.ADD_BUTTON -> updateView(true)
+                GameController.State.END_GAME_WIN -> endGame(true)
+                GameController.State.END_GAME_LOSE -> endGame(false)
             }
         }
     }
 
-    private fun updateView() {
+    private fun endGame(win: Boolean) {
+        timer.cancel()
+        if (win) {
+            Intent(this, EndGameActivity::class.java)
+                .putExtra(ActivityConstants.IS_WIN, win)
+                .also {
+                    startActivity(it)
+                    finish()
+                }
+        } else {
+            Intent(this, EndGameActivity::class.java)
+                .putExtra(ActivityConstants.IS_WIN, win)
+                .putExtra(ActivityConstants.LOSE_INFORMATION, game.getLoseInformation())
+                .also {
+                    startActivity(it)
+                    finish()
+                }
+        }
+    }
+
+    private fun startTimer() {
+        timer = object : CountDownTimer(DataConstants.GAME_TIME.toLong(), 1000) {
+            @SuppressLint("SetTextI18n")
+            override fun onTick(millisUntilFinished: Long) {
+                val minutes = (millisUntilFinished / 1000) / 60
+                val seconds = (millisUntilFinished / 1000) % 60
+
+                if (seconds < 10)
+                    tvTimer.text = "$minutes:0$seconds"
+                else
+                    tvTimer.text = "$minutes:$seconds"
+            }
+
+            override fun onFinish() {
+                game.endGame(applicationContext)
+            }
+        }
+        timer.start()
+    }
+
+    private fun updateView(isButton: Boolean) {
+        // Adds the button on screen
+        if (isButton && !btnEndGame.isVisible) {
+            btnEndGame.isEnabled = true
+            btnEndGame.visibility = View.VISIBLE
+        } else if (!isButton && btnEndGame.isVisible) { // Removes the button from the screen
+            btnEndGame.isEnabled = false
+            btnEndGame.visibility = View.GONE
+        }
+
         updateMarkers()
         drawPolygon()
     }
 
     private fun updateMarkers() {
-        // Removes the markers from the screen
+        if (!this::map.isInitialized) return
+
+        // Removes the markers from the screen.
         markers.forEach {
             it.remove()
         }
         markers.clear()
 
-        // Draws the new markers
+        // Draws the new markers.
         for (i in 0 until game.getTeam().getPlayers().size) {
             if (game.getPlayerId() != game.getTeam().getPlayers()[i].id) {
                 val mo = MarkerOptions()
@@ -122,12 +201,12 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
 
         map = googleMap
 
-        // Define map settings
+        // Define map settings.
         if (locEnabled)
             map.isMyLocationEnabled = true
         map.mapType = GoogleMap.MAP_TYPE_HYBRID
         map.uiSettings.isCompassEnabled = true
-        //map.uiSettings.isZoomControlsEnabled = true
+        map.uiSettings.isZoomControlsEnabled = true
         map.uiSettings.isZoomGesturesEnabled = true
 
 
@@ -136,7 +215,7 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
             .bearing(0f).tilt(0f).build()
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cp))
 
-        // Set a market on the player 1 start point
+        // Set a market on the player 1 start point.
         val mo =
             MarkerOptions().position(LatLng(game.getTeam().latitude!!, game.getTeam().longitude!!))
                 .title(getString(R.string.ap_player_1_start_point))
@@ -153,7 +232,7 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
             polygon.remove()
 
         val polygonOptions = PolygonOptions()
-        // Add players positions
+        // Add players positions.
         for (i in 0 until game.getTeam().getPlayers().size) {
             val position = game.getPlayerPosition(game.getPlayerId(i))
             if (position != null) {

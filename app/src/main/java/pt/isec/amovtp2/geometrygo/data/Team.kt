@@ -117,6 +117,7 @@ class Team(internal var teamName: String) {
         players.forEach {
             it.serverSocket?.close()
             it.socket?.close()
+            it.threadCreateTeam?.join()
         }
     }
 
@@ -142,6 +143,18 @@ class Team(internal var teamName: String) {
         synchronized(players) {
             players.removeAll(playersToRemove)
         }
+    }
+
+    fun getLastPlayer(): Player {
+        return players[players.lastIndex]
+    }
+
+    fun getNextPlayer(id: Int): Player {
+        return players[id]
+    }
+
+    fun getBeforePlayer(id: Int): Player {
+        return players[id - 2]
     }
 
 }

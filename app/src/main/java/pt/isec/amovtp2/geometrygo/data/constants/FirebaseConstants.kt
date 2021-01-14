@@ -15,4 +15,7 @@ object FirebaseConstants {
 
     // Last connection field.
     const val LAST_CONNECTION_FIELD = "lastConnectionDate"
+
+    // End confirmation.
+    const val CONFIRMED_END = "endConfirmation"
 }

@@ -2,6 +2,9 @@ package pt.isec.amovtp2.geometrygo.data.constants
 
 object DataConstants {
 
+    // Team name max size.
+    const val TEAM_NAME_SIZE = 25
+
     // Minimum number of players to start a game.
     const val MIN_PLAYERS = 3
 
@@ -17,4 +20,9 @@ object DataConstants {
     // Max time without sending information to the database, in minutes.
     const val MAX_TIME_WITHOUT_COMMUNICATION = 5
 
+    // Game time, in milliseconds (60 minutes)
+    const val GAME_TIME = 3600000
+
+    // Error factor, 2%.
+    const val ERROR_FACTOR = 0.02
 }

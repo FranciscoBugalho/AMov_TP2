@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <stroke
+        android:width="@dimen/ap_btn_end_game_stroke_with"
+        android:color="@color/orange" />
+    <solid android:color="@color/ap_btn_end_game_yellow" />
+    <size
+        android:width="@dimen/ap_btn_end_game_size"
+        android:height="@dimen/ap_btn_end_game_size" />
+    <solid android:color="@color/white" />
+
+</shape>

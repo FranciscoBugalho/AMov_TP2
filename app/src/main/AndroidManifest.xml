@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GeometryGO"
         tools:ignore="AllowBackup">
+        <activity android:name=".activities.EndGameActivity" />
         <activity android:name=".activities.PlayActivity" />
         <activity android:name=".activities.AboutActivity" />
         <activity android:name=".activities.TutorialActivity" />
@@ -46,7 +47,8 @@
         <receiver
             android:name=".receivers.SMSFunctionality"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
@@ -55,7 +57,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCME7nI-R6bvxpH1WETdfUQHYdokGZe-1c" />

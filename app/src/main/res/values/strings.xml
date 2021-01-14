@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GeometryGO</string>
+    <string name="app_name" translatable="false">GeometryGO</string>
     <string name="am_btn_create_lobby">Create Lobby</string>
     <string name="am_btn_join_lobby">Join Lobby</string>
     <string name="am_btn_tutorial">Tutorial</string>
@@ -22,12 +22,14 @@
     <string name="ad_cl_btn_create">Create</string>
     <string name="ad_cl_et_empty_error">Should insert team name first!</string>
     <string name="you_player_tag">You</string>
-    <string name="ad_cl_jl_et_no_latitude_longitude_error">Check if you GPS is enabled!</string>
+    <string name="ad_cl_jl_et_no_latitude_longitude_error">Check if your GPS is enabled!</string>
     <string name="ad_ql_btn_no">No</string>
     <string name="ad_ql_btn_yes">Yes</string>
     <string name="ad_ql_quit_lobby">Are you sure that you want to quit the lobby?</string>
     <string name="ad_ql_close_lobby">Are you sure that you want to close the lobby?</string>
+    <string name="ad_et_more_than_25_characters_error">The name should have less than 25 characters!</string>
     <string name="ap_player_1_start_point">P1 Start Point</string>
+    <string name="ap_btn_end_game_check_icon" translatable="false">✔</string>
     <string name="ad_cc_insert_number">Insert Number</string>
     <string name="ad_cc_btn_send">Send</string>
     <string name="ad_cc_btn_cancel">Cancel</string>
@@ -36,4 +38,9 @@
     <string name="ad_cc_insert_a_valid_phone_number_error">Insert a valid phone number!</string>
     <string name="sms_response_thanks_for_the_ip">Thanks for the ip!</string>
     <string name="sms_received_text">SMS received.</string>
+    <string name="aegw_tv_you_win">You win!</string>
+    <string name="aeg_btn_go_menu_arrow_right" translatable="false">➜</string>
+    <string name="not_enough_players_to_finish_the_game_information">Not enough players to finish the game.</string>
+    <string name="time_expired_information">Time expired!</string>
+    <string name="aeg_you_lose">You lose!</string>
 </resources>
