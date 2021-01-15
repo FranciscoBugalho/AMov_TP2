@@ -9,7 +9,8 @@ class Player() {
     internal var id: Int = 0
     internal var latitude: Double = 0.0
     internal var longitude: Double = 0.0
-    internal var endConfirmation: Boolean = true
+    internal var endConfirmation: Boolean = false
+    internal var toRemove: Boolean = false
 
     constructor(id: Int, latitude: Double, longitude: Double) : this() {
         this.id = id

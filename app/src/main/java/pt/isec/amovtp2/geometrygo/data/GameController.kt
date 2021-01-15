@@ -64,7 +64,7 @@ class GameController : ViewModel() {
                             receiveMessagesFromClients(player.serverSocket!!.accept())
                         }
                     }
-                }catch (_: Exception) {
+                } catch (_: Exception) {
                     return@thread
                 }
             }
@@ -377,7 +377,7 @@ class GameController : ViewModel() {
                                 printStream.flush()
                             }
                         } catch (_: Exception) {
-                        //stopGame()
+                            //stopGame()
                         }
                     }
                 //state.postValue(State.UPDATE_VIEW)
@@ -648,26 +648,6 @@ class GameController : ViewModel() {
             player.longitude = longitude
 
             saveDataInDatabase()
-        } else // Update only the time for the last connection.
-            updateTimeInDatabase()
-    }
-
-    private fun updateTimeInDatabase() {
-        val db = Firebase.firestore
-
-        val v = db.collection(FirebaseConstants.PLAYER_LOCATION_COLLECTION)
-            .document(team!!.teamName)
-            .collection(
-                FirebaseConstants.PLAYERS_COLLECTION_PATH + " " + UtilsFunctions.convertDateToStr(
-                    startDateTime
-                )
-            )
-            .document(player.id.toString())
-
-        // Saves the last connection in the database.
-        db.runTransaction { transition ->
-            transition.update(v, FirebaseConstants.LAST_CONNECTION_FIELD, Timestamp(Date()))
-            null
         }
     }
 
@@ -695,60 +675,65 @@ class GameController : ViewModel() {
 
     fun readDataFromDatabase(context: Context) {
         state.postValue(State.UPDATE_VIEW)
+
+        val db = Firebase.firestore
         var end: Int
+        val toRemove = arrayListOf<Player>()
+
         GlobalScope.launch {
-            val db = Firebase.firestore
-            while (state.value != State.END_GAME_WIN || state.value != State.END_GAME_LOSE) {
-                end = 1
-                val toRemove = arrayListOf<Player>()
-
-                team!!.getPlayers().forEach {
-                    db.collection(FirebaseConstants.PLAYER_LOCATION_COLLECTION)
-                        .document(team!!.teamName)
-                        .collection(
-                            FirebaseConstants.PLAYERS_COLLECTION_PATH + " " + UtilsFunctions.convertDateToStr(
-                                startDateTime
-                            )
+            team!!.getPlayers().forEach {
+                db.collection(FirebaseConstants.PLAYER_LOCATION_COLLECTION)
+                    .document(team!!.teamName)
+                    .collection(
+                        FirebaseConstants.PLAYERS_COLLECTION_PATH + " " + UtilsFunctions.convertDateToStr(
+                            startDateTime
                         )
-                        .document(it.id.toString())
-                        .addSnapshotListener { doc, e ->
-                            if (e != null)
-                                return@addSnapshotListener
+                    )
+                    .document(it.id.toString())
+                    .addSnapshotListener { doc, e ->
+                        if (e != null)
+                            return@addSnapshotListener
 
-                            // Gets all the information from the firebase.
-                            if (doc != null && doc.exists()) {
-                                val latitude = doc.getDouble(FirebaseConstants.LATITUDE_FIELD)
-                                val longitude = doc.getDouble(FirebaseConstants.LONGITUDE_FIELD)
-                                val connectionDate =
-                                    doc.getTimestamp(FirebaseConstants.LAST_CONNECTION_FIELD)
-                                val endConfirmation =
-                                    doc.getBoolean(FirebaseConstants.CONFIRMED_END)
+                        // Gets all the information from the firebase.
+                        if (doc != null && doc.exists()) {
+                            val latitude = doc.getDouble(FirebaseConstants.LATITUDE_FIELD)
+                            val longitude = doc.getDouble(FirebaseConstants.LONGITUDE_FIELD)
+                            val connectionDate =
+                                doc.getTimestamp(FirebaseConstants.LAST_CONNECTION_FIELD)
+                            val endConfirmation =
+                                doc.getBoolean(FirebaseConstants.CONFIRMED_END)
 
-                                if (endConfirmation == true)
-                                    end += 1
-                                else
-                                    end = 1
+                            if (latitude != null && longitude != null && connectionDate != null) {
+                                team!!.getPlayers().forEach { iterator ->
+                                    if (iterator.id == it.id) {
+                                        iterator.latitude = latitude
+                                        iterator.longitude = longitude
+                                        iterator.endConfirmation = endConfirmation ?: false
+                                    }
 
-                                if (latitude != null && longitude != null && connectionDate != null) {
-                                    val playerToRemove = team!!.setPlayerLocation(
-                                        it.id,
+                                    iterator.toRemove = team!!.setPlayerLocation(
+                                        iterator.id,
                                         latitude,
                                         longitude,
                                         connectionDate,
                                     )
-
-                                    if (player.id == it.id) {
-                                        player.latitude = latitude
-                                        player.longitude = longitude
-                                        player.endConfirmation = endConfirmation ?: false
-                                    }
-
-                                    if (playerToRemove != null)
-                                        toRemove.add(playerToRemove)
-
                                 }
                             }
                         }
+                    }
+            }
+
+            while (state.value != State.END_GAME_WIN || state.value != State.END_GAME_LOSE) {
+                end = 0
+
+                team!!.getPlayers().forEach {
+                    if (it.endConfirmation)
+                        end += 1
+                    else
+                        end = 1
+
+                    if (it.toRemove)
+                        toRemove.add(it)
                 }
 
                 synchronized(team!!.getPlayers()) {
@@ -762,7 +747,8 @@ class GameController : ViewModel() {
                 when {
                     // If the team has less than 3 members.
                     team!!.getSize() < DataConstants.MIN_PLAYERS -> {
-                        loseInformation = context.getString(R.string.not_enough_players_to_finish_the_game_information)
+                        loseInformation =
+                            context.getString(R.string.not_enough_players_to_finish_the_game_information)
                         state.postValue(State.END_GAME_LOSE)
                         return@launch
                     }
@@ -775,7 +761,6 @@ class GameController : ViewModel() {
                     isPolygonRegular() -> state.postValue(State.ADD_BUTTON)
                     else -> state.postValue(State.UPDATE_VIEW)
                 }
-                end = 1
 
                 delay(DataConstants.DELAY_BETWEEN_SENDING_DATA.toLong())
             }

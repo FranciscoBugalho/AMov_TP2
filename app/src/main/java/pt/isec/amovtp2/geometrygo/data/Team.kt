@@ -126,17 +126,17 @@ class Team(internal var teamName: String) {
         latitude: Double,
         longitude: Double,
         connectionDate: Timestamp
-    ): Player? {
+    ): Boolean {
         var diff = connectionDate.toDate().time - Timestamp.now().toDate().time
 
         diff /= (60 * 1000)
 
         // If the last connection was more than 5 minutes, set the player to be removed
         if (diff > DataConstants.MAX_TIME_WITHOUT_COMMUNICATION)
-            return getPlayerById(id)
+            return true
 
         updatePlayerLocation(id, latitude, longitude)
-        return null
+        return false
     }
 
     fun removePlayers(playersToRemove: ArrayList<Player>) {
