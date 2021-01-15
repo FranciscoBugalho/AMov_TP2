@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.maps.android.PolyUtil
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -115,10 +116,6 @@ class GameController : ViewModel() {
 
                     val newPlayerInfo = iS.readLine()
 
-                    team!!.getPlayers().forEach {
-                        Log.i("TAG", "receiveMessagesFromClients: ${it.id}")
-                    }
-
                     if (!gameStarted)
                         checkIfGameCanStart()
 
@@ -185,7 +182,6 @@ class GameController : ViewModel() {
                         printStream.flush()
                     }
                 } catch (_: Exception) {
-                    //stopGame()
                 }
             }
         } else { // Update player information.
@@ -224,6 +220,8 @@ class GameController : ViewModel() {
                         newPlayersInfo.split(" ")[1] == MessagesStatusConstants.START_STATE -> {
                             startDateTime =
                                 UtilsFunctions.convertToDate(newPlayersInfo.split(" ")[2])
+
+                            team!!.identifier = newPlayersInfo.split(" ")[3]
 
                             setStateAsStart()
                         }
@@ -356,7 +354,8 @@ class GameController : ViewModel() {
             player.threadCreateTeam = null
             player.socket?.close()
             player.socket = null
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     /**
@@ -465,7 +464,7 @@ class GameController : ViewModel() {
         } else if (status == MessagesStatusConstants.START_STATE) {
             state.postValue(State.START)
             message =
-                team!!.teamName + " " + status + " " + UtilsFunctions.convertDateToStr(startDateTime)
+                team!!.teamName + " " + status + " " + UtilsFunctions.convertDateToStr(startDateTime) + " " + team!!.identifier
         }
 
         if (message == null) return
@@ -507,7 +506,6 @@ class GameController : ViewModel() {
                     player.id = -1
                     team!!.getPlayers().clear()
                     team!!.addPlayer(player)
-                    //stopGame()
                 }
             }
         }
@@ -527,6 +525,7 @@ class GameController : ViewModel() {
             team!!.latitude = player.latitude
             team!!.longitude = player.longitude
             startDateTime = Date()
+            team!!.generateTeamIdentifier(startDateTime)
         } else {
             team!!.latitude = team!!.getPlayerById(1)!!.latitude
             team!!.longitude = team!!.getPlayerById(1)!!.longitude
@@ -636,14 +635,8 @@ class GameController : ViewModel() {
                 FirebaseConstants.CONFIRMED_END to false
             )
 
-            db.collection(FirebaseConstants.PLAYER_LOCATION_COLLECTION)
-                .document(team!!.teamName)
-                .collection(
-                    FirebaseConstants.PLAYERS_COLLECTION_PATH + " " + UtilsFunctions.convertDateToStr(
-                        startDateTime
-                    )
-                )
-                .document(it.id.toString()).set(playerData)
+            db.collection(team!!.identifier).document(it.id.toString()).set(playerData)
+
         }
         state.postValue(State.UPDATE_VIEW)
     }
@@ -661,14 +654,7 @@ class GameController : ViewModel() {
     private fun saveDataInDatabase() {
         val db = Firebase.firestore
 
-        val v = db.collection(FirebaseConstants.PLAYER_LOCATION_COLLECTION)
-            .document(team!!.teamName)
-            .collection(
-                FirebaseConstants.PLAYERS_COLLECTION_PATH + " " + UtilsFunctions.convertDateToStr(
-                    startDateTime
-                )
-            )
-            .document(player.id.toString())
+        val v = db.collection(team!!.identifier).document(player.id.toString())
 
         // Saves the data in the database.
         db.runTransaction { transition ->
@@ -689,14 +675,7 @@ class GameController : ViewModel() {
 
         GlobalScope.launch {
             team!!.getPlayers().forEach {
-                db.collection(FirebaseConstants.PLAYER_LOCATION_COLLECTION)
-                    .document(team!!.teamName)
-                    .collection(
-                        FirebaseConstants.PLAYERS_COLLECTION_PATH + " " + UtilsFunctions.convertDateToStr(
-                            startDateTime
-                        )
-                    )
-                    .document(it.id.toString())
+                db.collection(team!!.identifier).document(it.id.toString())
                     .addSnapshotListener { doc, e ->
                         if (e != null)
                             return@addSnapshotListener
@@ -716,14 +695,14 @@ class GameController : ViewModel() {
                                         iterator.latitude = latitude
                                         iterator.longitude = longitude
                                         iterator.endConfirmation = endConfirmation ?: false
-                                    }
 
-                                    iterator.toRemove = team!!.setPlayerLocation(
-                                        iterator.id,
-                                        latitude,
-                                        longitude,
-                                        connectionDate,
-                                    )
+                                        iterator.toRemove = team!!.setPlayerLocation(
+                                            iterator.id,
+                                            latitude,
+                                            longitude,
+                                            connectionDate,
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -757,15 +736,13 @@ class GameController : ViewModel() {
                         loseInformation =
                             context.getString(R.string.not_enough_players_to_finish_the_game_information)
                         state.postValue(State.END_GAME_LOSE)
-                        return@launch
                     }
                     // If all the players confirm the intention to end the game.
                     end == team!!.getSize() -> {
                         state.postValue(State.END_GAME_WIN)
-                        return@launch
                     }
                     // If the polygon angles are equal.
-                    isPolygonRegular() -> state.postValue(State.ADD_BUTTON)
+                    isWin() -> state.postValue(State.ADD_BUTTON)
                     else -> state.postValue(State.UPDATE_VIEW)
                 }
 
@@ -774,6 +751,26 @@ class GameController : ViewModel() {
         }
 
         // TODO TRATAR DO FIM DO JOGO
+    }
+
+    private fun isWin(): Boolean {
+        return isPolygonRegular() && polygonContainsPoint()
+    }
+
+    private fun polygonContainsPoint(): Boolean {
+        val points = arrayListOf<LatLng>()
+        for (i in 0 until team!!.getPlayers().size) {
+            val position = team!!.getPlayerPosition(getPlayerId(i))
+            if (position != null) {
+                points.add(position)
+            }
+        }
+
+        return PolyUtil.containsLocation(
+            LatLng(team!!.latitude!!, team!!.longitude!!),
+            points,
+            true
+        )
     }
 
     private fun isPolygonRegular(): Boolean {
@@ -804,7 +801,7 @@ class GameController : ViewModel() {
                 // Last player.
                 team!!.getLastPlayer().id -> {
                     val thisAngle = toDegrees(
-                        UtilsFunctions.calculateAngle(it, team!!.getLeader()) -
+                        UtilsFunctions.calculateAngle(it, team!!.getFirst()) -
                                 UtilsFunctions.calculateAngle(it, team!!.getBeforePlayer(it.id))
                     )
 
@@ -840,14 +837,7 @@ class GameController : ViewModel() {
     fun confirmEnd() {
         val db = Firebase.firestore
 
-        val v = db.collection(FirebaseConstants.PLAYER_LOCATION_COLLECTION)
-            .document(team!!.teamName)
-            .collection(
-                FirebaseConstants.PLAYERS_COLLECTION_PATH + " " + UtilsFunctions.convertDateToStr(
-                    startDateTime
-                )
-            )
-            .document(player.id.toString())
+        val v = db.collection(team!!.identifier).document(player.id.toString())
 
         // Set end confirmation in the database.
         db.runTransaction { transition ->
@@ -863,5 +853,42 @@ class GameController : ViewModel() {
 
     fun getLoseInformation(): String {
         return loseInformation
+    }
+
+    fun getPlayerAngle(playerId: Int): String {
+        val actualPlayer = team!!.getPlayerById(playerId)
+        when (playerId) {
+            // First player.
+            1 -> {
+                val thisAngle = toDegrees(
+                    UtilsFunctions.calculateAngle(actualPlayer!!, team!!.getNextPlayer(1)) -
+                            UtilsFunctions.calculateAngle(actualPlayer, team!!.getLastPlayer())
+                )
+
+                return String.format("%.3f", UtilsFunctions.convertToFirstQuadrant(abs(thisAngle)))
+            }
+            // Last player.
+            team!!.getLastPlayer().id -> {
+                val thisAngle = toDegrees(
+                    UtilsFunctions.calculateAngle(actualPlayer!!, team!!.getFirst()) -
+                            UtilsFunctions.calculateAngle(actualPlayer, team!!.getBeforePlayer(actualPlayer.id))
+                )
+
+                return String.format("%.3f", UtilsFunctions.convertToFirstQuadrant(abs(thisAngle)))
+            }
+            // Others.
+            else -> {
+                val thisAngle = toDegrees(
+                    UtilsFunctions.calculateAngle(actualPlayer!!, team!!.getNextPlayer(actualPlayer.id)) -
+                            UtilsFunctions.calculateAngle(actualPlayer, team!!.getBeforePlayer(actualPlayer.id))
+                )
+
+                return String.format("%.3f", UtilsFunctions.convertToFirstQuadrant(abs(thisAngle)))
+            }
+        }
+    }
+
+    fun getPlayersDistance(): String {
+        return team!!.getPlayersDistance()
     }
 }

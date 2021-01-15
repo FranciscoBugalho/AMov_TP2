@@ -58,6 +58,11 @@
     <dimen name="ap_btn_end_game_margin_bottom">16dp</dimen>
     <dimen name="ap_btn_end_game_stroke_with">3dip</dimen>
     <dimen name="ap_btn_end_game_size">100dp</dimen>
+    <dimen name="ap_ll_players_margin_horizontal">50dp</dimen>
+    <dimen name="ap_ll_players_margin_bottom">10dp</dimen>
+    <dimen name="ap_tv_players_info_padding_vertical">5dp</dimen>
+    <dimen name="ap_tv_players_info_padding_horizontal">15dp</dimen>
+    <dimen name="ap_tv_players_info_text_size">20sp</dimen>
 
     <!-- Alert Dialog for no internet connection. -->
     <dimen name="ad_nic_tv_text_size">22sp</dimen>

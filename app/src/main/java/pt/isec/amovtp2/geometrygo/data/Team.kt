@@ -3,7 +3,10 @@ package pt.isec.amovtp2.geometrygo.data
 import android.location.Location
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
+import com.google.maps.android.SphericalUtil.computeDistanceBetween
 import pt.isec.amovtp2.geometrygo.data.constants.DataConstants
+import java.util.*
+import kotlin.collections.ArrayList
 
 class Team(internal var teamName: String) {
 
@@ -16,7 +19,9 @@ class Team(internal var teamName: String) {
     // Server starting longitude.
     internal var longitude: Double? = null
 
-    fun getLeader(): Player {
+    internal lateinit var identifier: String
+
+    fun getFirst(): Player {
         return players[0]
     }
 
@@ -92,7 +97,6 @@ class Team(internal var teamName: String) {
         return true
     }
 
-
     fun isLastPlayer(id: Int): Boolean {
         if (id == players[players.size - 1].id)
             return true
@@ -155,6 +159,35 @@ class Team(internal var teamName: String) {
 
     fun getBeforePlayer(id: Int): Player {
         return players[id - 2]
+    }
+
+    fun generateTeamIdentifier(startDateTime: Date) {
+        identifier =
+            "$latitude$longitude${players.size}" + UtilsFunctions.convertDateToStr(startDateTime)
+    }
+
+    fun getPlayersDistance(): String {
+        var str = ""
+        players.forEach {
+            str += if (it.id == players.size) {
+                "${it.id}-${getFirst().id} -> " + String.format(
+                    "%.0f",
+                    computeDistanceBetween(
+                        LatLng(it.latitude, it.longitude),
+                        LatLng(getFirst().latitude, getFirst().longitude)
+                    )
+                ) + "m    "
+            } else {
+                "${it.id}-${getNextPlayer(it.id).id} -> " + String.format(
+                    "%.0f",
+                    computeDistanceBetween(
+                        LatLng(it.latitude, it.longitude),
+                        LatLng(getNextPlayer(it.id).latitude, getNextPlayer(it.id).longitude)
+                    )
+                ) + "m    "
+            }
+        }
+        return str
     }
 
 }

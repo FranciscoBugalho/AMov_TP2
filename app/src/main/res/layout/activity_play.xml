@@ -45,14 +45,48 @@
                 android:textSize="@dimen/ap_tv_timer_text_size" />
 
         </LinearLayout>
+
     </FrameLayout>
+
+    <!-- LinearLayout for two players information. -->
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginHorizontal="@dimen/ap_ll_players_margin_horizontal"
+        android:layout_marginBottom="@dimen/ap_ll_players_margin_bottom"
+        android:background="@color/white"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- ScrollView for the players information -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+                <!-- TextView to display the first player information. -->
+                <TextView
+                    android:id="@+id/tvInfoPlayers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/ap_tv_players_info_padding_vertical"
+                    android:paddingHorizontal="@dimen/ap_tv_players_info_padding_horizontal"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/ap_tv_players_info_text_size"
+                    android:maxLines="2" />
+
+        </ScrollView>
+
+    </LinearLayout>
 
     <!-- Button to confirm the intention to end the game. -->
     <Button
         android:id="@+id/btnEndGame"
         android:layout_width="@dimen/ap_btn_end_game_layout_width"
         android:layout_height="@dimen/ap_btn_end_game_layout_height"
-        android:layout_marginEnd="@dimen/ap_btn_end_game_margin_end"
         android:layout_marginBottom="@dimen/ap_btn_end_game_margin_bottom"
         android:background="@drawable/rounded_button_end_game"
         android:enabled="false"
@@ -65,9 +99,9 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

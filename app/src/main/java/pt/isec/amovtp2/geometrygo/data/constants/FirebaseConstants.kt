@@ -1,12 +1,6 @@
 package pt.isec.amovtp2.geometrygo.data.constants
 
 object FirebaseConstants {
-    // Player locations collection in the firebase cloud.
-    const val PLAYER_LOCATION_COLLECTION = "Player Locations"
-
-    // Path in the collections where player data will be saved.
-    const val PLAYERS_COLLECTION_PATH = "Players"
-
     // Latitude field.
     const val LATITUDE_FIELD = "latitude"
 

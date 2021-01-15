@@ -4,12 +4,14 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.opengl.Visibility
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -158,8 +160,17 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
             btnEndGame.visibility = View.GONE
         }
 
+        updateTextView()
         updateMarkers()
         drawPolygon()
+    }
+
+    private fun updateTextView() {
+        if (!this::map.isInitialized) return
+
+        val textView = findViewById<TextView>(R.id.tvInfoPlayers)
+        textView.text = game.getPlayersDistance()
+        textView.invalidate()
     }
 
     private fun updateMarkers() {
@@ -182,9 +193,8 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
                         )
                     )
                     .title(
-                        getString(R.string.play_activity_player_first_letter) + game.getPlayerId(
-                            i
-                        )
+                        getString(R.string.play_activity_player_first_letter) + game.getPlayerId(i)
+                    + " - " + game.getPlayerAngle(game.getPlayerId(i)) + "°"
                     )
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
 
@@ -208,7 +218,7 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
         map.uiSettings.isCompassEnabled = true
         map.uiSettings.isZoomControlsEnabled = true
         map.uiSettings.isZoomGesturesEnabled = true
-
+        map.uiSettings.isMapToolbarEnabled = false
 
         val cp = CameraPosition.Builder()
             .target(LatLng(game.getPlayer().latitude, game.getPlayer().longitude)).zoom(17f)
@@ -245,18 +255,13 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
         stylePolygon(polygon)
     }
 
-
     private fun stylePolygon(polygon: Polygon) {
-        val POLYGON_STROKE_WIDTH_PX = 8
-        val COLOR_BLUE_ARGB = -0x657db
-
         // Get the data object stored with the polygon.
         val type = polygon.tag?.toString() ?: ""
-        val strokeColor = COLOR_BLUE_ARGB
 
         if (type == ActivityConstants.POLYGON_TAG) {
-            polygon.strokeWidth = POLYGON_STROKE_WIDTH_PX.toFloat()
-            polygon.strokeColor = strokeColor
+            polygon.strokeWidth = 8f
+            polygon.strokeColor = -0x657db
         }
     }
 
