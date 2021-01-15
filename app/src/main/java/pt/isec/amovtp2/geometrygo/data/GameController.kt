@@ -749,8 +749,6 @@ class GameController : ViewModel() {
                 delay(DataConstants.DELAY_BETWEEN_SENDING_DATA.toLong())
             }
         }
-
-        // TODO TRATAR DO FIM DO JOGO
     }
 
     private fun isWin(): Boolean {
@@ -871,7 +869,10 @@ class GameController : ViewModel() {
             team!!.getLastPlayer().id -> {
                 val thisAngle = toDegrees(
                     UtilsFunctions.calculateAngle(actualPlayer!!, team!!.getFirst()) -
-                            UtilsFunctions.calculateAngle(actualPlayer, team!!.getBeforePlayer(actualPlayer.id))
+                            UtilsFunctions.calculateAngle(
+                                actualPlayer,
+                                team!!.getBeforePlayer(actualPlayer.id)
+                            )
                 )
 
                 return String.format("%.3f", UtilsFunctions.convertToFirstQuadrant(abs(thisAngle)))
@@ -879,8 +880,14 @@ class GameController : ViewModel() {
             // Others.
             else -> {
                 val thisAngle = toDegrees(
-                    UtilsFunctions.calculateAngle(actualPlayer!!, team!!.getNextPlayer(actualPlayer.id)) -
-                            UtilsFunctions.calculateAngle(actualPlayer, team!!.getBeforePlayer(actualPlayer.id))
+                    UtilsFunctions.calculateAngle(
+                        actualPlayer!!,
+                        team!!.getNextPlayer(actualPlayer.id)
+                    ) -
+                            UtilsFunctions.calculateAngle(
+                                actualPlayer,
+                                team!!.getBeforePlayer(actualPlayer.id)
+                            )
                 )
 
                 return String.format("%.3f", UtilsFunctions.convertToFirstQuadrant(abs(thisAngle)))

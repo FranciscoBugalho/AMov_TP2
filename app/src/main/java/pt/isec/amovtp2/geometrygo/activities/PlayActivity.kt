@@ -4,14 +4,12 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.opengl.Visibility
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -194,7 +192,7 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
                     )
                     .title(
                         getString(R.string.play_activity_player_first_letter) + game.getPlayerId(i)
-                    + " - " + game.getPlayerAngle(game.getPlayerId(i)) + "°"
+                                + " - " + game.getPlayerAngle(game.getPlayerId(i)) + "°"
                     )
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
 
