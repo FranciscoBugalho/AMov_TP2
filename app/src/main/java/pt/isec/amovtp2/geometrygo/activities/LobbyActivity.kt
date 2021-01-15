@@ -196,6 +196,7 @@ class LobbyActivity : AppCompatActivity() {
                     game.clientExitLobby()
                 }
                 dlg.dismiss()
+                finish()
             }
             setNegativeButton(getString(R.string.ad_ql_btn_no)) { dlg: DialogInterface, _: Int ->
                 dlg.dismiss()

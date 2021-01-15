@@ -115,6 +115,10 @@ class GameController : ViewModel() {
 
                     val newPlayerInfo = iS.readLine()
 
+                    team!!.getPlayers().forEach {
+                        Log.i("TAG", "receiveMessagesFromClients: ${it.id}")
+                    }
+
                     if (!gameStarted)
                         checkIfGameCanStart()
 
@@ -135,7 +139,6 @@ class GameController : ViewModel() {
                     team!!.getPlayers().sortBy { it.id }
                 }
             } catch (_: Exception) {
-                //deleteLobby()
                 return@thread
             }
         }
@@ -216,6 +219,7 @@ class GameController : ViewModel() {
                     when {
                         newPlayersInfo.split(" ")[1] == MessagesStatusConstants.END_STATE -> {
                             state.postValue(State.END_LOBBY)
+                            player.id = -1
                         }
                         newPlayersInfo.split(" ")[1] == MessagesStatusConstants.START_STATE -> {
                             startDateTime =
@@ -344,14 +348,15 @@ class GameController : ViewModel() {
      */
     private fun deleteLobby() {
         try {
-            val leader = team!!.getLeader()
-            state.postValue(State.END_LOBBY)
-            leader.socket?.close()
-            leader.socket = null
-            leader.threadCreateTeam?.interrupt()
-            leader.threadCreateTeam = null
-        } catch (_: Exception) {
-        }
+            team!!.getPlayers().clear()
+            team!!.addPlayer(player)
+            player.serverSocket?.close()
+            player.serverSocket = null
+            player.threadCreateTeam?.interrupt()
+            player.threadCreateTeam = null
+            player.socket?.close()
+            player.socket = null
+        } catch (_: Exception) { }
     }
 
     /**
@@ -377,10 +382,8 @@ class GameController : ViewModel() {
                                 printStream.flush()
                             }
                         } catch (_: Exception) {
-                            //stopGame()
                         }
                     }
-                //state.postValue(State.UPDATE_VIEW)
             }
         }
     }
@@ -422,7 +425,6 @@ class GameController : ViewModel() {
                     printStream.flush()
                 }
             } catch (_: Exception) {
-                //stopGame()
             }
         }
     }
@@ -449,7 +451,6 @@ class GameController : ViewModel() {
                         printStream.flush()
                     }
                 } catch (_: Exception) {
-                    //stopGame()
                 }
             }
         }
@@ -485,6 +486,9 @@ class GameController : ViewModel() {
                     }
             }
         }
+
+        if (status == MessagesStatusConstants.END_STATE)
+            deleteLobby()
     }
 
     fun clientExitLobby() {
@@ -500,6 +504,9 @@ class GameController : ViewModel() {
                         printStream.flush()
                     }
                 } catch (_: Exception) {
+                    player.id = -1
+                    team!!.getPlayers().clear()
+                    team!!.addPlayer(player)
                     //stopGame()
                 }
             }
