@@ -33,6 +33,7 @@ import pt.isec.amovtp2.geometrygo.fragments.AlertDialogCreateLobby
 import pt.isec.amovtp2.geometrygo.fragments.AlertDialogJoinLobby
 import java.util.*
 
+// 192.168.1.70
 class LobbyActivity : AppCompatActivity() {
 
     // Verifies if the lobby already started or not.

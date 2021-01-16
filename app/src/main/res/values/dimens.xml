@@ -36,6 +36,7 @@
     <dimen name="as_tv_score_information_padding">3dp</dimen>
 
     <!-- Activity Tutorial Dimensions. -->
+    <dimen name="at_ll_global_padding">16dp</dimen>
 
     <!-- Activity About Dimensions. -->
     <dimen name="aa_ll_global_padding">16dp</dimen>
@@ -53,6 +54,7 @@
     <dimen name="ap_btn_end_game_layout_width">60dp</dimen>
     <dimen name="ap_btn_end_game_layout_height">60dp</dimen>
     <dimen name="ap_btn_end_game_text_size">28sp</dimen>
+    <dimen name="ap_btn_end_game_margin_end">16dp</dimen>
     <dimen name="ap_btn_end_game_margin_bottom">16dp</dimen>
     <dimen name="ap_btn_end_game_stroke_with">3dip</dimen>
     <dimen name="ap_btn_end_game_size">100dp</dimen>

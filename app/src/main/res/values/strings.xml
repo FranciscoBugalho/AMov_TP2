@@ -2,6 +2,7 @@
     <string name="app_name" translatable="false">GeometryGO</string>
     <string name="am_btn_create_lobby">Create Lobby</string>
     <string name="am_btn_join_lobby">Join Lobby</string>
+    <string name="am_btn_tutorial">Tutorial</string>
     <string name="am_btn_about">About</string>
     <string name="am_btn_scoreboard">Scoreboard</string>
     <string name="as_tv_top_5">Top 5</string>
@@ -47,14 +48,4 @@
     <string name="ap_dialog_back_pressed_title">Are you sure that you want to leave the game?</string>
     <string name="ap_dialog_back_pressed_yes">Yes</string>
     <string name="ap_dialog_back_pressed_no">No</string>
-    <string name="ap_dialog_create_dialog_polygon_title">Polygon to draw:</string>
-    <string name="ap_dialog_create_polygon_ok">Ok</string>
-    <string name="ap_polygon_triangle">Triangle</string>
-    <string name="ap_polygon_square">Square</string>
-    <string name="ap_polygon_pentagon">Pentagon</string>
-    <string name="ap_polygon_hexagon">Hexagon</string>
-    <string name="ap_polygon_heptagon">Heptagon</string>
-    <string name="ap_polygon_octagon">Octagon</string>
-    <string name="ap_polygon_eneagon">Eneagon</string>
-    <string name="ap_polygon_decagon">Decagon</string>
 </resources>

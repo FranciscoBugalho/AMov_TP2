@@ -63,25 +63,22 @@ class AlertDialogCreateLobby(
 
         btnCreate = view.findViewById(R.id.btnCreate)
         btnCreate.setOnClickListener {
-            when {
-                editText.text.isEmpty() -> {
-                    editText.error = getString(R.string.ad_cl_et_empty_error)
-                    return@setOnClickListener
-                }
-                editText.text.toString().length > DataConstants.TEAM_NAME_SIZE -> {
-                    editText.error = getString(R.string.ad_et_more_than_25_characters_error)
-                    return@setOnClickListener
-                }
-                else -> {
-                    if (latitude != null && longitude != null) {
-                        game.createTeam(editText.text.toString())
-                        tvTeamName.text = game.getTeamName()
-                        game.startAsServer(latitude!!, longitude!!)
-                        dialog?.dismiss()
-                    } else
-                        editText.error = getString(R.string.ad_cl_jl_et_no_latitude_longitude_error)
-                    return@setOnClickListener
-                }
+            if (editText.text.isEmpty()) {
+                editText.error = getString(R.string.ad_cl_et_empty_error)
+                return@setOnClickListener
+            } else if (editText.text.toString().length > DataConstants.TEAM_NAME_SIZE) {
+                editText.error = getString(R.string.ad_et_more_than_25_characters_error)
+                return@setOnClickListener
+            }
+            else {
+                if (latitude != null && longitude != null) {
+                    game.createTeam(editText.text.toString())
+                    tvTeamName.text = game.getTeamName()
+                    game.startAsServer(latitude!!, longitude!!)
+                    dialog?.dismiss()
+                } else
+                    editText.error = getString(R.string.ad_cl_jl_et_no_latitude_longitude_error)
+                return@setOnClickListener
             }
         }
 

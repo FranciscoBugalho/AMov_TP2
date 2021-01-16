@@ -2,6 +2,7 @@
 <resources>
     <string name="am_btn_create_lobby">Criar Grupo</string>
     <string name="am_btn_scoreboard">Classificações</string>
+    <string name="am_btn_tutorial">Tutorial</string>
     <string name="am_btn_about">Sobre</string>
     <string name="aa_about_information">Projeto realizado por:\n\t- Henrique Fonseca\n\t- José Francisco Bugalho\n\t- Marco Ferreira\n\nProjeto desenvolvido no ano letivo 2020/2021 para a unidade curricular de Arquiteturas Móveis do 3º ano da Licenciatura em Engenharia Informática lecionada no Instituto Superior de Engenharia de Coimbra.</string>
     <string name="as_tv_top_5">Top 5</string>
@@ -44,14 +45,4 @@
     <string name="ap_dialog_back_pressed_title">Tem a certeza que quer sair do jogo?</string>
     <string name="ap_dialog_back_pressed_yes">Sim</string>
     <string name="ap_dialog_back_pressed_no">Não</string>
-    <string name="ap_dialog_create_dialog_polygon_title">Poligono a fazer:</string>
-    <string name="ap_dialog_create_polygon_ok">Ok</string>
-    <string name="ap_polygon_triangle">Triângulo</string>
-    <string name="ap_polygon_square">Quadrado</string>
-    <string name="ap_polygon_pentagon">Pentágono</string>
-    <string name="ap_polygon_hexagon">Hexágono</string>
-    <string name="ap_polygon_heptagon">Heptágono</string>
-    <string name="ap_polygon_octagon">Octágono</string>
-    <string name="ap_polygon_decagon">Decágono</string>
-    <string name="ap_polygon_eneagon">Eneágono</string>
 </resources>
