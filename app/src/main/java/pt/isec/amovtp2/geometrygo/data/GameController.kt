@@ -633,6 +633,7 @@ class GameController : ViewModel() {
                 FirebaseConstants.LONGITUDE_FIELD to it.longitude,
                 FirebaseConstants.LAST_CONNECTION_FIELD to Timestamp(Date()),
                 FirebaseConstants.CONFIRMED_END to false,
+                FirebaseConstants.IS_REMOVED to false,
             )
 
             db.collection(team!!.identifier).document(it.id.toString()).set(playerData)
