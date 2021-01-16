@@ -26,8 +26,6 @@ class SMSFunctionality : BroadcastReceiver() {
 
                 abortBroadcast()
                 val resp: SmsManager = SmsManager.getDefault()
-                // todo perguntar se quer -se juntar num lobby
-                // * saber em que actividade estamos, se for a main activty ou join looby então criar dialog box e fazer join
                 resp.sendTextMessage(
                     origin,
                     null,

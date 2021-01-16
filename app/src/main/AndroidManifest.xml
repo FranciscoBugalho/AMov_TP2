@@ -19,12 +19,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GeometryGO"
         tools:ignore="AllowBackup">
-        <activity android:name=".activities.EndGameActivity" />
-        <activity android:name=".activities.PlayActivity" />
-        <activity android:name=".activities.AboutActivity" />
-        <activity android:name=".activities.TutorialActivity" />
-        <activity android:name=".activities.ScoreboardActivity" />
-        <activity android:name=".activities.LobbyActivity" />
+        <activity android:name=".activities.EndGameActivity" android:screenOrientation="portrait" />
+        <activity android:name=".activities.PlayActivity" android:screenOrientation="portrait" />
+        <activity android:name=".activities.AboutActivity" android:screenOrientation="portrait" />
+        <activity android:name=".activities.TutorialActivity" android:screenOrientation="portrait" />
+        <activity android:name=".activities.ScoreboardActivity" android:screenOrientation="portrait" />
+        <activity android:name=".activities.LobbyActivity" android:screenOrientation="portrait" />
         <activity
             android:name=".activities.MainActivity"
             android:screenOrientation="portrait">
