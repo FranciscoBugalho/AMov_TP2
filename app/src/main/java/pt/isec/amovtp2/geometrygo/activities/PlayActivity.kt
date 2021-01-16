@@ -28,7 +28,6 @@ import pt.isec.amovtp2.geometrygo.R
 import pt.isec.amovtp2.geometrygo.data.Game.game
 import pt.isec.amovtp2.geometrygo.data.GameController
 import pt.isec.amovtp2.geometrygo.data.constants.DataConstants
-import pt.isec.amovtp2.geometrygo.data.constants.MessagesStatusConstants
 
 class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -110,6 +109,8 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
                 GameController.State.END_LOBBY -> closeGame()
             }
         }
+
+        createDialogPolygon()
     }
 
     private fun closeGame() {
@@ -349,4 +350,32 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
         fLoc.requestLocationUpdates(locReq, locationCallback, null)
         locEnabled = true
     }
+
+    private fun createDialogPolygon() {
+        val dlg = AlertDialog.Builder(this).run {
+            setTitle(getString(R.string.ap_dialog_create_dialog_polygon_title) + " " + getPolygonName())
+
+            setPositiveButton(getString(R.string.ap_dialog_create_polygon_ok)) { dlg: DialogInterface, _: Int ->
+                dlg.dismiss()
+            }
+            setCancelable(true)
+            create()
+        }
+        dlg.show()
+    }
+
+    private fun getPolygonName(): String {
+        when(game.getTeam().getSize()) {
+            3 -> return getString(R.string.ap_polygon_triangle)
+            4 -> return getString(R.string.ap_polygon_square)
+            5 -> return getString(R.string.ap_polygon_pentagon)
+            6 -> return getString(R.string.ap_polygon_hexagon)
+            7 -> return getString(R.string.ap_polygon_heptagon)
+            8 -> return getString(R.string.ap_polygon_octagon)
+            9 -> return getString(R.string.ap_polygon_eneagon)
+            10 -> return getString(R.string.ap_polygon_decagon)
+        }
+        return ""
+    }
+
 }
