@@ -50,12 +50,6 @@ class MainActivity : AppCompatActivity(), NetworkConnection.ConnectivityReceiver
             }
         }
 
-        findViewById<Button>(R.id.btnTutorial).setOnClickListener {
-            Intent(this, TutorialActivity::class.java).also {
-                startActivity(it)
-            }
-        }
-
         findViewById<Button>(R.id.btnAbout).setOnClickListener {
             Intent(this, AboutActivity::class.java).also {
                 startActivity(it)
