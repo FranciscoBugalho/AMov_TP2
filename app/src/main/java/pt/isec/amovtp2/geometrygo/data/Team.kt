@@ -190,4 +190,35 @@ class Team(internal var teamName: String) {
         return str
     }
 
+    fun getAllPlayersPosition(): ArrayList<LatLng> {
+        val positions = arrayListOf<LatLng>()
+
+        players.forEach {
+            positions.add(LatLng(it.latitude, it.longitude))
+        }
+        return positions
+    }
+
+    fun getPlayersAverageDistance(): String {
+        val allDistances = arrayListOf<Double>()
+        players.forEach {
+            if (it.id == players.size) {
+                allDistances.add(
+                    computeDistanceBetween(
+                        LatLng(it.latitude, it.longitude),
+                        LatLng(getFirst().latitude, getFirst().longitude)
+                    )
+                )
+            } else {
+                allDistances.add(
+                    computeDistanceBetween(
+                        LatLng(it.latitude, it.longitude),
+                        LatLng(getNextPlayer(it.id).latitude, getNextPlayer(it.id).longitude)
+                    )
+                )
+            }
+        }
+        return String.format("%.2f", allDistances.average())
+    }
+
 }

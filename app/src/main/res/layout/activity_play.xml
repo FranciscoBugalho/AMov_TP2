@@ -48,7 +48,7 @@
 
     </FrameLayout>
 
-    <!-- LinearLayout for two players information. -->
+    <!-- LinearLayout for players information. -->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -66,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-                <!-- TextView to display the first player information. -->
+                <!-- TextView to display the players information. -->
                 <TextView
                     android:id="@+id/tvInfoPlayers"
                     android:layout_width="match_parent"

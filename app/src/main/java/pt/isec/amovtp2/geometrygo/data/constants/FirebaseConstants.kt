@@ -12,4 +12,7 @@ object FirebaseConstants {
 
     // End confirmation.
     const val CONFIRMED_END = "endConfirmation"
+
+    // Is removed field.
+    const val IS_REMOVED = "isRemoved"
 }

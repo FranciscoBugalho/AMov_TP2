@@ -37,7 +37,12 @@
     <string name="sms_received_text">SMS recebido.</string>
     <string name="ad_et_more_than_25_characters_error">O nome da equipa deve ter menos de 25 carateres!</string>
     <string name="aegw_tv_you_win">Você ganhou!</string>
-    <string name="not_enough_players_to_finish_the_game_information">Não há players suficientes para acabar o jogo!</string>
+    <string name="not_enough_players_to_finish_the_game_information">Não há jogadores suficientes para acabar o jogo!</string>
     <string name="time_expired_information">O tempo expirou!</string>
     <string name="aeg_you_lose">Você perdeu!</string>
+    <string name="aeg_area_tag">Área:</string>
+    <string name="aeg_average_distance_tag">Distância média:</string>
+    <string name="ap_dialog_back_pressed_title">Tem a certeza que quer sair do jogo?</string>
+    <string name="ap_dialog_back_pressed_yes">Sim</string>
+    <string name="ap_dialog_back_pressed_no">Não</string>
 </resources>

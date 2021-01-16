@@ -9,6 +9,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.maps.android.PolyUtil
+import com.google.maps.android.SphericalUtil.computeArea
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -195,7 +196,6 @@ class GameController : ViewModel() {
             }
         }
     }
-
 
     /**
      * receiveDataFromServer
@@ -662,6 +662,7 @@ class GameController : ViewModel() {
             transition.update(v, FirebaseConstants.LONGITUDE_FIELD, player.longitude)
             transition.update(v, FirebaseConstants.LAST_CONNECTION_FIELD, Timestamp(Date()))
             transition.update(v, FirebaseConstants.CONFIRMED_END, player.endConfirmation)
+            transition.update(v, FirebaseConstants.IS_REMOVED, false)
             null
         }
     }
@@ -688,20 +689,30 @@ class GameController : ViewModel() {
                                 doc.getTimestamp(FirebaseConstants.LAST_CONNECTION_FIELD)
                             val endConfirmation =
                                 doc.getBoolean(FirebaseConstants.CONFIRMED_END)
+                            val isRemoved =
+                                doc.getBoolean(FirebaseConstants.IS_REMOVED)
 
-                            if (latitude != null && longitude != null && connectionDate != null) {
+                            if (latitude != null && longitude != null && connectionDate != null && isRemoved != null) {
                                 team!!.getPlayers().forEach { iterator ->
-                                    if (iterator.id == it.id) {
-                                        iterator.latitude = latitude
-                                        iterator.longitude = longitude
-                                        iterator.endConfirmation = endConfirmation ?: false
+                                // If the player weren't removed.
+                                    if (!isRemoved) {
+                                        if (iterator.id == it.id) {
+                                            iterator.latitude = latitude
+                                            iterator.longitude = longitude
+                                            iterator.endConfirmation = endConfirmation ?: false
 
-                                        iterator.toRemove = team!!.setPlayerLocation(
-                                            iterator.id,
-                                            latitude,
-                                            longitude,
-                                            connectionDate,
-                                        )
+                                            iterator.toRemove = team!!.setPlayerLocation(
+                                                iterator.id,
+                                                latitude,
+                                                longitude,
+                                                connectionDate,
+                                            )
+
+                                            if (iterator.toRemove)
+                                                setAsRemoved(iterator.id)
+                                        }
+                                    } else {
+                                        team!!.getPlayerById(it.id)?.toRemove = true
                                     }
                                 }
                             }
@@ -713,6 +724,7 @@ class GameController : ViewModel() {
                 end = 0
 
                 team!!.getPlayers().forEach {
+                    // Check the end confirmation.
                     if (it.endConfirmation)
                         end += 1
                     else
@@ -723,11 +735,15 @@ class GameController : ViewModel() {
                 }
 
                 synchronized(team!!.getPlayers()) {
+                    // If it's the actual player changes the screen.
+                    toRemove.forEach {
+                        if (it.id == player.id)
+                            state.postValue(State.END_LOBBY)
+                    }
                     // Remove players if needed.
                     if (toRemove.isNotEmpty()) {
                         team!!.removePlayers(toRemove)
                     }
-                    // TODO: SE FOR EU TERMINAR O JOGO
                 }
 
                 when {
@@ -748,6 +764,17 @@ class GameController : ViewModel() {
 
                 delay(DataConstants.DELAY_BETWEEN_SENDING_DATA.toLong())
             }
+        }
+    }
+
+    fun setAsRemoved(id: Int) {
+        val db = Firebase.firestore
+
+        val v = db.collection(team!!.identifier).document(id.toString())
+
+        // Saves the data in the database.
+        db.runTransaction { transition ->
+            transition.update(v, FirebaseConstants.IS_REMOVED, true)
         }
     }
 
@@ -863,7 +890,7 @@ class GameController : ViewModel() {
                             UtilsFunctions.calculateAngle(actualPlayer, team!!.getLastPlayer())
                 )
 
-                return String.format("%.3f", UtilsFunctions.convertToFirstQuadrant(abs(thisAngle)))
+                return String.format("%.1f", UtilsFunctions.convertToFirstQuadrant(abs(thisAngle)))
             }
             // Last player.
             team!!.getLastPlayer().id -> {
@@ -875,7 +902,7 @@ class GameController : ViewModel() {
                             )
                 )
 
-                return String.format("%.3f", UtilsFunctions.convertToFirstQuadrant(abs(thisAngle)))
+                return String.format("%.1f", UtilsFunctions.convertToFirstQuadrant(abs(thisAngle)))
             }
             // Others.
             else -> {
@@ -890,12 +917,20 @@ class GameController : ViewModel() {
                             )
                 )
 
-                return String.format("%.3f", UtilsFunctions.convertToFirstQuadrant(abs(thisAngle)))
+                return String.format("%.1f", UtilsFunctions.convertToFirstQuadrant(abs(thisAngle)))
             }
         }
     }
 
     fun getPlayersDistance(): String {
         return team!!.getPlayersDistance()
+    }
+
+    fun calculateArea(): String {
+        return String.format("%.2f", computeArea(team!!.getAllPlayersPosition()))
+    }
+
+    fun getPlayersAverageDistance(): String {
+        return team!!.getPlayersAverageDistance()
     }
 }

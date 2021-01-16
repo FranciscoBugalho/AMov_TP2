@@ -2,6 +2,7 @@ package pt.isec.amovtp2.geometrygo.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.os.CountDownTimer
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
@@ -26,6 +28,7 @@ import pt.isec.amovtp2.geometrygo.R
 import pt.isec.amovtp2.geometrygo.data.Game.game
 import pt.isec.amovtp2.geometrygo.data.GameController
 import pt.isec.amovtp2.geometrygo.data.constants.DataConstants
+import pt.isec.amovtp2.geometrygo.data.constants.MessagesStatusConstants
 
 class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -104,8 +107,17 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
                 GameController.State.ADD_BUTTON -> updateView(true)
                 GameController.State.END_GAME_WIN -> endGame(true)
                 GameController.State.END_GAME_LOSE -> endGame(false)
+                GameController.State.END_LOBBY -> closeGame()
             }
         }
+    }
+
+    private fun closeGame() {
+        Intent(this, MainActivity::class.java)
+            .also {
+                startActivity(it)
+                finish()
+            }
     }
 
     private fun endGame(win: Boolean) {
@@ -261,6 +273,24 @@ class PlayActivity : AppCompatActivity(), OnMapReadyCallback {
             polygon.strokeWidth = 8f
             polygon.strokeColor = -0x657db
         }
+    }
+
+    override fun onBackPressed() {
+        val dlg = AlertDialog.Builder(this).run {
+            setTitle(getString(R.string.ap_dialog_back_pressed_title))
+
+            setPositiveButton(getString(R.string.ap_dialog_back_pressed_yes)) { dlg: DialogInterface, _: Int ->
+                game.setAsRemoved(game.getPlayerId())
+                dlg.dismiss()
+                finish()
+            }
+            setNegativeButton(getString(R.string.ap_dialog_back_pressed_no)) { dlg: DialogInterface, _: Int ->
+                dlg.dismiss()
+            }
+            setCancelable(false)
+            create()
+        }
+        dlg.show()
     }
 
     override fun onResume() {

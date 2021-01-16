@@ -43,4 +43,9 @@
     <string name="not_enough_players_to_finish_the_game_information">Not enough players to finish the game.</string>
     <string name="time_expired_information">Time expired!</string>
     <string name="aeg_you_lose">You lose!</string>
+    <string name="aeg_area_tag">Area:</string>
+    <string name="aeg_average_distance_tag">Average distance:</string>
+    <string name="ap_dialog_back_pressed_title">Are you sure that you want to leave the game?</string>
+    <string name="ap_dialog_back_pressed_yes">Yes</string>
+    <string name="ap_dialog_back_pressed_no">No</string>
 </resources>
