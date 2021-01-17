@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.maps.android.PolyUtil
@@ -20,6 +21,7 @@ import java.lang.Math.toDegrees
 import java.net.ServerSocket
 import java.net.Socket
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
@@ -932,5 +934,29 @@ class GameController : ViewModel() {
 
     fun getPlayersAverageDistance(): String {
         return team!!.getPlayersAverageDistance()
+    }
+    /**
+            identificador da equipa,
+            nome da equipa,
+            coordenadas finais de cada elemento,
+            comprimento médio da aresta,
+            área do polígono e
+            data e hora em que foi alcançado
+     */
+    fun saveScores() {
+        val polygnName = "POLYGN_" + team?.getSize()
+        val db = Firebase.firestore
+
+        val finalArea = computeArea(team!!.getAllPlayersPosition())
+
+        val playersCoord = arrayListOf<String>()
+        for (i in 0 until team!!.getPlayers().size) {
+            playersCoord.add(team!!.getPlayers()[i].latitude.toString() +" "+team!!.getPlayers()[i].longitude.toString())
+        }
+        val score = Scores(team!!.getSize(),team!!.identifier,team!!.teamName, playersCoord ,getPlayersAverageDistance(),finalArea,Timestamp(Date()))
+
+
+        db.collection("Polygns").document(polygnName).set(score, SetOptions.merge())
+
     }
 }

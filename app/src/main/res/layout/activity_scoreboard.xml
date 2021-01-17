@@ -9,28 +9,6 @@
     android:padding="@dimen/as_ll_global_padding"
     tools:context=".activities.ScoreboardActivity">
 
-    <!-- ConstraintLayout for the app logo. -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
-        app:layout_constraintTop_toTopOf="@+id/textView2">
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="83dp"
-            android:gravity="center"
-            android:text="METER O ICONE AQUI"
-            android:textColor="@color/black"
-            android:textSize="25sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- ConstraintLayout for the score information. -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -64,75 +42,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3">
 
-            <!-- TextView with the first team name. -->
-            <TextView
-                android:id="@+id/tvPlayer1"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:padding="@dimen/as_tv_score_information_padding"
-                android:textColor="@color/black"
-                android:textSize="@dimen/as_tv_score_information_text_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvPlayer2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <!-- TextView with the second team name. -->
-            <TextView
-                android:id="@+id/tvPlayer2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:padding="@dimen/as_tv_score_information_padding"
-                android:textColor="@color/black"
-                android:textSize="@dimen/as_tv_score_information_text_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvPlayer3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPlayer1" />
-
-            <!-- TextView with the third team name. -->
-            <TextView
-                android:id="@+id/tvPlayer3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:padding="@dimen/as_tv_score_information_padding"
-                android:textColor="@color/black"
-                android:textSize="@dimen/as_tv_score_information_text_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvPlayer4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPlayer2" />
-
-            <!-- TextView with the forth team name. -->
-            <TextView
-                android:id="@+id/tvPlayer4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:padding="@dimen/as_tv_score_information_padding"
-                android:textColor="@color/black"
-                android:textSize="@dimen/as_tv_score_information_text_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvPlayer5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPlayer3" />
-
-            <!-- TextView with the fifth team name. -->
-            <TextView
-                android:id="@+id/tvPlayer5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:padding="@dimen/as_tv_score_information_padding"
-                android:textColor="@color/black"
-                android:textSize="@dimen/as_tv_score_information_text_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPlayer4" />
+                android:layout_height="match_parent"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:id="@+id/top5"
+                    ></LinearLayout>
+            </ScrollView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

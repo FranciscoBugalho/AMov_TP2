@@ -15,4 +15,23 @@ object FirebaseConstants {
 
     // Is removed field.
     const val IS_REMOVED = "isRemoved"
+
+    // HashMap Save Final INFO for score
+    const val TEAM_ID = "teamId"
+    const val TEAM_NAME = "teamName"
+    const val PLAYERS_POSITIONS = "playersPosition"
+    const val AVG_DISTANCE = "avgDistance"
+    const val AREA = "area"
+    const val DATE = "date"
+    const val TIME = "time"
+
+    /**
+     *      identificador da equipa,
+     *      nome da equipa,
+    coordenadas finais de cada elemento,
+    comprimento médio da aresta,
+    área do polígono e
+    data e hora em que foi alcançado
+     */
+
 }

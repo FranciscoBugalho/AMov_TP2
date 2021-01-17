@@ -56,6 +56,7 @@ class EndGameActivity : AppCompatActivity(), OnMapReadyCallback {
         isWin = intent.getBooleanExtra(ActivityConstants.IS_WIN, false)
         if (isWin) {
             textView.text = getString(R.string.aeg_average_distance_tag) + " " + game.getPlayersAverageDistance() + "m    " + getString(R.string.aeg_area_tag) + " " + game.calculateArea() + "m²"
+            game.saveScores()
         } else {
             val loseInformation = intent.getStringExtra(ActivityConstants.LOSE_INFORMATION)
 
