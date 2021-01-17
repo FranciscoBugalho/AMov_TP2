@@ -13,16 +13,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.75">
+        android:layout_weight="0.9">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="METER O ICONE AQUI"
-            android:textColor="@color/black"
-            android:textSize="25sp" />
+        <!-- ImageView with the logo -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/logo"
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 
@@ -83,24 +81,8 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/am_btn_text_size"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/btnTutorial"
+                app:layout_constraintBottom_toTopOf="@+id/btnAbout"
                 app:layout_constraintTop_toBottomOf="@+id/btnJoinLobby" />
-
-            <!-- Tutorial Button. -->
-            <Button
-                android:id="@+id/btnTutorial"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/am_btn_layout_margin"
-                android:background="@drawable/menu_buttons"
-                android:padding="@dimen/am_btn_padding"
-                android:text="@string/am_btn_tutorial"
-                android:textColor="@color/black"
-                android:textSize="@dimen/am_btn_text_size"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/btnAbout"
-                app:layout_constraintTop_toBottomOf="@+id/btnScoreboard" />
 
             <!-- About Button. -->
             <Button
@@ -116,7 +98,7 @@
                 android:textSize="@dimen/am_btn_text_size"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnTutorial" />
+                app:layout_constraintTop_toBottomOf="@+id/btnScoreboard" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -50,7 +50,6 @@
 
     <!-- LinearLayout for players information. -->
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -64,7 +63,8 @@
         <!-- ScrollView for the players information -->
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:ignore="UselessParent">
 
                 <!-- TextView to display the players information. -->
                 <TextView

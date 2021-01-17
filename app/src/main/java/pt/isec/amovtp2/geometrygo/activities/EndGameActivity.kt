@@ -13,7 +13,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.common.collect.Lists
 import pt.isec.amovtp2.geometrygo.R
-import pt.isec.amovtp2.geometrygo.data.Game
 import pt.isec.amovtp2.geometrygo.data.Game.game
 
 class EndGameActivity : AppCompatActivity(), OnMapReadyCallback {
