@@ -54,4 +54,5 @@
     <string name="ap_polygon_octagon">Octágono</string>
     <string name="ap_polygon_decagon">Decágono</string>
     <string name="ap_polygon_eneagon">Eneágono</string>
+    <string name="as_n_vertices">N Vertices:</string>
 </resources>

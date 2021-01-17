@@ -17,6 +17,11 @@ object UtilsFunctions {
         return SimpleDateFormat(UtilsConstants.DATE_FORMAT).parse(date)!!
     }
 
+    @SuppressLint("SimpleDateFormat")
+    fun convertDateToStrScores(date: Date): String {
+        return SimpleDateFormat(UtilsConstants.DATE_FORMAT_NORMAL).format(date)
+    }
+
     fun calculateAngle(actual: Player, other: Player) : Double {
         return atan2(
             actual.longitude - other.longitude,

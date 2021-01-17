@@ -21,7 +21,6 @@ import java.lang.Math.toDegrees
 import java.net.ServerSocket
 import java.net.Socket
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
@@ -697,7 +696,7 @@ class GameController : ViewModel() {
 
                             if (latitude != null && longitude != null && connectionDate != null && isRemoved != null) {
                                 team!!.getPlayers().forEach { iterator ->
-                                // If the player weren't removed.
+                                    // If the player weren't removed.
                                     if (!isRemoved) {
                                         if (iterator.id == it.id) {
                                             iterator.latitude = latitude
@@ -936,28 +935,31 @@ class GameController : ViewModel() {
     fun getPlayersAverageDistance(): String {
         return team!!.getPlayersAverageDistance()
     }
-    /**
-            identificador da equipa,
-            nome da equipa,
-            coordenadas finais de cada elemento,
-            comprimento médio da aresta,
-            área do polígono e
-            data e hora em que foi alcançado
-     */
+
     fun saveScores() {
-        val polygnName = "POLYGN_" + team?.getSize()
+        val polygonName = "POLYGON_" + team?.getSize()
         val db = Firebase.firestore
 
         val finalArea = computeArea(team!!.getAllPlayersPosition())
 
         val playersCoord = arrayListOf<String>()
         for (i in 0 until team!!.getPlayers().size) {
-            playersCoord.add(team!!.getPlayers()[i].latitude.toString() +" "+team!!.getPlayers()[i].longitude.toString())
+            playersCoord.add(team!!.getPlayers()[i].latitude.toString() + " " + team!!.getPlayers()[i].longitude.toString())
         }
-        val score = Scores(team!!.getSize(),team!!.identifier,team!!.teamName, playersCoord ,getPlayersAverageDistance(),finalArea,Timestamp(Date()))
+        val score = Scores(
+            team!!.getSize(),
+            team!!.identifier,
+            team!!.teamName,
+            playersCoord,
+            getPlayersAverageDistance(),
+            finalArea,
+            Timestamp(Date())
+        )
 
+        val initPoly = hashMapOf("Init" to "init")
 
-        db.collection("Polygns").document(polygnName).set(score, SetOptions.merge())
-
+        db.collection("Polygons").document(polygonName).set(initPoly, SetOptions.merge())
+        db.collection("Polygons").document(polygonName).collection("Scores")
+            .document(team!!.identifier).set(score)
     }
 }

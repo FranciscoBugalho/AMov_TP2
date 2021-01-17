@@ -34,8 +34,7 @@
     <dimen name="as_tv_top_5_padding">3dp</dimen>
     <dimen name="as_tv_score_information_text_size">20sp</dimen>
     <dimen name="as_tv_score_information_padding">3dp</dimen>
-
-    <!-- Activity Tutorial Dimensions. -->
+    <dimen name="as_ll_players_padding">10dp</dimen>
 
     <!-- Activity About Dimensions. -->
     <dimen name="aa_ll_global_padding">16dp</dimen>
